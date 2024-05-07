@@ -1,6 +1,6 @@
-const Server = require("./src/rest/Server")
+const Server = require("./src/Server")
 require("dotenv").config()
-const PORT = 3000
+const PORT = 4321
 
 const server = new Server(PORT)
 
