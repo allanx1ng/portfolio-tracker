@@ -10,6 +10,7 @@ const jwt = require("jsonwebtoken")
 const secretKey = process.env.JWT_SECRET_KEY
 
 const Account = require("./routes/Account.js")
+const Authentication = require("./routes/Authentication.js")
 const Prices = require("./routes/Prices.js")
 
 const passportConfig = require("./middleware/PassportConfig")
@@ -68,6 +69,8 @@ class Server {
     this.app.post("/createuser", passport.authenticate("local"), Account.create)
 
     this.app.get("/price/:asset", Prices.getPrice)
+
+    this.app.post("/login", Authentication.login)
   }
 
   start() {

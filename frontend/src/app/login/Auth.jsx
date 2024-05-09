@@ -3,6 +3,7 @@ import { useState } from "react"
 import { ToastContainer, toast } from "react-toastify"
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import apiClient from "@/util/apiClient";
 import "react-toastify/dist/ReactToastify.css"
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 // const BACKEND_URL = "http://localhost:3000";
@@ -12,6 +13,7 @@ const Auth = () => {
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { login } = useAuth()
 	// const { login } = useAuth();
   const successMsg = (msg) => {
     toast.success(msg, {
@@ -41,32 +43,26 @@ const Auth = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
+    setIsLoading(true)
     try {
-			const data = fetch(LOGIN_URL, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					email: email,
-					password: password,
-				}),
-			});
+			const data = apiClient.post('/login', { email, password });
 
 			data.then((response) => {
-				if (response.ok) {
-					return response.json();
+				if (response.status === 200) {
+					return response.data;
 				}
 				return Promise.reject(response);
 			})
 				.then((result) => {
 					console.log(result.token);
-					useAuth.login(result.token);
-					successMsg("Login Success")
+					login(result.token);
+					successMsg("Login Successful")
 
 					setTimeout(() => {
+            setIsLoading(false);
 						router.push("/");
-					}, 1000);
+            
+					}, 2000);
 				})
 				.catch((err) => {
 					errorMsg(err.statusText);
@@ -74,13 +70,13 @@ const Auth = () => {
 		} catch (error) {
 			errorMsg(error.message);
 		} finally {
-			setIsLoading(false);
+			
 		}
   }
   return (
     <div className="w-screen h-screen">
       <ToastContainer />
-      <form className="grid w-full justify-center p-10 space-y-2">
+      <form className="grid w-full justify-center p-10 space-y-2" >
         <input
           className="h-8 rounded-lg px-2 border-teal-800 border-2"
           placeholder={"Email"}
@@ -96,7 +92,7 @@ const Auth = () => {
           type="password"
           required
         />
-        <button
+        <button disabled={isLoading}
           className="border-2 text-white font-medium bg-green-400 border-green-400 rounded-lg h-8 w-full place-self-center hover:border-green-500"
           onClick={handleLogin}
         >

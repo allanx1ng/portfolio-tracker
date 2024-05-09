@@ -16,6 +16,8 @@ const AuthProvider = ({ children }) => {
 
 	const login = (token) => {
 		localStorage.setItem("token", token);
+		console.log("login processing")
+		console.log(decodeToken(token))
 		setUser(decodeToken(token));
 	};
 
