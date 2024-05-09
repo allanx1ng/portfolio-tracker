@@ -41,6 +41,10 @@ module.exports = (passport) => {
     const user = users.find((user) => user.id === id)
     done(null, user)
   })
+  // db.query('SELECT * FROM users WHERE id = $1', [id], (err, result) => {
+  //   if (err) return done(err);
+  //   return done(null, result.rows[0]);
+  // });
 }
 
 // module.exports = (passport) => {

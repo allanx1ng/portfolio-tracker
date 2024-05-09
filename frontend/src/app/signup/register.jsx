@@ -25,6 +25,10 @@ const Register = () => {
     })
   }
 
+  const tryRegister = async () => {
+		
+	};
+
   const signUp = () => {
     if (password.length <= 3 || password.length > 20) {
       errorMsg("Password does not meet requirements")
@@ -32,6 +36,7 @@ const Register = () => {
     if (password != passwordVerify) {
       errorMsg("Passwords dont match")
     }
+    tryRegister();
   }
   return (
     <div className="w-screen h-screen">

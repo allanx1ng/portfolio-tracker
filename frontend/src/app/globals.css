@@ -31,3 +31,13 @@ body {
     text-wrap: balance;
   }
 }
+
+@layer base {
+  h1 {
+    @apply text-4xl font-bold; /* Example styles: 4xl font size and bold font */
+  }
+  p {
+    @apply text-lg; /* Example for paragraph tags */
+  }
+  /* Add more styles for other tags if needed */
+}

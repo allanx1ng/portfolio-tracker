@@ -9,11 +9,11 @@ class Prices {
         this.dataCache = {};
 
         // Fetch prices immediately and every 5 minutes (300,000 ms)
-        this.fetchAndUpdatePrices();
-        setInterval(() => this.fetchAndUpdatePrices(), 300000);
+        this.fetchAndUpdateStats();
+        setInterval(() => this.fetchAndUpdateStats(), 300000);
     }
 
-    async fetchAndUpdatePrices() {
+    async fetchAndUpdateStats() {
         try {
             console.log('Trying request');
             const url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
@@ -48,9 +48,9 @@ class Prices {
         
         if (!assetReq) {
             // Return all prices if no specific asset is requested
-            res.json(this.priceCache);
+            res.json(this.dataCache);
         } else {
-            const asset = this.priceCache[assetReq];
+            const asset = this.dataCache[assetReq];
             if (asset !== undefined) {
                 res.json({ [assetReq]: asset });
             } else {

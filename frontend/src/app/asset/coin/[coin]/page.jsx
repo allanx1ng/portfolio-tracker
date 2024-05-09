@@ -6,21 +6,26 @@ const Coin = async ({ params }) => {
   const asset = params.coin
   const fetchAsset = async () => {
     const backendURL = "http://localhost:4321/price/" + asset
-    const res = await axios.get(backendURL)
+    try {
+      const res = await axios.get(backendURL)
 
-    return res.data
+      return res.data
+    } catch (error) {
+      return null;
+    }
+   
   }
   const initialData = await fetchAsset()
   return (
     <div className="w-screen">
       <div className="container ml-40 mt-20">
         <div className="flex items-baseline">
-          <img src="" alt="blank"></img>
+          <img src={initialData? "https://s2.coinmarketcap.com/static/img/coins/200x200/" + initialData[asset.toUpperCase()].id + ".png" : ""} alt="error" className="w-16"></img>
           <h2 className="text-4xl ml-4">Bitcoin</h2>
           <h3 className="text-3xl ml-4 text-gray-500 bottom-0">BTC</h3>
         </div>
         <h1 className="text-6xl mt-4">
-          ${initialData[asset.toUpperCase()]}
+          ${initialData ? initialData[asset.toUpperCase()].quote.USD.price: "Error fetching price"}
         </h1>
 
         <h3 className="text-xl mt-8">Total Holdings:</h3>

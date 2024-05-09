@@ -3,9 +3,11 @@ import Navbar from "./Navbar";
 
 export default function Home() {
   return (
-    <div>hello world
-      <div>hello world 123213123</div>
-      <Navbar/>
+    <div>
+      <h1>
+        All your finances in one place
+      </h1>
+      
     </div>
     // <RootLayout>
      

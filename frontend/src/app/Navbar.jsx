@@ -1,6 +1,10 @@
-import React from 'react';
 
-const Navbar = ({ isLoggedIn, userName }) => {
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+
+import CheckUser from "./CheckUser"
+
+const Navbar = () => {
   return (
     <div className="bg-gray-800 text-white p-4 flex items-center justify-between h-24">
       <div className="flex-1">
@@ -13,15 +17,8 @@ const Navbar = ({ isLoggedIn, userName }) => {
         <a href="/contact" className="mx-4 font-semibold hover:underline transition duration-250 ease-in-out">Contact</a>
       </div>
       <div className="flex-1 text-right">
-        {isLoggedIn ? (
-          <span className="mr-8 font-semibold hover:underline transition duration-250 ease-in-out">{userName}</span>
-        ) : (
-          <div className="mr-8">
-            <a href="/login" className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out">Login</a>
-            <text>/</text>
-            <a href="/signup" className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out">Sign Up</a>
-          </div>
-        )}
+        <CheckUser/>
+        
       </div>
     </div>
   );
