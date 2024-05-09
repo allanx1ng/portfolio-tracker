@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { useRouter } from "next/navigation"
@@ -11,6 +11,12 @@ const Register = () => {
   const [password, setPassword] = useState("")
   const [passwordVerify, setPasswordVerify] = useState("")
   const [showPassword, toggleShowPassword] = useState(false)
+
+  // useEffect(() => {
+  //   if (user) {
+  //     router.push("/")
+  //   }
+  // }, [])
 
   const errorMsg = (msg) => {
     toast.error(msg, {

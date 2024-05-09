@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ToastContainer, toast } from "react-toastify"
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -13,7 +13,13 @@ const Auth = () => {
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { login } = useAuth()
+  const { login, user } = useAuth()
+
+  useEffect(() => {
+    if (user) {
+      router.push("/")
+    }
+  }, [])
 	// const { login } = useAuth();
   const successMsg = (msg) => {
     toast.success(msg, {
