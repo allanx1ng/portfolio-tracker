@@ -1,70 +1,62 @@
-// const LocalStrategy = require("passport-local").Strategy
-// const bcrypt = require("bcrypt")
-// // const DatabaseInstance = require("../database/Database")
-
-// passportConfig.js
 const LocalStrategy = require("passport-local").Strategy
 const bcrypt = require("bcrypt")
 const DatabaseInstance = require("../db/Database")
 
 module.exports = (passport) => {
-  // Configure the local strategy
-  // Mock user data
-  // const users = [
-  //   { id: 1, username: "admin", password: "secret" },
-  //   { id: 2, username: "user", password: "password" },
-  // ]
+  passport.use(
+    new LocalStrategy(
+      {
+        usernameField: "email", // This specifies that the LocalStrategy should expect an 'email' field instead of 'username'
+        passwordField: "password", // This is optional if you are using 'password' as the field name, it's by default expected
+      },
+      function verifyCredentials(email, password, done) {
+        const db = DatabaseInstance.getInstance()
+        const query = "SELECT * FROM login WHERE email=$1" // Changed from username to email
 
-  // Function to find a user by username
-  // function findUserByUsername(username) {}
+        try {
+          db.queryDbValues(query, [email]).then((data) => {
+            if (data.length === 0) {
+              return done(null, false, {
+                message: "No account with that email found.",
+                status: 404,
+              })
+            }
 
-  // Function to verify credentials
-  function verifyCredentials(username, password, done) {
-    const db = DatabaseInstance.getInstance()
-    const query = "SELECT * FROM login WHERE username=$1"
-    try {
-      db.queryDbValues(query, [username]).then((data) => {
-        if (data.length == 0) {
-          return done(null, false, {
-            message: "No accounts with that username found.",
+            // console.log("Hash of the user inputted password:", hashedPassword)
+            bcrypt.compare(password, data[0].password, (err, result) => {
+              if (err) {
+                return done(err)
+              }
+
+              // For debugging: Log the result of bcrypt compare
+              console.log("Bcrypt comparison result:", result)
+
+              if (!result) {
+                return done(null, false, { message: "Incorrect password.", status: 401 })
+              }
+
+              return done(null, data[0])
+            })
           })
+        } catch (err) {
+          return done(err)
         }
+      }
+    )
+  )
 
-        bcrypt.compare(password, data[0].password, (err, result) => {
-          if (err) {
-            return done(err)
-          }
-
-          if (!result) {
-            return done(null, false, { message: "Incorrect password." })
-          }
-
-          return done(null, data[0])
-        })
-      })
-    } catch (err) {
-      return done(err)
-    }
-  }
-
-  passport.use(new LocalStrategy(verifyCredentials))
-
-  // Serialize user
   passport.serializeUser((user, done) => {
-    done(null, user.id)
+    done(null, user.email) // Assuming you are storing the user's email in the user object
   })
 
-  // Deserialize user
-  passport.deserializeUser(async (id, done) => {
-    try {
-      const db = DatabaseInstance.getInstance()
+  passport.deserializeUser(async (email, done) => {
+    const db = DatabaseInstance.getInstance()
+    const query = "SELECT * FROM login WHERE email=$1"
 
-      const query = "SELECT * FROM login WHERE username=$1"
-      const data = await db.queryDbValues(query, [id])
-      if (data.length == 0) {
-        return done(null, false, {
-          message: "No accounts with that username found.",
-        })
+    try {
+      const data = await db.queryDbValues(query, [email])
+      if (data.length === 0) {
+        return done(null, false, { message: "No account with that email found.", status: 404 })
       }
 
       return done(null, data[0])
@@ -72,63 +64,4 @@ module.exports = (passport) => {
       done(err, false) // In case of an error
     }
   })
-  // db.query('SELECT * FROM users WHERE id = $1', [id], (err, result) => {
-  //   if (err) return done(err);
-  //   return done(null, result.rows[0]);
-  // });
 }
-
-// module.exports = (passport) => {
-//   passport.use(
-//     new LocalStrategy(function verify(username, password, done) {
-//       const db = DatabaseInstance.getInstance()
-//       const query = `SELECT * FROM login WHERE username=$1`
-
-//       try {
-//         db.queryDbValues(query, [username]).then((data) => {
-//           if (data.length == 0) {
-//             return done(null, false, {
-//               message: "No accounts with that username found.",
-//             })
-//           }
-
-//           bcrypt.compare(password, data[0].password, (err, result) => {
-//             if (err) {
-//               return done(err)
-//             }
-
-//             if (!result) {
-//               return done(null, false, { message: "Incorrect password." })
-//             }
-
-//             return done(null, data[0])
-//           })
-//         })
-//       } catch (err) {
-//         return done(err)
-//       }
-//     })
-//   )
-
-//   passport.serializeUser((user, done) => {
-//     done(null, user.username)
-//   })
-
-//   passport.deserializeUser(async (id, done) => {
-//     try {
-//       const db = DatabaseInstance.getInstance()
-
-//       const query = `SELECT * FROM login WHERE username=$1`
-//       const data = await db.queryDbValues(query, [id])
-//       if (data.length == 0) {
-//         return done(null, false, {
-//           message: "No accounts with that username found.",
-//         })
-//       }
-
-//       return done(null, data[0])
-//     } catch (err) {
-//       done(err, false) // In case of an error
-//     }
-//   })
-// }

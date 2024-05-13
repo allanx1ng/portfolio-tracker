@@ -1,11 +1,10 @@
 "use client"
 import { useState, useEffect } from "react"
 import { ToastContainer, toast } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
+import { successMsg, errorMsg } from "@/util/toastNotifications";
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
 import apiClient from "@/util/apiClient"
-
 
 const Register = () => {
   const [userEmail, setEmail] = useState("")
@@ -13,81 +12,77 @@ const Register = () => {
   const [password, setPassword] = useState("")
   const [passwordVerify, setPasswordVerify] = useState("")
   const [showPassword, toggleShowPassword] = useState(false)
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
 
   const { login, user } = useAuth()
 
   const router = useRouter()
 
   useEffect(() => {
-    if (user) {
+    if (user && !justLoggedIn) {
       router.push("/")
     }
-  }, [])
+  }, [user, justLoggedIn])
 
-  useEffect(() => {
-    if (user) {
-      router.push("/")
-    }
-  }, [user])
-
-  const errorMsg = (msg) => {
-    toast.error(msg, {
-      position: "bottom-left",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    })
-  }
 
   const tryRegister = async (event) => {
-    event.preventDefault()
     setIsLoading(true)
 
     try {
-			const data = apiClient.post('/register', { userEmail, userName, password });
+      const response = await apiClient.post("/register", {
+        email: userEmail,
+        username: userName,
+        password: password,
+      })
 
-			data.then((response) => {
-				if (response.status === 200) {
-					return response.data;
-				}
-				return Promise.reject(response);
-			})
-				.then((result) => {
-					successMsg("Registration Successful")
+      if (response.status === 201) {
+        successMsg("Registration Successful")
+        setJustLoggedIn(true)
+        setTimeout(() => {
+          setIsLoading(false)
+          router.push("/")
+        }, 2000)
+      } else {
+        errorMsg(response.status)
+      }
 
-					setTimeout(() => {
-            setIsLoading(false);
-						router.push("/");
-            
-					}, 2000);
-				})
-				.catch((err) => {
-          setIsLoading(false);
-					errorMsg(err.statusText);
-				});
-		} catch (error) {
-      setIsLoading(false);
-			errorMsg(error.message);
-		} finally {
-			
-		}
-		
-	};
+    } catch (error) {
+      setIsLoading(false)
+      if (error.response) {
+        // Server responded with a status other than 2xx
+        errorMsg(`Error ${error.response.status} - ${error.response.data.message}`);
+      } else if (error.request) {
+        // Request was made but no response was received
+        errorMsg("Network error, please try again later.");
+      } else {
+        // Something else happened in setting up the request
+        errorMsg(`Error: ${error.message}`);
+      }
+    } finally {
+    }
+  }
 
-  const signUp = () => {
-    if (password.length <= 3 || password.length > 20) {
+  const signUp = (event) => {
+    event.preventDefault();
+    if (!userEmail) {
+      errorMsg("plz enter email")
+      return
+    }
+    if (!userName) {
+      errorMsg("plz enter username")
+      return
+    }
+    if (password.length < 3 || password.length > 20) {
       errorMsg("Password does not meet requirements")
+      return
     }
     if (password != passwordVerify) {
       errorMsg("Passwords dont match")
+      return
     }
-    tryRegister();
+    tryRegister()
   }
   return (
     <div className="w-screen h-screen">

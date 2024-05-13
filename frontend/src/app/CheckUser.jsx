@@ -11,9 +11,11 @@ const CheckUser = () => {
     console.log("Logged in with token: " + user["token"])
   }
 
-  const handleLogout = () => {
-    logout()
-    router.push("/")
+  const handleLogout = (event) => {
+    event.preventDefault();
+    logout();
+    router.push("/login");
+    // router.push("/")
   }
   return (
     <div>
@@ -27,7 +29,7 @@ const CheckUser = () => {
           </a>
           <text>/</text>
           <a
-            href="/"
+            href="/login"
             className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
             onClick={handleLogout}
           >

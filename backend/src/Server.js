@@ -67,12 +67,30 @@ class Server {
 
   registerRoutes() {
     // Registration
-    this.app.post("/register", passport.authenticate("local"), Account.create)
-    this.app.get('/verify-email', Account.verify)
+    this.app.post("/register", Account.create)
+    this.app.get("/verify-email", Account.verify)
 
     this.app.get("/price/:asset", Prices.getPrice)
 
-    this.app.post("/login", Authentication.login)
+    this.app.post(
+      "/login",
+      (req, res, next) => {
+        passport.authenticate("local", (err, user, info) => {
+          if (err) {
+            return res.status(500).json({ message: "Internal Server Error" })
+          }
+          if (!user) {
+            // Determine the appropriate status code and message
+            console.log(err, user, info)
+            return res.status(info.status || 401).json({ message: info.message || "Authentication failed" })
+          }
+          // If user is successfully authenticated, forward to Authentication.login
+          // req.user = user // Manually set user
+          return next() // Pass to the next middleware/function
+        })(req, res, next)
+      },
+      Authentication.login
+    )
   }
 
   start() {

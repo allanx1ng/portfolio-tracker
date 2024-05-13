@@ -27,8 +27,10 @@ class Authentication {
     try {
       const user = { email: req.body.email, password: req.body.password }
       // check against user in db
+
+
       console.log(user)
-      const token = jwt.sign(user, secretKey, { expiresIn: "12h" })
+      const token = jwt.sign({email: user.email}, secretKey, { expiresIn: "12h" })
       console.log(token)
       return res.status(201).json({ message: "Logged in successfully", token: token })
     } catch (err) {
