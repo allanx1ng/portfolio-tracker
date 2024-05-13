@@ -3,7 +3,9 @@ import { useState, useEffect } from "react"
 import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { useRouter } from "next/navigation"
-const REGISTER_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/account`
+import { useAuth } from "@/context/AuthContext"
+import apiClient from "@/util/apiClient"
+
 
 const Register = () => {
   const [userEmail, setEmail] = useState("")
@@ -12,11 +14,23 @@ const Register = () => {
   const [passwordVerify, setPasswordVerify] = useState("")
   const [showPassword, toggleShowPassword] = useState(false)
 
-  // useEffect(() => {
-  //   if (user) {
-  //     router.push("/")
-  //   }
-  // }, [])
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { login, user } = useAuth()
+
+  const router = useRouter()
+
+  useEffect(() => {
+    if (user) {
+      router.push("/")
+    }
+  }, [])
+
+  useEffect(() => {
+    if (user) {
+      router.push("/")
+    }
+  }, [user])
 
   const errorMsg = (msg) => {
     toast.error(msg, {
@@ -31,7 +45,38 @@ const Register = () => {
     })
   }
 
-  const tryRegister = async () => {
+  const tryRegister = async (event) => {
+    event.preventDefault()
+    setIsLoading(true)
+
+    try {
+			const data = apiClient.post('/register', { userEmail, userName, password });
+
+			data.then((response) => {
+				if (response.status === 200) {
+					return response.data;
+				}
+				return Promise.reject(response);
+			})
+				.then((result) => {
+					successMsg("Registration Successful")
+
+					setTimeout(() => {
+            setIsLoading(false);
+						router.push("/");
+            
+					}, 2000);
+				})
+				.catch((err) => {
+          setIsLoading(false);
+					errorMsg(err.statusText);
+				});
+		} catch (error) {
+      setIsLoading(false);
+			errorMsg(error.message);
+		} finally {
+			
+		}
 		
 	};
 
@@ -91,6 +136,7 @@ const Register = () => {
         <button
           className="border-2 text-white font-medium bg-green-400 border-green-400 rounded-lg h-8 w-full place-self-center hover:border-green-500"
           onClick={signUp}
+          disabled={isLoading}
         >
           Sign Up
         </button>

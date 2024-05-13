@@ -1,10 +1,11 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AuthProvider, useAuth } from "@/context/AuthContext"
 import { useRouter } from "next/navigation"
 
 const CheckUser = () => {
   const { user, logout } = useAuth()
+  
   const router = useRouter()
   if (user) {
     console.log("Logged in with token: " + user["token"])
@@ -19,13 +20,17 @@ const CheckUser = () => {
       {user ? (
         <div>
           <a
-            className="mr-8 font-semibold hover:underline transition duration-250 ease-in-out"
+            className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
             href="/profile"
           >
-            {user.username}
+            {user.email}
           </a>
           <text>/</text>
-          <a href="/" onClick={handleLogout}>
+          <a
+            href="/"
+            className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
+            onClick={handleLogout}
+          >
             Logout
           </a>
         </div>

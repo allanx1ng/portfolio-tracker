@@ -20,6 +20,12 @@ const Auth = () => {
       router.push("/")
     }
   }, [])
+
+  useEffect(() => {
+    if (user) {
+      router.push("/")
+    }
+  }, [user])
 	// const { login } = useAuth();
   const successMsg = (msg) => {
     toast.success(msg, {
@@ -54,7 +60,7 @@ const Auth = () => {
 			const data = apiClient.post('/login', { email, password });
 
 			data.then((response) => {
-				if (response.status === 200) {
+				if (response.status === 201) {
 					return response.data;
 				}
 				return Promise.reject(response);
@@ -71,9 +77,11 @@ const Auth = () => {
 					}, 2000);
 				})
 				.catch((err) => {
+          setIsLoading(false);
 					errorMsg(err.statusText);
 				});
 		} catch (error) {
+      setIsLoading(false);
 			errorMsg(error.message);
 		} finally {
 			

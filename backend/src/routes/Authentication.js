@@ -2,6 +2,9 @@
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
+const DatabaseInstance = require("../db/Database")
+const db = DatabaseInstance.getInstance()
+
 // // const db = DatabaseInstance.getInstance();
 const secretKey = process.env.JWT_SECRET_KEY
 class Authentication {
@@ -27,7 +30,7 @@ class Authentication {
       console.log(user)
       const token = jwt.sign(user, secretKey, { expiresIn: "12h" })
       console.log(token)
-      return res.json({ message: "Logged in successfully", token: token })
+      return res.status(201).json({ message: "Logged in successfully", token: token })
     } catch (err) {
       res.status(500)
     }

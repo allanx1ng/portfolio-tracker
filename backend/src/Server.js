@@ -66,7 +66,9 @@ class Server {
   }
 
   registerRoutes() {
-    this.app.post("/createuser", passport.authenticate("local"), Account.create)
+    // Registration
+    this.app.post("/register", passport.authenticate("local"), Account.create)
+    this.app.get('/verify-email', Account.verify)
 
     this.app.get("/price/:asset", Prices.getPrice)
 
