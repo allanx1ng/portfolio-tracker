@@ -1,10 +1,11 @@
 "use client"
 import { useState, useEffect } from "react"
 import { ToastContainer, toast } from "react-toastify"
-import { successMsg, errorMsg } from "@/util/toastNotifications";
+import { successMsg, errorMsg } from "@/util/toastNotifications"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
 import apiClient from "@/util/apiClient"
+import VerifyEmail from "@/components/VerifyEmail"
 
 const Register = () => {
   const [userEmail, setEmail] = useState("")
@@ -12,7 +13,7 @@ const Register = () => {
   const [password, setPassword] = useState("")
   const [passwordVerify, setPasswordVerify] = useState("")
   const [showPassword, toggleShowPassword] = useState(false)
-  const [justLoggedIn, setJustLoggedIn] = useState(false);
+  const [justRegistered, setJustRegistered] = useState(false)
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -21,11 +22,10 @@ const Register = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if (user && !justLoggedIn) {
+    if (user && !justRegistered) {
       router.push("/")
     }
-  }, [user, justLoggedIn])
-
+  }, [user, justRegistered])
 
   const tryRegister = async (event) => {
     setIsLoading(true)
@@ -39,7 +39,7 @@ const Register = () => {
 
       if (response.status === 201) {
         successMsg("Registration Successful")
-        setJustLoggedIn(true)
+        setJustRegistered(true)
         setTimeout(() => {
           setIsLoading(false)
           router.push("/")
@@ -47,25 +47,24 @@ const Register = () => {
       } else {
         errorMsg(response.status)
       }
-
     } catch (error) {
       setIsLoading(false)
       if (error.response) {
         // Server responded with a status other than 2xx
-        errorMsg(`Error ${error.response.status} - ${error.response.data.message}`);
+        errorMsg(`Error ${error.response.status} - ${error.response.data.message}`)
       } else if (error.request) {
         // Request was made but no response was received
-        errorMsg("Network error, please try again later.");
+        errorMsg("Network error, please try again later.")
       } else {
         // Something else happened in setting up the request
-        errorMsg(`Error: ${error.message}`);
+        errorMsg(`Error: ${error.message}`)
       }
     } finally {
     }
   }
 
   const signUp = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     if (!userEmail) {
       errorMsg("plz enter email")
       return
@@ -86,7 +85,10 @@ const Register = () => {
   }
   return (
     <div className="w-screen h-screen">
-      <ToastContainer />
+      <ToastContainer className='z-50' />
+      {/* {justRegistered && 
+        <VerifyEmail/>
+      } */}
       <form className="grid w-full justify-center center p-10 space-y-2">
         <input
           className="h-8 rounded-lg px-2 border-teal-800 border-2"
