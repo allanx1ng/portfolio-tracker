@@ -1,4 +1,6 @@
 import Metamask from "@/components/WalletConnections/Metamask"
+import Phantom from "@/components/WalletConnections/Phantom"
+// import Coinbase from "@/components/WalletConnections/Coinbase"
 
 
 
@@ -11,6 +13,12 @@ const Connect = () => {
     return <div>
         connect ur accounts
         <Metamask/>
+        <Phantom/>
+        {/* <Coinbase/> */}
+        <div>
+            manually add assets
+        </div>
+
     </div>
 
 

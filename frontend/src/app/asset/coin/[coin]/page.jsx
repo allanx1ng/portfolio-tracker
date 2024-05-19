@@ -1,11 +1,9 @@
 import axios from "axios"
-// import DataContext from "./DataContext"
-import Price from "./Price"
 
 const Coin = async ({ params }) => {
   const asset = params.coin
   const fetchAsset = async () => {
-    const backendURL = "http://localhost:4321/price/" + asset
+    const backendURL = "http://localhost:4321/price/coin/" + asset
     try {
       const res = await axios.get(backendURL)
 
@@ -15,6 +13,10 @@ const Coin = async ({ params }) => {
     }
   }
   const initialData = await fetchAsset()
+  let coin
+  if (initialData) {
+    coin = initialData[asset.toUpperCase()]
+  }
   return (
     <div className="w-screen">
       {initialData ? (
@@ -23,20 +25,31 @@ const Coin = async ({ params }) => {
             <img
               src={
                 "https://s2.coinmarketcap.com/static/img/coins/200x200/" +
-                initialData[asset.toUpperCase()].id +
+                coin.id +
                 ".png"
               }
               alt="error"
               className="w-16"
             ></img>
-            <h2 className="text-4xl ml-4">Bitcoin</h2>
-            <h3 className="text-3xl ml-4 text-gray-500 bottom-0">BTC</h3>
+            <h2 className="text-4xl ml-4">{coin.name}</h2>
+            <h3 className="text-3xl ml-4 text-gray-500 bottom-0">
+              {coin.symbol}
+            </h3>
           </div>
-          <h1 className="text-6xl mt-4">${initialData[asset.toUpperCase()].quote.USD.price}</h1>
+          <h1 className="text-6xl mt-4">${coin.quote.USD.price}</h1>
 
           <h3 className="text-xl mt-8">Total Holdings:</h3>
           <h1 className="text-4xl">$60000.00</h1>
           <p>{asset}</p>
+          <p>
+            {coin.platform
+              ? 
+              "Chain: " +
+                coin.platform.name +
+                ", Address: " +
+                coin.platform.token_address
+              : "not a token"}
+          </p>
 
           <div id="chart" className="w-800px h-400px bg-orange-300 mt-20">
             chart
@@ -51,12 +64,12 @@ const Coin = async ({ params }) => {
           </div>
 
           <h2>Stats</h2>
-          <h2>Market Cap</h2>
-          <h2>24h Volume</h2>
-          <h2>Circulating Supply</h2>
-          <h2>Total Supply</h2>
-          <h2>Diluted Mcap</h2>
-          <h2>ATH</h2>
+          <h2>Market Cap: {coin.circulating_supply ? coin.circulating_supply * coin.quote.USD.price : coin.self_reported_market_cap ? coin.self_reported_market_cap : "unknown"}</h2>
+          {/* <h2>24h Volume: {coin.}</h2> */}
+          <h2>Circulating Supply: {coin.circulating_supply ? coin.circulating_supply : coin.self_reported_circulating_supply ? coin.self_reported_circulating_supply : "unknown"}</h2>
+          <h2>Total Supply: {coin.max_supply ? coin.max_supply : coin.total_supply ? coin.total_supply : "unknown"}</h2>
+          <h2>Diluted Mcap {coin.max_supply ? coin.max_supply * coin.quote.USD.price : coin.total_supply ? coin.total_supply * coin.quote.USD.price : "unknown"}</h2>
+          {/* <h2>ATH</h2> */}
         </div>
       ) : (
         <div>Error fetching info</div>

@@ -9,6 +9,12 @@ const Metamask = () => {
   const [account, setAccount] = useState(null)
   const [balance, setBalance] = useState(null)
 
+  const RPC_ENDPOINTS = {
+    ethereum: "https://rpc.ankr.com/eth",
+    polygon: "https://polygon-rpc.com",
+    bsc: "https://bsc-dataseed.binance.org/",
+  }
+
   const connectMetaMask = async () => {
     try {
       if (window.ethereum) {

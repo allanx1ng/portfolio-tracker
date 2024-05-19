@@ -12,8 +12,10 @@ const secretKey = process.env.JWT_SECRET_KEY
 const Account = require("./routes/Account.js")
 const Authentication = require("./routes/Authentication.js")
 const Prices = require("./routes/Prices.js")
+const SolTokenFetch = require("./routes/SolTokenFetch.js")
 
 const passportConfig = require("./middleware/PassportConfig")
+const AddPortfolio = require("./routes/AddPortfolio.js")
 
 class Server {
   constructor(port) {
@@ -70,7 +72,15 @@ class Server {
     this.app.post("/register", Account.create)
     this.app.get("/verify-email", Account.verify)
 
-    this.app.get("/price/:asset", Prices.getPrice)
+    // fetch asset prices
+    this.app.get("/price/:type/:asset", Prices.getPrice)
+
+    // create new portfolio for custom asset adding
+    this.app.post("/portfolio/create/:name", Authentication.authenticateToken, AddPortfolio.createPortfolio)
+    this.app.delete("/portfolio/delete/:name", Authentication.authenticateToken, AddPortfolio.removePortfolio)
+
+    // get wallet balances:
+    this.app.post('/fetch-sol-tokens', SolTokenFetch.fetchTokens)
 
     this.app.post(
       "/login",

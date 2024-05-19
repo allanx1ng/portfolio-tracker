@@ -25,17 +25,17 @@ class Account {
       }
 
       // check if user is already registered
-      const dataEmail = await db.queryDbValues(`SELECT * FROM account WHERE email=$1`, [email])
+      const dataEmail = await db.queryDbValues(`SELECT * FROM UserAccount WHERE email=$1`, [email])
       if (dataEmail.length > 0) {
         return res.status(400).send({ message: "User with this email already exists" })
       }
-      const dataUser = await db.queryDbValues(`SELECT * FROM account WHERE username=$1`, [username])
+      const dataUser = await db.queryDbValues(`SELECT * FROM UserAccount WHERE username=$1`, [username])
       if (dataUser.length > 0) {
         return res.status(400).send({ message: "Username already exists" })
       }
 
       const hashedPassword = await bcrypt.hash(password, 10)
-      const insertAccount = `INSERT INTO account (email, username, created_on) VALUES ($1, $2, $3);`
+      const insertAccount = `INSERT INTO UserAccount (email, username, created_on) VALUES ($1, $2, $3);`
       const insertLogin = `INSERT INTO login (email, password) VALUES ($1, $2);`
 
       // Get the current timestamp in milliseconds
