@@ -17,7 +17,19 @@ export default function addPortfolio() {
       }
     } catch (err) {
         console.log(err)
-        errorMsg(err.message + err.response.data.error.detail)
+        try {
+            if (err.response.status == 401) {
+                errorMsg("not logged in 401")
+            } else if (err.response.status == 403) {
+                errorMsg("unauthorized 403")
+            } else {
+                errorMsg(err.message + err.response.data.error.detail)
+            }
+            
+        } catch (err) {
+            errorMsg(err.message)
+        }
+        
     }
   }
   return (

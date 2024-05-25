@@ -55,7 +55,6 @@ const Auth = () => {
         errorMsg(`Error: ${error.message}`);
       }
     } finally {
-      setIsLoading(false);
     }
   }
   return (
