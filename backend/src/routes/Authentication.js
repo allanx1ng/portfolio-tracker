@@ -27,10 +27,14 @@ class Authentication {
     try {
       const user = { email: req.body.email, password: req.body.password }
       // check against user in db
+      const query  = 'SELECT uid FROM UserAccount WHERE email = $1'
+
+      const uid = await db.queryDbValues(query, [user.email]);
 
 
       console.log(user)
-      const token = jwt.sign({email: user.email}, secretKey, { expiresIn: "12h" })
+      console.log(uid[0].uid)
+      const token = jwt.sign({email: user.email, uid: uid[0].uid}, secretKey, { expiresIn: "12h" })
       console.log(token)
       return res.status(201).json({ message: "Logged in successfully", token: token })
     } catch (err) {

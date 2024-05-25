@@ -4,10 +4,10 @@ import { useEffect, useState } from "react"
 import { useAuth } from "@/context/AuthContext"
 import { successMsg, errorMsg } from "@/util/toastNotifications"
 import { ToastContainer } from "react-toastify"
-import apiClient from "@/util/apiClient"
+import { getPortfolios } from "@/util/getUserPortfolios"
 import { useRouter } from "next/navigation"
 
-export default function getPortfolios() {
+export default function getUserPortfolios() {
   const [portfolios, setPortfolios] = useState([])
   const { user } = useAuth()
   const router = useRouter()
@@ -18,23 +18,25 @@ export default function getPortfolios() {
 
   const fetchPortfolios = async () => {
     try {
-      const response = await apiClient.get("/portfolio")
+      const response = await getPortfolios()
 
-      if (response.status == 200) {
+      if (response) {
         successMsg("portfolios fetched")
-        console.log(response.data.data)
-        setPortfolios(response.data.data)
+        console.log(response)
+        setPortfolios(response)
       }
-    } catch (err) {}
+    } catch (err) {
+        errorMsg(err)
+    }
   }
 
   return (
     <div>
       {portfolios.map((p) => (
-        <div key={p.uid + p.portfolio_name}>
-          <div>{p.portfolio_name}</div>
+        <li key={p.uid + p.portfolio_name}>
+          <a href={`/portfolios/${p.portfolio_name}`}>{p.portfolio_name}</a>
           {/* <div>{p.account_type}</div> */}
-        </div>
+        </li>
       ))}
     </div>
   )

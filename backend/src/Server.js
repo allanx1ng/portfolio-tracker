@@ -79,6 +79,7 @@ class Server {
     this.app.post("/portfolio/create/:name", Authentication.authenticateToken, AddPortfolio.createPortfolio)
     this.app.delete("/portfolio/delete/:name", Authentication.authenticateToken, AddPortfolio.removePortfolio)
     this.app.get("/portfolio", Authentication.authenticateToken, AddPortfolio.getPortfolios)
+    this.app.get("/portfolio/:name", Authentication.authenticateToken, AddPortfolio.getPortfolios)
 
     // get wallet balances:
     this.app.post('/fetch-sol-tokens', SolTokenFetch.fetchTokens)
