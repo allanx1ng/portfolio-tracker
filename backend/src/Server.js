@@ -16,6 +16,7 @@ const SolTokenFetch = require("./routes/SolTokenFetch.js")
 
 const passportConfig = require("./middleware/PassportConfig")
 const AddPortfolio = require("./routes/AddPortfolio.js")
+const SearchAssets = require("./routes/SearchAssets.js")
 
 class Server {
   constructor(port) {
@@ -80,6 +81,8 @@ class Server {
     this.app.delete("/portfolio/delete/:name", Authentication.authenticateToken, AddPortfolio.removePortfolio)
     this.app.get("/portfolio", Authentication.authenticateToken, AddPortfolio.getPortfolios)
     this.app.get("/portfolio/:name", Authentication.authenticateToken, AddPortfolio.getPortfolios)
+
+    this.app.get("/search/search-assets", SearchAssets.search)
 
     // get wallet balances:
     this.app.post('/fetch-sol-tokens', SolTokenFetch.fetchTokens)

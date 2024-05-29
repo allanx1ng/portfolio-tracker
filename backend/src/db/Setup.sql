@@ -1,11 +1,16 @@
 
-DROP TABLE IF EXISTS Portfolio;
-DROP TABLE IF EXISTS UserInfo;
-DROP TABLE IF EXISTS Login;
-DROP TABLE IF EXISTS UserAccount;
 
--- DROP TABLE IF EXISTS AccountInfo;
--- DROP TABLE IF EXISTS Account;
+DROP TABLE IF EXISTS Portfolio_assets CASCADE;
+DROP TABLE IF EXISTS StockAsset CASCADE;
+DROP TABLE IF EXISTS CryptoAsset CASCADE;
+DROP TABLE IF EXISTS Asset CASCADE;
+DROP TABLE IF EXISTS Portfolio CASCADE;
+DROP TABLE IF EXISTS UserInfo CASCADE;
+DROP TABLE IF EXISTS Login CASCADE;
+DROP TABLE IF EXISTS UserAccount CASCADE;
+
+DROP TABLE IF EXISTS AccountInfo;
+DROP TABLE IF EXISTS Account;
 
 
 CREATE TABLE UserAccount (
@@ -44,6 +49,48 @@ CREATE TABLE Portfolio (
     PRIMARY KEY (uid, portfolio_name),
     FOREIGN KEY (uid) REFERENCES useraccount(uid)
 );
+
+CREATE TABLE Asset (
+    asset_name VARCHAR(60),
+    asset_ticker VARCHAR(20),
+    asset_type VARCHAR(20),
+    PRIMARY KEY (asset_name, asset_ticker)
+);
+
+CREATE TABLE CryptoAsset (
+    asset_name VARCHAR(60),
+    asset_ticker VARCHAR(20),
+    cmc_id int,
+    decimals int,
+    PRIMARY KEY (asset_name, asset_ticker),
+    FOREIGN KEY (asset_name, asset_ticker) REFERENCES Asset(asset_name, asset_ticker)
+);
+
+CREATE TABLE StockAsset (
+    asset_name VARCHAR(60),
+    asset_ticker VARCHAR(20),
+    exchange VARCHAR(60),
+    industry VARCHAR(60),
+    PRIMARY KEY (asset_name, asset_ticker),
+    FOREIGN KEY (asset_name, asset_ticker) REFERENCES Asset(asset_name, asset_ticker)
+);
+
+
+
+CREATE TABLE Portfolio_assets (
+
+    uid integer,
+    portfolio_name VARCHAR(60),
+    asset_name VARCHAR(60),
+    asset_ticker VARCHAR(20),
+    amount NUMERIC(36, 18),
+    PRIMARY KEY (uid, portfolio_name, asset_name, asset_ticker),
+    FOREIGN KEY (uid) REFERENCES useraccount(uid),
+    FOREIGN KEY (portfolio_nam) REFERENCES Portfolio(portfolio_name),
+    FOREIGN KEY (asset_name, asset_ticker) REFERENCES Asset(asset_name, asset_ticker)
+);
+
+
 
 
 INSERT INTO UserAccount(email, username, created_on, verified) VALUES

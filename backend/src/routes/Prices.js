@@ -12,8 +12,8 @@ class Prices {
     this.stockDataCache = {}
 
     // Fetch prices immediately and every 5 minutes (300,000 ms)
-    // this.fetchAndUpdateCoinStats()
-    // this.fetchAndUpdateStockStats()
+    this.fetchAndUpdateCoinStats()
+    this.fetchAndUpdateStockStats()
     // setInterval(() => this.fetchAndUpdateStats(), 300000);
   }
 
@@ -63,7 +63,11 @@ class Prices {
         const url = `https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/${formattedDate}?adjusted=true&apiKey=${POLYGON_KEY}`
         try {
           const response = await axios.get(url)
-          this.stockDataCache = response.data.results
+          if (response.data.results) {
+            this.stockDataCache = response.data.results
+          } else {
+            console.log("stock fetching error")
+          }
         } catch (error) {
           console.error(`Error fetching fundamental data for ${ticker}:`, error)
           return { ticker, error: error.message }
@@ -95,11 +99,16 @@ class Prices {
           res.status(404).json({ error: "Asset not found" })
         }
       } else if (assetClass === "stock") {
-        const asset = this.stockDataCache.find(item => item.T === assetReq)
-        if (asset) {
-          res.json({ [assetReq]: asset })
-        } else {
-          res.status(404).json({ error: "Asset not found" })
+        try {
+          console.log(this.stockDataCache)
+          const asset = this.stockDataCache.find((item) => item.T === assetReq)
+          if (asset) {
+            res.json({ [assetReq]: asset })
+          } else {
+            res.status(404).json({ error: "Asset not found" })
+          }
+        } catch (err) {
+          console.log(err)
         }
       }
     }
