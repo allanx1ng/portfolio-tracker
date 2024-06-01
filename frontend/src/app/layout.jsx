@@ -2,6 +2,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import Navbar from "./Navbar"
 import { AuthProvider } from "@/context/AuthContext"
+import { ToastContainer } from "react-toastify"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -15,6 +16,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <AuthProvider>
         <body className={inter.className}>
+          <ToastContainer/>
           <Navbar />
           {children}
         </body>

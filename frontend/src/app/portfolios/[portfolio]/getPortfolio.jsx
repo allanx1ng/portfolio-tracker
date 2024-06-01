@@ -7,10 +7,10 @@ import { ToastContainer } from "react-toastify"
 import Loading from "../loading"
 import Error from "./error"
 
-export default function ({ name }) {
+export default function ({ name, reload}) {
   useEffect(() => {
     fetchPortfolio()
-  }, [])
+  }, [reload])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -34,11 +34,18 @@ export default function ({ name }) {
     <Loading />
   ) : error ? <Error/> :(
     <div>
-      <ToastContainer />
-      <h1>{portfolio.portfolio_name}</h1>
+      {/* <ToastContainer /> */}
+      <h1>{portfolio.portfolio_data.portfolio_name}</h1>
       <div>
-        {portfolio.account_type}
+        {portfolio.portfolio_data.account_type}
       </div>
+      {portfolio.assets.map((asset) => (
+        <div key={asset.asset_ticker}>
+            {asset.asset_name}
+            {asset.amount}
+            {asset.avg_price}
+        </div>
+      ))}
     </div>
   )
 }

@@ -9,8 +9,8 @@ DROP TABLE IF EXISTS UserInfo CASCADE;
 DROP TABLE IF EXISTS Login CASCADE;
 DROP TABLE IF EXISTS UserAccount CASCADE;
 
-DROP TABLE IF EXISTS AccountInfo;
-DROP TABLE IF EXISTS Account;
+-- DROP TABLE IF EXISTS AccountInfo;
+-- DROP TABLE IF EXISTS Account;
 
 
 CREATE TABLE UserAccount (
@@ -53,7 +53,7 @@ CREATE TABLE Portfolio (
 CREATE TABLE Asset (
     asset_name VARCHAR(60),
     asset_ticker VARCHAR(20),
-    asset_type VARCHAR(20),
+    asset_type VARCHAR(20) CHECK (asset_type IN ('coin', 'stock')),
     PRIMARY KEY (asset_name, asset_ticker)
 );
 
@@ -84,9 +84,10 @@ CREATE TABLE Portfolio_assets (
     asset_name VARCHAR(60),
     asset_ticker VARCHAR(20),
     amount NUMERIC(36, 18),
+    avg_price NUMERIC(36, 18),
     PRIMARY KEY (uid, portfolio_name, asset_name, asset_ticker),
-    FOREIGN KEY (uid) REFERENCES useraccount(uid),
-    FOREIGN KEY (portfolio_nam) REFERENCES Portfolio(portfolio_name),
+    -- FOREIGN KEY (uid) REFERENCES useraccount(uid),
+    FOREIGN KEY (uid, portfolio_name) REFERENCES Portfolio(uid, portfolio_name),
     FOREIGN KEY (asset_name, asset_ticker) REFERENCES Asset(asset_name, asset_ticker)
 );
 
@@ -94,11 +95,11 @@ CREATE TABLE Portfolio_assets (
 
 
 INSERT INTO UserAccount(email, username, created_on, verified) VALUES
-('test1@test1.com', '1', '2023-10-10 00:00:00', TRUE),
+('test', '1', '2023-10-10 00:00:00', TRUE),
 ('1', '4', '2023-10-10 00:00:00', TRUE),
 ('test2@test1.com', '2', '2023-10-10 00:00:00', FALSE);
 
 INSERT INTO Login(email, password) VALUES
-('test1@test1.com', '$2b$10$O0u7e875hwBfQtVVf/SY5uDy29d2Eqhw9N7BY2wsTZMb91US/LcJO'),
+('test', '$2b$10$O0u7e875hwBfQtVVf/SY5uDy29d2Eqhw9N7BY2wsTZMb91US/LcJO'),
 ('1', '$2b$10$O0u7e875hwBfQtVVf/SY5uDy29d2Eqhw9N7BY2wsTZMb91US/LcJO'),
 ('test2@test1.com', '$2b$10$O0u7e875hwBfQtVVf/SY5uDy29d2Eqhw9N7BY2wsTZMb91US/LcJO');

@@ -3,18 +3,65 @@ require("dotenv").config()
 const CMC_API_KEY = process.env.CMC_API_KEY
 const ALPHA_VANTAGE_KEY = process.env.ALPHA_VANTAGE_KEY
 const POLYGON_KEY = process.env.POLYGON_KEY
+const DatabaseInstance = require("../db/Database")
+const db = DatabaseInstance.getInstance()
 
 class Prices {
   constructor() {
     // Initialize the price cache
+    this.db = DatabaseInstance.getInstance()
     this.priceCache = {}
     this.coinDataCache = {}
     this.stockDataCache = {}
+    this.coinDataArray = []
+    this.stockDataArray = []
 
     // Fetch prices immediately and every 5 minutes (300,000 ms)
-    this.fetchAndUpdateCoinStats()
-    this.fetchAndUpdateStockStats()
+    this.fetchAndUpdateStats()
     // setInterval(() => this.fetchAndUpdateStats(), 300000);
+  }
+
+  async fetchAndUpdateStats() {
+
+    const promises = [this.fetchAndUpdateCoinStats(), this.fetchAndUpdateStockStats()]
+    Promise.all(promises).then(() => {
+      console.log('updating db')
+      this.updateDbStats()
+    })
+
+
+  }
+
+  async updateDbStats() {
+    try {
+      const promises = [];
+      // ON CONFLICT (asset_name, asset_ticker) 
+      // DO UPDATE SET 
+      //     asset_type = EXCLUDED.asset_type,
+      //     last_updated = EXCLUDED.last_updated
+      const sql = `INSERT INTO Asset (asset_name, asset_ticker, asset_type)
+      VALUES ($1, $2, $3)
+      ;`
+      const sql2 = `INSERT INTO CryptoAsset (asset_name, asset_ticker, cmc_id)
+      VALUES ($1, $2, $3)
+      ;`
+      // console.log(this.stockDataCache)
+      this.coinDataArray.forEach((item) => {
+        // console.log(item.name)
+        const entry = this.db.queryDbValues(sql, [item.name, item.symbol, 'coin']).then((res) => {
+          return this.db.queryDbValues(sql2, [item.name, item.symbol, item.id])
+        }).catch((err) => {
+          // console.log(err)
+        })
+        // promises.push(entry)
+      })
+      // await Promise.all(promises)
+
+
+    } catch (err) {
+      console.log(err)
+    }
+    
   }
 
   async fetchAndUpdateCoinStats() {
@@ -33,6 +80,7 @@ class Prices {
 
       // Initialize or update the price cache
       const data = response.data.data
+      this.coinDataArray = data
       data.forEach((coin) => {
         this.priceCache[coin.symbol] = coin.quote.USD.price
       })
