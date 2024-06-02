@@ -22,46 +22,50 @@ class Prices {
   }
 
   async fetchAndUpdateStats() {
-
     const promises = [this.fetchAndUpdateCoinStats(), this.fetchAndUpdateStockStats()]
     Promise.all(promises).then(() => {
-      console.log('updating db')
+      console.log("updating db")
       this.updateDbStats()
     })
-
-
   }
 
   async updateDbStats() {
     try {
-      const promises = [];
-      // ON CONFLICT (asset_name, asset_ticker) 
-      // DO UPDATE SET 
+      const promises = []
+      // ON CONFLICT (asset_name, asset_ticker)
+      // DO UPDATE SET
       //     asset_type = EXCLUDED.asset_type,
       //     last_updated = EXCLUDED.last_updated
       const sql = `INSERT INTO Asset (asset_name, asset_ticker, asset_type)
       VALUES ($1, $2, $3)
       ;`
-      const sql2 = `INSERT INTO CryptoAsset (asset_name, asset_ticker, cmc_id)
-      VALUES ($1, $2, $3)
-      ;`
+      const sql2 = `INSERT INTO CryptoAsset (asset_name, asset_ticker, cmc_id, latest_price)
+      VALUES ($1, $2, $3, $4) 
+      ON CONFLICT (asset_name, asset_ticker)
+      DO UPDATE SET latest_price = EXCLUDED.latest_price;`
+
       // console.log(this.stockDataCache)
       this.coinDataArray.forEach((item) => {
         // console.log(item.name)
-        const entry = this.db.queryDbValues(sql, [item.name, item.symbol, 'coin']).then((res) => {
-          return this.db.queryDbValues(sql2, [item.name, item.symbol, item.id])
-        }).catch((err) => {
-          // console.log(err)
-        })
+        const entry = this.db
+          .queryDbValues(sql, [item.name, item.symbol, "coin"])
+          .then((res) => {
+            return this.db.queryDbValues(sql2, [
+              item.name,
+              item.symbol,
+              item.id,
+              item.quote.USD.price,
+            ])
+          })
+          .catch((err) => {
+            // console.log(err)
+          })
         // promises.push(entry)
       })
       // await Promise.all(promises)
-
-
     } catch (err) {
       console.log(err)
     }
-    
   }
 
   async fetchAndUpdateCoinStats() {

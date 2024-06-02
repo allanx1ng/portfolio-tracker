@@ -7,6 +7,10 @@ export default function Home() {
       <h1>
         All your finances in one place
       </h1>
+      <div>
+        view portfolio:
+        <a href="/portfolio">portfolios</a>
+      </div>
       
     </div>
     // <RootLayout>

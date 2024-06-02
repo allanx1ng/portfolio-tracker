@@ -6,5 +6,6 @@ export default function() {
             all portfolios:
         </h1>
         <GetAllPortfolios/>
+        <a href="/connect/addCustom">add portfolios:</a>
     </div>
 }

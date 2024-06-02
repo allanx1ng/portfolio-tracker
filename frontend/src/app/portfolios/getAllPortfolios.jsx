@@ -12,22 +12,29 @@ export default function getAllPortfolios() {
   }, [])
   const [portfolios, setPortfolios] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   const fetchAllPortfolios = async () => {
     try {
+        setError(false)
       const data = await getPortfolios()
       setPortfolios(data)
       setLoading(false)
+      successMsg("success")
     } catch (err) {
       errorMsg(err)
+      setLoading(false)
+      setError(true)
     }
   }
 
   return loading ? (
     <Loading />
-  ) : (
+  ) : error ? <div>
+    error 404
+  </div>:(
     <div>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       {portfolios.map((p) => (
         <li key={p.uid + p.portfolio_name}>
           <a href={`/portfolios/${p.portfolio_name}`}>{p.portfolio_name}</a>

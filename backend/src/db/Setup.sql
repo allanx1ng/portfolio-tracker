@@ -62,6 +62,8 @@ CREATE TABLE CryptoAsset (
     asset_ticker VARCHAR(20),
     cmc_id int,
     decimals int,
+    latest_price NUMERIC(36, 18),
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (asset_name, asset_ticker),
     FOREIGN KEY (asset_name, asset_ticker) REFERENCES Asset(asset_name, asset_ticker)
 );
@@ -71,6 +73,8 @@ CREATE TABLE StockAsset (
     asset_ticker VARCHAR(20),
     exchange VARCHAR(60),
     industry VARCHAR(60),
+    latest_price NUMERIC(36, 18),
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (asset_name, asset_ticker),
     FOREIGN KEY (asset_name, asset_ticker) REFERENCES Asset(asset_name, asset_ticker)
 );

@@ -47,7 +47,7 @@ export default function ({ name, setReload }) {
         errorMsg('err')
       }
     } catch (err) {
-      errorMsg(err)
+      errorMsg(err.message)
     } finally {
       setLoading(false)
     }
