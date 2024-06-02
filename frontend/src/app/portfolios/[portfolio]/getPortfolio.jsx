@@ -39,6 +39,9 @@ export default function ({ name, reload}) {
       <div>
         {portfolio.portfolio_data.account_type}
       </div>
+      <div>
+        TVL: {portfolio.tvl}
+      </div>
       {portfolio.assets.map((asset) => (
         <div key={asset.asset_ticker}>
             {asset.asset_name}

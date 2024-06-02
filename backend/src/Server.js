@@ -80,8 +80,8 @@ class Server {
     // create new portfolio for custom asset adding
     this.app.post("/portfolio/create/:name", Authentication.authenticateToken, AddPortfolio.createPortfolio)
     this.app.delete("/portfolio/delete/:name", Authentication.authenticateToken, AddPortfolio.removePortfolio)
-    this.app.get("/portfolio", Authentication.authenticateToken, AddPortfolio.getPortfolios)
-    this.app.get("/portfolio/:name", Authentication.authenticateToken, AddPortfolio.getPortfolios)
+    this.app.get("/portfolio", Authentication.authenticateToken, Portfolio.getPortfolios)
+    this.app.get("/portfolio/:name", Authentication.authenticateToken, Portfolio.getPortfolios)
     this.app.post("/portfolio/add-asset", Authentication.authenticateToken, Portfolio.addAsset)
 
     this.app.get("/search/search-assets", SearchAssets.search)

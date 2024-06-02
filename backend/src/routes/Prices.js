@@ -38,6 +38,7 @@ class Prices {
       //     last_updated = EXCLUDED.last_updated
       const sql = `INSERT INTO Asset (asset_name, asset_ticker, asset_type)
       VALUES ($1, $2, $3)
+      ON CONFLICT DO NOTHING
       ;`
       const sql2 = `INSERT INTO CryptoAsset (asset_name, asset_ticker, cmc_id, latest_price)
       VALUES ($1, $2, $3, $4) 
@@ -58,7 +59,7 @@ class Prices {
             ])
           })
           .catch((err) => {
-            // console.log(err)
+            console.log(err)
           })
         // promises.push(entry)
       })
