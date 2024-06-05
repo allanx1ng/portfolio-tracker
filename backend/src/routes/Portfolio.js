@@ -69,14 +69,23 @@ class Portfolio {
           const promises = []
           promises.push(Portfolio.getAssets(uid, name))
           promises.push(Portfolio.getPortfolioTVL(uid, name))
-          const [assets, tvl] = await Promise.all(promises)
-          console.log(tvl)
+          promises.push(Portfolio.getPortfolioContributions(uid, name))
+          const [assets, tvl, contributions] = await Promise.all(promises)
+          console.log(contributions)
           // const query2 = "SELECT * FROM portfolio_assets WHERE uid = $1 AND portfolio_name=$2"
           // const assets = await db.queryDbValues(query2, [uid, name])
-          console.log(assets)
+          // console.log(assets)
+          const roundedTVL = Portfolio.round(tvl[0].total_usd_value, 2)
+          const roundedContributions = Portfolio.round(contributions[0].total_contributed, 2)
+          // console.log(rounded)
           res.status(200).json({
             message: "portfolio fetched for user: " + uid,
-            data: { portfolio_data: data[0], assets: assets, tvl: tvl[0].total_usd_value},
+            data: {
+              portfolio_data: data[0],
+              assets: assets,
+              tvl: roundedTVL,
+              contributions: roundedContributions,
+            },
           })
         }
       } catch (err) {
@@ -106,6 +115,8 @@ class Portfolio {
           CryptoAsset ca ON pa.asset_name = ca.asset_name AND pa.asset_ticker = ca.asset_ticker
       LEFT JOIN
           StockAsset sa ON pa.asset_name = sa.asset_name AND pa.asset_ticker = sa.asset_ticker
+      WHERE
+          pa.uid = $1 AND pa.portfolio_name = $2
       GROUP BY
           pa.uid, pa.portfolio_name;
       `
@@ -125,11 +136,54 @@ class Portfolio {
       GROUP BY
           pa.uid;
       `
-
   }
 
-  static async getAllAssets(uid) {
+  static async getPortfolioContributions(uid, name) {
+    const sql = `SELECT
+          SUM(pa.amount * pa.avg_price) AS total_contributed
+      FROM
+          Portfolio_assets pa
+      WHERE
+          pa.uid = $1 AND pa.portfolio_name = $2;
+      `
+    return await db.queryDbValues(sql, [uid, name])
+  }
 
+  static async getTotalContributions(uid) {
+    const sql = `SELECT
+        SUM(pa.amount * pa.avg_price) AS total_contributed
+    FROM
+        Portfolio_assets pa
+    WHERE
+        pa.uid = $1;
+    `
+    return await db.queryDbValues(sql, [uid])
+  }
+
+  static async getAllAssets(uid) {}
+
+  static round(num, maxDecimals) {
+    // Convert the number to a string
+    let numStr = num.toString()
+
+    // Find the position of the decimal point
+    let decimalIndex = numStr.indexOf(".")
+
+    // If there is no decimal point, the number is an integer
+    if (decimalIndex === -1) {
+      return num
+    }
+
+    // Check the number of decimal places
+    let decimalPlaces = numStr.length - decimalIndex - 1
+
+    // If the number of decimal places exceeds the maximum, round it
+    if (decimalPlaces > maxDecimals) {
+      return Math.round(num * (10 ** maxDecimals)) / (10 ** maxDecimals)
+    }
+
+    // If the number of decimal places is within the limit, return the original number
+    return num
   }
 }
 

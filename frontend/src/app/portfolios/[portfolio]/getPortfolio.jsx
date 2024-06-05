@@ -42,11 +42,16 @@ export default function ({ name, reload}) {
       <div>
         TVL: {portfolio.tvl}
       </div>
+      <div>
+        Total Contributions: {portfolio.contributions}
+      </div>
       {portfolio.assets.map((asset) => (
         <div key={asset.asset_ticker}>
             {asset.asset_name}
-            {asset.amount}
-            {asset.avg_price}
+            {" "} 
+            {parseFloat(asset.amount).toFixed(2)}
+            {" "}
+            {parseFloat(asset.avg_price).toFixed(2)}
         </div>
       ))}
     </div>
