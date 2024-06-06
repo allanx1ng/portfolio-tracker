@@ -94,6 +94,72 @@ class Portfolio {
     }
   }
 
+  static async getAllAssets(req, res) {
+    const uid = req.user.uid
+    const sql = `
+    WITH CombinedAssets AS (
+      SELECT
+          pa.asset_name,
+          pa.asset_ticker,
+          SUM(pa.amount) AS total_amount,
+          SUM(pa.amount * pa.avg_price) AS total_contributed,
+          SUM(pa.amount * pa.avg_price) / SUM(pa.amount) AS combined_avg_price
+      FROM
+          Portfolio_assets pa
+      WHERE
+          pa.uid = $1
+      GROUP BY
+          pa.asset_name, pa.asset_ticker
+  ),
+  CurrentPortfolioValue AS (
+      SELECT
+          ca.asset_name,
+          ca.asset_ticker,
+          ca.total_amount,
+          ca.total_contributed,
+          ca.combined_avg_price,
+          COALESCE(cr.latest_price, st.latest_price) AS current_price,
+          COALESCE(ca.total_amount * cr.latest_price, ca.total_amount * st.latest_price) AS current_value
+      FROM
+          CombinedAssets ca
+      LEFT JOIN
+          CryptoAsset cr ON ca.asset_name = cr.asset_name AND ca.asset_ticker = cr.asset_ticker
+      LEFT JOIN
+          StockAsset st ON ca.asset_name = st.asset_name AND ca.asset_ticker = st.asset_ticker
+  )
+  SELECT
+      cpv.asset_name,
+      cpv.asset_ticker,
+      cpv.total_amount,
+      cpv.total_contributed,
+      cpv.combined_avg_price,
+      cpv.current_value,
+      cpv.current_price
+  FROM
+      CurrentPortfolioValue cpv;
+  
+    
+    `
+
+    try {
+      const promises = []
+      promises.push(db.queryDbValues(sql, [uid]))
+      promises.push(Portfolio.getTotalTVL(uid))
+      // promises.push(Portfolio.getUniqueHoldings(uid))
+      const [data, tvl, numHoldings] = await Promise.all(promises) 
+      console.log(data)
+      res.status(200).json({ data: data, tvl: tvl[0].total_usd_value })
+    } catch (err) {
+      res.status(500).json({ message: err })
+    }
+  }
+
+  /*
+  
+  ----------------------------- UTIL FUNCTIONS BELOW ------------------------------------
+
+  */
+
   static async getAssets(uid, name) {
     const query2 = "SELECT * FROM portfolio_assets WHERE uid = $1 AND portfolio_name=$2"
     try {
@@ -136,6 +202,7 @@ class Portfolio {
       GROUP BY
           pa.uid;
       `
+    return await db.queryDbValues(sql, [uid])
   }
 
   static async getPortfolioContributions(uid, name) {
@@ -160,7 +227,32 @@ class Portfolio {
     return await db.queryDbValues(sql, [uid])
   }
 
-  static async getAllAssets(uid) {}
+  static async getPortfolioUniqueHoldings(uid, name) {
+    const query = `
+    SELECT
+        COUNT(DISTINCT pa.asset_name, pa.asset_ticker) AS unique_holdings
+    FROM
+        Portfolio_assets pa
+    WHERE
+        pa.uid = $1 AND pa.portfolio_name = $2;
+  `
+    const values = [uid, name]
+    return await db.queryDbValues(query, values)
+  }
+
+  static async getUniqueHoldings(uid) {
+    const query = `
+    SELECT
+        COUNT(DISTINCT pa.asset_name, pa.asset_ticker) AS unique_holdings
+    FROM
+        Portfolio_assets pa
+    WHERE
+        pa.uid = $1;
+  `
+    const values = [uid]
+
+    return await db.queryDbValues(query, values)
+  }
 
   static round(num, maxDecimals) {
     // Convert the number to a string
@@ -179,7 +271,7 @@ class Portfolio {
 
     // If the number of decimal places exceeds the maximum, round it
     if (decimalPlaces > maxDecimals) {
-      return Math.round(num * (10 ** maxDecimals)) / (10 ** maxDecimals)
+      return Math.round(num * 10 ** maxDecimals) / 10 ** maxDecimals
     }
 
     // If the number of decimal places is within the limit, return the original number

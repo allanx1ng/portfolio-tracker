@@ -7,10 +7,15 @@ import { ToastContainer } from "react-toastify"
 import Loading from "../loading"
 import Error from "./error"
 
-export default function ({ name, reload}) {
+export default function ({ name, reload }) {
+  useEffect(() => {
+    if (reload) {
+      fetchPortfolio()
+    }
+  }, [reload])
   useEffect(() => {
     fetchPortfolio()
-  }, [reload])
+  }, [])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -22,6 +27,7 @@ export default function ({ name, reload}) {
       if (data) {
         console.log(data)
         setPortfolio(data)
+        setError(false)
         setLoading(false)
       }
     } catch (err) {
@@ -32,26 +38,19 @@ export default function ({ name, reload}) {
   }
   return loading ? (
     <Loading />
-  ) : error ? <Error/> :(
+  ) : error ? (
+    <Error />
+  ) : (
     <div>
       {/* <ToastContainer /> */}
       <h1>{portfolio.portfolio_data.portfolio_name}</h1>
-      <div>
-        {portfolio.portfolio_data.account_type}
-      </div>
-      <div>
-        TVL: {portfolio.tvl}
-      </div>
-      <div>
-        Total Contributions: {portfolio.contributions}
-      </div>
+      <div>{portfolio.portfolio_data.account_type}</div>
+      <div>TVL: {portfolio.tvl}</div>
+      <div>Total Contributions: {portfolio.contributions}</div>
       {portfolio.assets.map((asset) => (
         <div key={asset.asset_ticker}>
-            {asset.asset_name}
-            {" "} 
-            {parseFloat(asset.amount).toFixed(2)}
-            {" "}
-            {parseFloat(asset.avg_price).toFixed(2)}
+          {asset.asset_name} {parseFloat(asset.amount).toFixed(2)}{" "}
+          {parseFloat(asset.avg_price).toFixed(2)}
         </div>
       ))}
     </div>

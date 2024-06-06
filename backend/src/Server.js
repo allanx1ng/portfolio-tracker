@@ -83,6 +83,7 @@ class Server {
     this.app.get("/portfolio", Authentication.authenticateToken, Portfolio.getPortfolios)
     this.app.get("/portfolio/:name", Authentication.authenticateToken, Portfolio.getPortfolios)
     this.app.post("/portfolio/add-asset", Authentication.authenticateToken, Portfolio.addAsset)
+    this.app.get("/portfolio-all", Authentication.authenticateToken, Portfolio.getAllAssets)
 
     this.app.get("/search/search-assets", SearchAssets.search)
 

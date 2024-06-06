@@ -1,6 +1,6 @@
 import apiClient from "@/util/apiClient"
-import AddPortfolio from "./addPortfolio"
-import UserPortfolios from "./getUserPortfolios"
+
+import PageCointainer from "./PageCointainer"
 
 
 export default async function () {
@@ -11,14 +11,7 @@ export default async function () {
 
   return (
     <div>
-      custom portfolios
-      <div>
-        <UserPortfolios/>
-      </div>
-      <button>add custom portfolio</button>
-      <div>
-        <AddPortfolio />
-      </div>
+      <PageCointainer/>
     </div>
   )
 }

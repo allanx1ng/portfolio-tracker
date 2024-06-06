@@ -7,11 +7,16 @@ import { ToastContainer } from "react-toastify"
 import { getPortfolios } from "@/util/getUserPortfolios"
 import { useRouter } from "next/navigation"
 
-export default function getUserPortfolios() {
+export default function getUserPortfolios({ reload }) {
   const [portfolios, setPortfolios] = useState([])
   const { user } = useAuth()
   const router = useRouter()
 
+  useEffect(() => {
+    if (reload) {
+      fetchPortfolios()
+    }
+  }, [reload])
   useEffect(() => {
     fetchPortfolios()
   }, [])
@@ -26,7 +31,7 @@ export default function getUserPortfolios() {
         setPortfolios(response)
       }
     } catch (err) {
-        errorMsg(err)
+      errorMsg(err)
     }
   }
 
