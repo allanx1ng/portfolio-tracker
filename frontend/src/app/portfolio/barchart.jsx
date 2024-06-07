@@ -1,10 +1,14 @@
 "use client"
 import { Doughnut } from "react-chartjs-2"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import "chart.js/auto"
+import { useSearchParams } from "next/navigation"
 
-const BarChart = () => {
+const BarChart = ({assetData}) => {
     const chartRef = useRef(null);
+    const [labels, setLabels] = useState([])
+    const [values, setValues] = useState([])
+    
     useEffect(() => {
         // Effect for handling window resize
         const handleResize = () => {
@@ -22,12 +26,25 @@ const BarChart = () => {
           window.removeEventListener('resize', handleResize);
         };
       }, []);
+
+      useEffect(() => {
+        const tempLabels = []
+        const tempValues = []
+        assetData.forEach((e) => {
+          tempLabels.push(e.asset_ticker)
+          tempValues.push(parseFloat(e.current_value))
+        })
+        setLabels(tempLabels)
+        setValues(tempValues)
+      }, [assetData])
   // Chart data and configuration
   const data = {
-    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+    // labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+    labels: labels,
     datasets: [
       {
-        data: [12, 19, 3, 5, 2, 3],
+        // data: [12, 19, 3, 5, 2, 3],
+        data: values,
         backgroundColor: [
           "rgba(255, 99, 132, 0.6)",
           "rgba(54, 162, 235, 0.6)",

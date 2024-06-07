@@ -5,8 +5,8 @@ import apiClient from "@/util/apiClient"
 import { errorMsg } from "@/util/toastNotifications"
 import { Fragment } from "react"
 
-export default function () {
-  const [data, setData] = useState([])
+export default function ({data, setData}) {
+  // const [data, setData] = useState([])
   const [stocks, setStocks] = useState([])
   const [coins, setCoins] = useState([])
   const [tvl, setTvl] = useState(0)

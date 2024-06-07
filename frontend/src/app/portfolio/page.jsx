@@ -1,3 +1,6 @@
+"use client"
+
+import { useState } from "react"
 import Settings from "./Settings"
 import BarChart from "./barchart"
 
@@ -24,18 +27,18 @@ const Portfolio = () => {
       gainsAmount: "$12000",
     },
   ]
+
+  const [data, setData] = useState([])
   return (
     <div>
       <div className="m-24 w-1/2 min-h-1/2 ">
-        <BarChart />
+        <BarChart assetData={data} />
       </div>
       <div>
         <h1>Total holdings</h1>
 
         <a href="/portfolios">individual portfolios</a>
-        <FetchPortfolio/>
-
-        
+        <FetchPortfolio data={data} setData={setData} />
       </div>
 
       <Settings />
