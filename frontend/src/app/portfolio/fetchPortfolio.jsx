@@ -7,6 +7,8 @@ import { Fragment } from "react"
 
 export default function () {
   const [data, setData] = useState([])
+  const [stocks, setStocks] = useState([])
+  const [coins, setCoins] = useState([])
   const [tvl, setTvl] = useState(0)
   const [sort, setSort] = useState("Value")
   const [doSort, setDoSort] = useState(false)
@@ -33,7 +35,7 @@ export default function () {
       })
       setDoSort(false)
       setData(copyArray)
-      
+
       console.log(data)
     }
   }
@@ -45,7 +47,7 @@ export default function () {
       if (response.status == 200) {
         setDoSort(true)
         setTvl(response.data.tvl)
-        setData(response.data.data)
+        processAssets(response.data)
       } else {
         // errorMsg(err)
         console.log("error fetching data")
@@ -54,6 +56,13 @@ export default function () {
       console.log("error fetching data")
       // errorMsg(err)
     }
+  }
+
+  const processAssets = (data) => {
+    const tempCoins = [...data.coindata]
+    const tempStocks = [...data.stockdata]
+    const combinedData = [...tempCoins, ...tempStocks]
+    setData(combinedData)
   }
 
   const round = (num, maxDecimals) => {
@@ -97,7 +106,9 @@ export default function () {
           <div className="grid grid-cols-7 text-gray-600 text-sm font-light">
             {data.map((holding, index) => (
               <Fragment key={index}>
-                <div className="py-3 px-6 text-left whitespace-nowrap">{holding.asset_name}</div>
+                <div className="py-3 px-6 text-left whitespace-nowrap">
+                  <a href={"asset/coin/" + holding.asset_ticker}>{holding.asset_name}</a>
+                </div>
                 <div className="py-3 px-6 text-left">
                   {round((holding.current_value / tvl) * 100, 2) + "%"}
                 </div>

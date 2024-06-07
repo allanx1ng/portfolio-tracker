@@ -141,14 +141,117 @@ class Portfolio {
     
     `
 
+    const cryptoSQL = `WITH CombinedAssets AS (
+      SELECT
+          pa.asset_name,
+          pa.asset_ticker,
+          SUM(pa.amount) AS total_amount,
+          SUM(pa.amount * pa.avg_price) AS total_contributed,
+          SUM(pa.amount * pa.avg_price) / SUM(pa.amount) AS combined_avg_price
+      FROM
+          Portfolio_assets pa
+      WHERE
+          pa.uid = $1
+      GROUP BY
+          pa.asset_name, pa.asset_ticker
+  ),
+  CurrentPortfolioValue AS (
+      SELECT
+          ca.asset_name,
+          ca.asset_ticker,
+          ca.total_amount,
+          ca.total_contributed,
+          ca.combined_avg_price,
+          cr.cmc_id,
+          cr.latest_price AS current_price,
+          ca.total_amount * cr.latest_price AS current_value
+      FROM
+          CombinedAssets ca
+      INNER JOIN
+          CryptoAsset cr ON ca.asset_name = cr.asset_name AND ca.asset_ticker = cr.asset_ticker
+  )
+  SELECT
+      cpv.asset_name,
+      cpv.asset_ticker,
+      cpv.total_amount,
+      cpv.total_contributed,
+      cpv.combined_avg_price,
+      cpv.current_value,
+      cpv.current_price,
+      cpv.cmc_id
+  FROM
+      CurrentPortfolioValue cpv;`
+
+    const stockSQL = `WITH CombinedAssets AS (
+        SELECT
+            pa.asset_name,
+            pa.asset_ticker,
+            SUM(pa.amount) AS total_amount,
+            SUM(pa.amount * pa.avg_price) AS total_contributed,
+            SUM(pa.amount * pa.avg_price) / SUM(pa.amount) AS combined_avg_price
+        FROM
+            Portfolio_assets pa
+        WHERE
+            pa.uid = $1
+        GROUP BY
+            pa.asset_name, pa.asset_ticker
+    ),
+    CurrentPortfolioValue AS (
+        SELECT
+            ca.asset_name,
+            ca.asset_ticker,
+            ca.total_amount,
+            ca.total_contributed,
+            ca.combined_avg_price,
+            st.latest_price AS current_price,
+            ca.total_amount * st.latest_price AS current_value
+        FROM
+            CombinedAssets ca
+        INNER JOIN
+          StockAsset st ON ca.asset_name = st.asset_name AND ca.asset_ticker = st.asset_ticker
+    )
+    SELECT
+        cpv.asset_name,
+        cpv.asset_ticker,
+        cpv.total_amount,
+        cpv.total_contributed,
+        cpv.combined_avg_price,
+        cpv.current_value,
+        cpv.current_price
+    FROM
+        CurrentPortfolioValue cpv;`
+
     try {
       const promises = []
-      promises.push(db.queryDbValues(sql, [uid]))
+      // promises.push(db.queryDbValues(sql, [uid]))
+      promises.push(db.queryDbValues(cryptoSQL, [uid]))
+      promises.push(db.queryDbValues(stockSQL, [uid]))
       promises.push(Portfolio.getTotalTVL(uid))
+      promises.push(Portfolio.getTotalContributions(uid))
       // promises.push(Portfolio.getUniqueHoldings(uid))
-      const [data, tvl, numHoldings] = await Promise.all(promises) 
-      console.log(data)
-      res.status(200).json({ data: data, tvl: tvl[0].total_usd_value })
+      // const [data, tvl, total_contributions, numHoldings] = await Promise.all(promises)
+      // console.log(data)
+
+      // res.status(200).json({
+      //   data: data,
+      //   tvl: tvl[0].total_usd_value,
+      //   total_contributions: total_contributions,
+      //   numHoldings: numHoldings,
+      // })
+
+      const [coindata, stockdata, tvl, total_contributions] = await Promise.all(
+        promises
+      )
+
+      res.status(200).json({
+        coindata: coindata,
+        stockdata: stockdata,
+        tvl: tvl[0].total_usd_value,
+        total_contributions: total_contributions,
+        // numHoldings: numHoldings,
+      })
+
+      
     } catch (err) {
       res.status(500).json({ message: err })
     }
