@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify"
 import Loading from "../loading"
 import Error from "./error"
 
-export default function ({ name, reload, error, setError }) {
+export default function ({ name, reload, error, setError, portfolio, setPortfolio }) {
   useEffect(() => {
     if (reload) {
       fetchPortfolio()
@@ -19,7 +19,7 @@ export default function ({ name, reload, error, setError }) {
   const [loading, setLoading] = useState(true)
   // const [error, setError] = useState(false)
 
-  const [portfolio, setPortfolio] = useState()
+  // const [portfolio, setPortfolio] = useState()
 
   const fetchPortfolio = async () => {
     try {
@@ -39,24 +39,5 @@ export default function ({ name, reload, error, setError }) {
       setLoading(false)
     }
   }
-  return loading ? (
-    <Loading />
-  ) : portfolio.length == 0 ? (
-    <Error error={204}/> 
-    // <div></div>
-  ) : (
-    <div>
-      {/* <ToastContainer /> */}
-      <h1>{portfolio.portfolio_data.portfolio_name}</h1>
-      <div>{portfolio.portfolio_data.account_type}</div>
-      <div>TVL: {portfolio.tvl}</div>
-      <div>Total Contributions: {portfolio.contributions}</div>
-      {portfolio.assets.map((asset) => (
-        <div key={asset.asset_ticker}>
-          {asset.asset_name} {parseFloat(asset.amount).toFixed(2)}{" "}
-          {parseFloat(asset.avg_price).toFixed(2)}
-        </div>
-      ))}
-    </div>
-  )
+  return loading && <Loading />
 }

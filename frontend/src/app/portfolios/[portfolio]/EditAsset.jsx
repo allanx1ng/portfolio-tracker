@@ -1,10 +1,9 @@
-'use client'
+"use client"
 
-export default function() {
-    return <div>
-        Edit assets:
-        <div>
-            
-        </div>
+export default function ({edit, setEdit}) {
+  return (
+    <div>
+      <button onClick={() => setEdit(!edit)}>Edit assets:</button>
     </div>
+  )
 }
