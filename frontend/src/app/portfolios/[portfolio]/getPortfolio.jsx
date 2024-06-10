@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify"
 import Loading from "../loading"
 import Error from "./error"
 
-export default function ({ name, reload }) {
+export default function ({ name, reload, error, setError }) {
   useEffect(() => {
     if (reload) {
       fetchPortfolio()
@@ -17,7 +17,7 @@ export default function ({ name, reload }) {
     fetchPortfolio()
   }, [])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+  // const [error, setError] = useState(false)
 
   const [portfolio, setPortfolio] = useState()
 
@@ -25,21 +25,25 @@ export default function ({ name, reload }) {
     try {
       const data = await getPortfolio(name)
       if (data) {
-        console.log(data)
+        // console.log(data)
         setPortfolio(data)
         setError(false)
-        setLoading(false)
+        // setLoading(false)
       }
     } catch (err) {
-      errorMsg(err)
-      setError(true)
+      // console.log(err)
+      errorMsg(err.response.status)
+      setError(err.response.status)
+      // setLoading(false)
+    } finally {
       setLoading(false)
     }
   }
   return loading ? (
     <Loading />
-  ) : error ? (
-    <Error />
+  ) : portfolio.length == 0 ? (
+    <Error error={204}/> 
+    // <div></div>
   ) : (
     <div>
       {/* <ToastContainer /> */}

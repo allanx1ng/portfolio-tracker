@@ -26,7 +26,17 @@ class AddPortfolio {
 
   
 
-  static async removePortfolio(req, res) {}
+  static async removePortfolio(req, res) {
+    const uid = req.user.uid
+    const name = req.params.name
+    const sql = `DELETE FROM portfolio WHERE uid=$1 AND portfolio_name=$2`
+    try {
+      const data = await db.queryDbValues(sql, [uid, name])
+      res.status(200).json({message: "portfolio removed"})
+    } catch (err) {
+      res.status(500)
+    }
+  }
 }
 
 module.exports = AddPortfolio

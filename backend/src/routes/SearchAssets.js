@@ -5,44 +5,54 @@ require("dotenv").config()
 
 class SearchAssets {
   static async search(req, res) {
-    const assets = {
-        stocks: [
-            {
-                name: "Tesla",
-                ticker: "tsla"
-            },
-            {
-                name: "Apple",
-                ticker: "aapl"
-            },
-            {
-                name: "Microsoft",
-                ticker: "msft"
-            }
+    // const assets = {
+    //     stocks: [
+    //         {
+    //             name: "Tesla",
+    //             ticker: "tsla"
+    //         },
+    //         {
+    //             name: "Apple",
+    //             ticker: "aapl"
+    //         },
+    //         {
+    //             name: "Microsoft",
+    //             ticker: "msft"
+    //         }
 
-        ],
-        coins: [
-            {
-                name: "Bitcoin",
-                ticker: "btc"
-            },
-            {
-                name: "Ethereum",
-                ticker: "eth"
-            }
-        ]
-    }
+    //     ],
+    //     coins: [
+    //         {
+    //             name: "Bitcoin",
+    //             ticker: "btc"
+    //         },
+    //         {
+    //             name: "Ethereum",
+    //             ticker: "eth"
+    //         }
+    //     ]
+    // }
+    const sql = `SELECT asset_name as name, asset_ticker as ticker, asset_type as type FROM asset`
+  
+    
     const searchAssets = async (term) => {
       const lowercasedTerm = term.toLowerCase()
-      const stocks = assets.stocks.filter(
+      
+      const assets = await db.queryDbValues(sql, [])
+      console.log(lowercasedTerm)
+      console.log(assets)
+      
+      const stocks = assets.filter(
         (asset) =>
-          asset.name.toLowerCase().includes(lowercasedTerm) ||
-          asset.ticker.toLowerCase().includes(lowercasedTerm)
+          (asset.name.toLowerCase().includes(lowercasedTerm) ||
+          asset.ticker.toLowerCase().includes(lowercasedTerm)) &&
+          asset.type == 'stock'
       )
-      const coins = assets.coins.filter(
+      const coins = assets.filter(
         (asset) =>
-          asset.name.toLowerCase().includes(lowercasedTerm) ||
-          asset.ticker.toLowerCase().includes(lowercasedTerm)
+          (asset.name.toLowerCase().includes(lowercasedTerm) ||
+          asset.ticker.toLowerCase().includes(lowercasedTerm)) &&
+          asset.type == 'coin'
       )
 
 

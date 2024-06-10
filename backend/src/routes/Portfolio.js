@@ -75,6 +75,10 @@ class Portfolio {
           // const query2 = "SELECT * FROM portfolio_assets WHERE uid = $1 AND portfolio_name=$2"
           // const assets = await db.queryDbValues(query2, [uid, name])
           // console.log(assets)
+          if (assets.length === 0) {
+            res.status(204).json({message: "no assets in this portfolio"})
+            return
+          }
           const roundedTVL = Portfolio.round(tvl[0].total_usd_value, 2)
           const roundedContributions = Portfolio.round(contributions[0].total_contributed, 2)
           // console.log(rounded)
