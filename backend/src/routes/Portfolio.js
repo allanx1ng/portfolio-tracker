@@ -66,7 +66,7 @@ class Portfolio {
 
       const tvls = await Promise.all(promises)
       // console.log(tvls)
-      console.log(data)
+      // console.log(data)
 
       res.status(200).json({ message: "portfolio fetched for user: " + uid, data: data })
     } catch (err) {
@@ -177,8 +177,8 @@ class Portfolio {
         promises.push(Portfolio.getPortfolioTVL(uid, name))
         promises.push(Portfolio.getPortfolioContributions(uid, name))
         const [coins, stocks, tvl, contributions] = await Promise.all(promises)
-        console.log(contributions)
-        console.log(coins)
+        // console.log(contributions)
+        // console.log(coins)
         // const query2 = "SELECT * FROM portfolio_assets WHERE uid = $1 AND portfolio_name=$2"
         // const assets = await db.queryDbValues(query2, [uid, name])
         // console.log(assets)
@@ -187,7 +187,7 @@ class Portfolio {
           return
         }
         const roundedTVL = Portfolio.round(tvl, 2)
-        const roundedContributions = Portfolio.round(contributions[0].total_contributed, 2)
+        const roundedContributions = Portfolio.round(contributions, 2)
         // console.log(rounded)
         res.status(200).json({
           message: "portfolio fetched for user: " + uid,

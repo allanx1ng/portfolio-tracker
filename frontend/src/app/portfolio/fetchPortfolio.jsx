@@ -15,6 +15,7 @@ export default function ({ data, setData }) {
   const [contributions, setContributions] = useState(0)
   const [sort, setSort] = useState("Value")
   const [doSort, setDoSort] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (doSort) {
@@ -45,6 +46,7 @@ export default function ({ data, setData }) {
 
   const fetchPortfolio = async () => {
     try {
+      setLoading(true)
       const response = await apiClient.get("/portfolio-all")
       console.log(response)
       if (response.status == 200) {
@@ -61,6 +63,8 @@ export default function ({ data, setData }) {
     } catch (err) {
       console.log("error fetching data")
       // errorMsg(err)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -71,7 +75,9 @@ export default function ({ data, setData }) {
     setData(combinedData)
   }
 
-  return (
+  return loading ? (
+    <div>loading</div>
+  ) : (
     <div className="mb-24">
       {data.length == 0 ? (
         <div>no assets found, add some to get started</div>

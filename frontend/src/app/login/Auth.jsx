@@ -1,6 +1,5 @@
 "use client"
 import { useEffect, useState } from "react"
-import { ToastContainer, toast } from "react-toastify"
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import apiClient from "@/util/apiClient";
@@ -59,7 +58,6 @@ const Auth = () => {
   }
   return (
     <div className="w-screen h-screen">
-      <ToastContainer />
       <form className="grid w-full justify-center p-10 space-y-2" >
         <input
           className="h-8 rounded-lg px-2 border-teal-800 border-2"

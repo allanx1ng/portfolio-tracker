@@ -20,9 +20,9 @@ export default function getAllPortfolios() {
       const data = await getPortfolios()
       setPortfolios(data)
       setLoading(false)
-      successMsg("success")
+      // successMsg("success")
     } catch (err) {
-      errorMsg(err)
+      // errorMsg(err)
       setLoading(false)
       setError(true)
     }

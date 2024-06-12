@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { useAuth } from "@/context/AuthContext"
 import { successMsg, errorMsg } from "@/util/toastNotifications"
-import { ToastContainer } from "react-toastify"
 import { getPortfolios } from "@/util/getUserPortfolios"
 import { useRouter } from "next/navigation"
 
@@ -26,7 +25,6 @@ export default function getUserPortfolios({ reload }) {
       const response = await getPortfolios()
 
       if (response) {
-        successMsg("portfolios fetched")
         console.log(response)
         setPortfolios(response)
       }

@@ -1,4 +1,5 @@
 
+import BackButton from "@/components/BackButton"
 import GetAllPortfolios from "./getAllPortfolios"
 export default function() {
     return <div>
@@ -7,5 +8,6 @@ export default function() {
         </h1>
         <GetAllPortfolios/>
         <a href="/connect/addCustom">add portfolios:</a>
+        <BackButton url={'/portfolio'}/>
     </div>
 }

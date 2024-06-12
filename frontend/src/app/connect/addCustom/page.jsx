@@ -1,17 +1,11 @@
-import apiClient from "@/util/apiClient"
-
 import PageCointainer from "./PageCointainer"
-
+import BackButton from "@/components/BackButton"
 
 export default async function () {
- 
-  const portfolios = [1, 2, 3, 4]
-
-  
-
   return (
-    <div>
-      <PageCointainer/>
-    </div>
+    <>
+      <PageCointainer />
+      <BackButton url={"/portfolios"} />
+    </>
   )
 }

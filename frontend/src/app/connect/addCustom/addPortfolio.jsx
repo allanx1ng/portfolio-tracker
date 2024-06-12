@@ -3,7 +3,6 @@ import apiClient from "@/util/apiClient"
 
 import { useState } from "react"
 import { successMsg, errorMsg } from "@/util/toastNotifications"
-import { ToastContainer } from "react-toastify"
 
 export default function addPortfolio({ setReload }) {
   const [name, setName] = useState("")
@@ -34,7 +33,6 @@ export default function addPortfolio({ setReload }) {
   }
   return (
     <form>
-      <ToastContainer />
       <input value={name} onChange={(e) => setName(e.target.value)} placeholder="New Portfolio" />
       <button onClick={(e) => handleSubmit(e)}>save</button>
     </form>
