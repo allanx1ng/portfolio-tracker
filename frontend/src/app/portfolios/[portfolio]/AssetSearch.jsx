@@ -65,8 +65,8 @@ export default function ({ setAsset }) {
               {searchResults.coins.length > 0 ? (
                 <div>
                   coins:{" "}
-                  {searchResults.coins.map((asset) => (
-                    <li key={asset.ticker} className="p-2 border-2 my-1">
+                  {searchResults.coins.map((asset, index) => (
+                    <li key={index} className="p-2 border-2 my-1">
                       <button onClick={(e) => selectAsset(e, asset.name, asset.ticker, "coin")}>
                         {asset.name} ({asset.ticker.toUpperCase()})
                       </button>

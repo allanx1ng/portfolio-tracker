@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { getPortfolios } from "@/util/getUserPortfolios"
 import { errorMsg, successMsg } from "@/util/toastNotifications"
 import Loading from "./loading"
-import { ToastContainer } from "react-toastify"
+import { round } from "@/util/util"
 
 export default function getAllPortfolios() {
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function getAllPortfolios() {
 
   const fetchAllPortfolios = async () => {
     try {
-        setError(false)
+      setError(false)
       const data = await getPortfolios()
       setPortfolios(data)
       setLoading(false)
@@ -30,17 +30,21 @@ export default function getAllPortfolios() {
 
   return loading ? (
     <Loading />
-  ) : error ? <div>
-    error 404
-  </div>:(
+  ) : error ? (
+    <div>error 404</div>
+  ) : (
     <div>
       {/* <ToastContainer /> */}
-      {portfolios.map((p) => (
-        <li key={p.uid + p.portfolio_name}>
-          <a href={`/portfolios/${p.portfolio_name}`}>{p.portfolio_name}</a>
-          {/* <div>{p.account_type}</div> */}
-        </li>
-      ))}
+      {portfolios.length == 0 ? (
+        <div>no portfolios yet, add one to get started</div>
+      ) : (
+        portfolios.map((p, idx) => (
+          <li key={idx}>
+            <a href={`/portfolios/${p.portfolio_name}`}>{p.portfolio_name + " " + round(p.tvl, 2)}</a>
+            {/* <div>{p.account_type}</div> */}
+          </li>
+        ))
+      )}
     </div>
   )
 }

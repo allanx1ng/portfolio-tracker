@@ -3,7 +3,6 @@
 import { getPortfolio } from "@/util/getUserPortfolios"
 import { errorMsg, successMsg } from "@/util/toastNotifications"
 import { useState, useEffect } from "react"
-import { ToastContainer } from "react-toastify"
 import Loading from "../loading"
 import Error from "./error"
 
@@ -25,7 +24,7 @@ export default function ({ name, reload, error, setError, portfolio, setPortfoli
     try {
       const data = await getPortfolio(name)
       if (data) {
-        // console.log(data)
+        console.log(data)
         setPortfolio(data)
         setError(false)
         // setLoading(false)

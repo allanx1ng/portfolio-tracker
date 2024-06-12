@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react"
 import apiClient from "@/util/apiClient"
 import { errorMsg } from "@/util/toastNotifications"
-import { Fragment } from "react"
+// import { Fragment } from "react"
+import { round } from "@/util/util"
+import AssetTable from "@/components/AssetTable"
 
-export default function ({data, setData}) {
+export default function ({ data, setData }) {
   // const [data, setData] = useState([])
   const [stocks, setStocks] = useState([])
   const [coins, setCoins] = useState([])
@@ -48,6 +50,8 @@ export default function ({data, setData}) {
         setDoSort(true)
         setTvl(response.data.tvl)
         processAssets(response.data)
+      } else if (response.status == 204) {
+        console.log("no assets found")
       } else {
         // errorMsg(err)
         console.log("error fetching data")
@@ -65,71 +69,60 @@ export default function ({data, setData}) {
     setData(combinedData)
   }
 
-  const round = (num, maxDecimals) => {
-    // Convert the number to a string
-    let numStr = num.toString()
-
-    // Find the position of the decimal point
-    let decimalIndex = numStr.indexOf(".")
-
-    // If there is no decimal point, the number is an integer
-    if (decimalIndex === -1) {
-      return num
-    }
-
-    // Check the number of decimal places
-    let decimalPlaces = numStr.length - decimalIndex - 1
-
-    // If the number of decimal places exceeds the maximum, round it
-    if (decimalPlaces > maxDecimals) {
-      return Math.round(num * 10 ** maxDecimals) / 10 ** maxDecimals
-    }
-
-    // If the number of decimal places is within the limit, return the original number
-    return num
-  }
-
   return (
     <div className="mb-24">
-      <div className="overflow-x-auto">
-        <div className="min-w-screen bg-white shadow-md rounded my-6">
-          {/* Use grid layout for equal width columns */}
-          <div className="grid grid-cols-7 text-gray-600 uppercase text-sm leading-normal">
-            <div className="py-3 px-6 text-left">Asset</div>
-            <div className="py-3 px-6 text-left">% of portfolio</div>
-            <div className="py-3 px-6 text-center">Total Value</div>
-            <div className="py-3 px-6 text-center">Amount</div>
-            <div className="py-3 px-6 text-center">Current Price</div>
-            <div className="py-3 px-6 text-center">Avg Buy Price</div>
-            <div className="py-3 px-6 text-right">All time gainz</div>
+      {data.length == 0 ? (
+        <div>no assets found, add some to get started</div>
+      ) : (
+        <>
+          <div>TVL: {round(tvl,2)}</div>
+          <div className="overflow-x-auto">
+            <div className="min-w-screen bg-white shadow-md rounded my-6">
+              {/* Use grid layout for equal width columns */}
+              {/* <div className="grid grid-cols-7 text-gray-600 uppercase text-sm leading-normal">
+                <div className="py-3 px-6 text-left">Asset</div>
+                <div className="py-3 px-6 text-left">% of portfolio</div>
+                <div className="py-3 px-6 text-center">Total Value</div>
+                <div className="py-3 px-6 text-center">Amount</div>
+                <div className="py-3 px-6 text-center">Current Price</div>
+                <div className="py-3 px-6 text-center">Avg Buy Price</div>
+                <div className="py-3 px-6 text-right">All time gainz</div>
+              </div> */}
+              
+              <AssetTable data={data} tvl={tvl}/>
+
+              {/* <div className="grid grid-cols-7 text-gray-600 text-sm font-light">
+                {data.map((holding, index) => (
+                  <Fragment key={index}>
+                    <div className="py-3 px-6 text-left whitespace-nowrap">
+                      <a href={"asset/coin/" + holding.asset_ticker}>{holding.asset_name}</a>
+                    </div>
+                    <div className="py-3 px-6 text-left">
+                      {round((holding.current_value / tvl) * 100, 2) + "%"}
+                    </div>
+                    <div className="py-3 px-6 text-center">{round(holding.current_value, 2)}</div>
+                    <div className="py-3 px-6 text-center">{round(holding.total_amount, 2)}</div>
+                    <div className="py-3 px-6 text-center">{round(holding.current_price, 2)}</div>
+                    <div className="py-3 px-6 text-center">
+                      {round(holding.combined_avg_price, 2)}
+                    </div>
+                    <div className="py-3 px-6 text-right flex justify-center space-x-1">
+                      <span>
+                        {round((holding.current_value / holding.total_contributed - 1) * 100, 2) +
+                          "%"}
+                      </span>
+                      <span>/</span>
+                      <span className="text-green-500">
+                        {"$" + round(holding.current_value - holding.total_contributed, 2)}
+                      </span>
+                    </div>
+                  </Fragment>
+                ))}
+              </div> */}
+            </div>
           </div>
-          <div className="grid grid-cols-7 text-gray-600 text-sm font-light">
-            {data.map((holding, index) => (
-              <Fragment key={index}>
-                <div className="py-3 px-6 text-left whitespace-nowrap">
-                  <a href={"asset/coin/" + holding.asset_ticker}>{holding.asset_name}</a>
-                </div>
-                <div className="py-3 px-6 text-left">
-                  {round((holding.current_value / tvl) * 100, 2) + "%"}
-                </div>
-                <div className="py-3 px-6 text-center">{round(holding.current_value, 2)}</div>
-                <div className="py-3 px-6 text-center">{round(holding.total_amount, 2)}</div>
-                <div className="py-3 px-6 text-center">{round(holding.current_price, 2)}</div>
-                <div className="py-3 px-6 text-center">{round(holding.combined_avg_price, 2)}</div>
-                <div className="py-3 px-6 text-right flex justify-center space-x-1">
-                  <span>
-                    {round((holding.current_value / holding.total_contributed) * 100, 2) + "%"}
-                  </span>
-                  <span>/</span>
-                  <span className="text-green-500">
-                    {"$" + round(holding.current_value - holding.total_contributed, 2)}
-                  </span>
-                </div>
-              </Fragment>
-            ))}
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   )
 }

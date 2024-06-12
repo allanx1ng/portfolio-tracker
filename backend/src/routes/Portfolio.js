@@ -42,59 +42,166 @@ class Portfolio {
   static async getPortfolios(req, res) {
     const user = req.user.email
     const uid = req.user.uid
-    const name = req.params.name
-    if (!name) {
-      const query = "SELECT * FROM portfolio WHERE uid = $1"
-      try {
-        //   const sql = "SELECT uid FROM UserAccount WHERE email = $1;"
-        //   const uid = await db.queryDbValues(sql, [user])
-        const data = await db.queryDbValues(query, [uid])
+    const query = "SELECT * FROM portfolio WHERE uid = $1"
+    try {
+      //   const sql = "SELECT uid FROM UserAccount WHERE email = $1;"
+      //   const uid = await db.queryDbValues(sql, [user])
+      const data = await db.queryDbValues(query, [uid])
+      console.log(data)
 
-        res.status(200).json({ message: "portfolio fetched for user: " + uid, data: data })
-      } catch (err) {
-        res.status(500).json({ error: err })
+      if (data.length == 0) {
+        res.status(204)
+        return
       }
-    } else if (name) {
-      const query = "SELECT * FROM portfolio WHERE uid = $1 AND portfolio_name = $2"
 
-      try {
-        //   const sql = "SELECT uid FROM UserAccount WHERE email = $1;"
-        //   const uid = await db.queryDbValues(sql, [user])
-        const data = await db.queryDbValues(query, [uid, name])
-        if (data.length === 0) {
-          res
-            .status(404)
-            .json({ message: " no portfolio with name: " + name + " for user: " + user })
-        } else {
-          const promises = []
-          promises.push(Portfolio.getAssets(uid, name))
-          promises.push(Portfolio.getPortfolioTVL(uid, name))
-          promises.push(Portfolio.getPortfolioContributions(uid, name))
-          const [assets, tvl, contributions] = await Promise.all(promises)
-          console.log(contributions)
-          // const query2 = "SELECT * FROM portfolio_assets WHERE uid = $1 AND portfolio_name=$2"
-          // const assets = await db.queryDbValues(query2, [uid, name])
-          // console.log(assets)
-          if (assets.length === 0) {
-            res.status(204).json({message: "no assets in this portfolio"})
-            return
-          }
-          const roundedTVL = Portfolio.round(tvl[0].total_usd_value, 2)
-          const roundedContributions = Portfolio.round(contributions[0].total_contributed, 2)
-          // console.log(rounded)
-          res.status(200).json({
-            message: "portfolio fetched for user: " + uid,
-            data: {
-              portfolio_data: data[0],
-              assets: assets,
-              tvl: roundedTVL,
-              contributions: roundedContributions,
-            },
+      const promises = []
+      data.forEach((portfolio) => {
+        promises.push(
+          Portfolio.getPortfolioTVL(uid, portfolio.portfolio_name).then((res) => {
+            portfolio.tvl = res
+            return res
           })
+        )
+      })
+
+      const tvls = await Promise.all(promises)
+      // console.log(tvls)
+      console.log(data)
+
+      res.status(200).json({ message: "portfolio fetched for user: " + uid, data: data })
+    } catch (err) {
+      res.status(500).json({ error: err })
+    }
+  }
+
+  static async getPortfolio(req, res) {
+    const user = req.user.email
+    const uid = req.user.uid
+    const name = req.params.name
+
+    const query = "SELECT * FROM portfolio WHERE uid = $1 AND portfolio_name = $2"
+
+    const cryptoSQL = `WITH CombinedAssets AS (
+      SELECT
+          pa.asset_name,
+          pa.asset_ticker,
+          SUM(pa.amount) AS total_amount,
+          SUM(pa.amount * pa.avg_price) AS total_contributed,
+          SUM(pa.amount * pa.avg_price) / SUM(pa.amount) AS combined_avg_price
+      FROM
+          Portfolio_assets pa
+      WHERE
+          pa.uid = $1
+          AND pa.portfolio_name = $2
+      GROUP BY
+          pa.asset_name, pa.asset_ticker
+  ),
+  CurrentPortfolioValue AS (
+      SELECT
+          ca.asset_name,
+          ca.asset_ticker,
+          ca.total_amount,
+          ca.total_contributed,
+          ca.combined_avg_price,
+          cr.cmc_id,
+          cr.latest_price AS current_price,
+          ca.total_amount * cr.latest_price AS current_value
+      FROM
+          CombinedAssets ca
+      INNER JOIN
+          CryptoAsset cr ON ca.asset_name = cr.asset_name AND ca.asset_ticker = cr.asset_ticker
+  )
+  SELECT
+      cpv.asset_name,
+      cpv.asset_ticker,
+      cpv.total_amount,
+      cpv.total_contributed,
+      cpv.combined_avg_price,
+      cpv.current_value,
+      cpv.current_price,
+      cpv.cmc_id
+  FROM
+      CurrentPortfolioValue cpv;`
+
+    const stockSQL = `WITH CombinedAssets AS (
+        SELECT
+            pa.asset_name,
+            pa.asset_ticker,
+            SUM(pa.amount) AS total_amount,
+            SUM(pa.amount * pa.avg_price) AS total_contributed,
+            SUM(pa.amount * pa.avg_price) / SUM(pa.amount) AS combined_avg_price
+        FROM
+            Portfolio_assets pa
+        WHERE
+            pa.uid = $1
+            AND pa.portfolio_name = $2
+        GROUP BY
+            pa.asset_name, pa.asset_ticker
+    ),
+    CurrentPortfolioValue AS (
+        SELECT
+            ca.asset_name,
+            ca.asset_ticker,
+            ca.total_amount,
+            ca.total_contributed,
+            ca.combined_avg_price,
+            st.latest_price AS current_price,
+            ca.total_amount * st.latest_price AS current_value
+        FROM
+            CombinedAssets ca
+        INNER JOIN
+          StockAsset st ON ca.asset_name = st.asset_name AND ca.asset_ticker = st.asset_ticker
+    )
+    SELECT
+        cpv.asset_name,
+        cpv.asset_ticker,
+        cpv.total_amount,
+        cpv.total_contributed,
+        cpv.combined_avg_price,
+        cpv.current_value,
+        cpv.current_price
+    FROM
+        CurrentPortfolioValue cpv;`
+
+    try {
+      //   const sql = "SELECT uid FROM UserAccount WHERE email = $1;"
+      //   const uid = await db.queryDbValues(sql, [user])
+      const data = await db.queryDbValues(query, [uid, name])
+      if (data.length === 0) {
+        res.status(404).json({ message: " no portfolio with name: " + name + " for user: " + user })
+      } else {
+        const promises = []
+        // promises.push(Portfolio.getAssets(uid, name))
+        promises.push(db.queryDbValues(cryptoSQL, [uid, name]))
+        promises.push(db.queryDbValues(stockSQL, [uid, name]))
+        promises.push(Portfolio.getPortfolioTVL(uid, name))
+        promises.push(Portfolio.getPortfolioContributions(uid, name))
+        const [coins, stocks, tvl, contributions] = await Promise.all(promises)
+        console.log(contributions)
+        console.log(coins)
+        // const query2 = "SELECT * FROM portfolio_assets WHERE uid = $1 AND portfolio_name=$2"
+        // const assets = await db.queryDbValues(query2, [uid, name])
+        // console.log(assets)
+        if (coins.length === 0 && stocks.length == 0) {
+          res.status(204).json({ message: "no assets in this portfolio" })
+          return
         }
-      } catch (err) {
-        res.status(500).json({ error: err })
+        const roundedTVL = Portfolio.round(tvl, 2)
+        const roundedContributions = Portfolio.round(contributions[0].total_contributed, 2)
+        // console.log(rounded)
+        res.status(200).json({
+          message: "portfolio fetched for user: " + uid,
+          data: {
+            portfolio_data: data[0],
+            coindata: coins,
+            stockdata: stocks,
+            tvl: roundedTVL,
+            contributions: roundedContributions,
+          },
+        })
       }
+    } catch (err) {
+      res.status(500).json({ error: err })
     }
   }
 
@@ -243,19 +350,21 @@ class Portfolio {
       //   numHoldings: numHoldings,
       // })
 
-      const [coindata, stockdata, tvl, total_contributions] = await Promise.all(
-        promises
-      )
+      const [coindata, stockdata, tvl, total_contributions] = await Promise.all(promises)
+
+      if (stockdata.length == 0 && coindata.length == 0) {
+        res.status(204)
+        console.log(204)
+        return
+      }
 
       res.status(200).json({
         coindata: coindata,
         stockdata: stockdata,
-        tvl: tvl[0].total_usd_value,
+        tvl: tvl,
         total_contributions: total_contributions,
         // numHoldings: numHoldings,
       })
-
-      
     } catch (err) {
       res.status(500).json({ message: err })
     }
@@ -293,7 +402,13 @@ class Portfolio {
       GROUP BY
           pa.uid, pa.portfolio_name;
       `
-    return await db.queryDbValues(sql, [uid, name])
+    const data = await db.queryDbValues(sql, [uid, name])
+
+    if (data.length == 1) {
+      return data[0].total_usd_value
+    } else {
+      return 0
+    }
   }
 
   static async getTotalTVL(uid) {
@@ -309,7 +424,13 @@ class Portfolio {
       GROUP BY
           pa.uid;
       `
-    return await db.queryDbValues(sql, [uid])
+
+    const data = await db.queryDbValues(sql, [uid])
+    if (data.length == 1) {
+      return data[0].total_usd_value
+    } else {
+      return 0
+    }
   }
 
   static async getPortfolioContributions(uid, name) {

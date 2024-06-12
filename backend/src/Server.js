@@ -81,7 +81,7 @@ class Server {
     this.app.post("/portfolio/create/:name", Authentication.authenticateToken, AddPortfolio.createPortfolio)
     this.app.delete("/portfolio/delete/:name", Authentication.authenticateToken, AddPortfolio.removePortfolio)
     this.app.get("/portfolio", Authentication.authenticateToken, Portfolio.getPortfolios)
-    this.app.get("/portfolio/:name", Authentication.authenticateToken, Portfolio.getPortfolios)
+    this.app.get("/portfolio/:name", Authentication.authenticateToken, Portfolio.getPortfolio)
     this.app.post("/portfolio/add-asset", Authentication.authenticateToken, Portfolio.addAsset)
     this.app.get("/portfolio-all", Authentication.authenticateToken, Portfolio.getAllAssets)
 
