@@ -441,7 +441,12 @@ class Portfolio {
       WHERE
           pa.uid = $1 AND pa.portfolio_name = $2;
       `
-    return await db.queryDbValues(sql, [uid, name])
+    const data = await db.queryDbValues(sql, [uid, name])
+    if (data.length == 1) {
+      return data[0].total_contributed
+    } else {
+      return 0
+    }
   }
 
   static async getTotalContributions(uid) {
@@ -452,7 +457,12 @@ class Portfolio {
     WHERE
         pa.uid = $1;
     `
-    return await db.queryDbValues(sql, [uid])
+    const data = await db.queryDbValues(sql, [uid])
+    if (data.length == 1) {
+      return data[0].total_contributed
+    } else {
+      return 0
+    }
   }
 
   static async getPortfolioUniqueHoldings(uid, name) {

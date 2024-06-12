@@ -12,6 +12,7 @@ export default function ({ data, setData }) {
   const [stocks, setStocks] = useState([])
   const [coins, setCoins] = useState([])
   const [tvl, setTvl] = useState(0)
+  const [contributions, setContributions] = useState(0)
   const [sort, setSort] = useState("Value")
   const [doSort, setDoSort] = useState(false)
 
@@ -49,6 +50,7 @@ export default function ({ data, setData }) {
       if (response.status == 200) {
         setDoSort(true)
         setTvl(response.data.tvl)
+        setContributions(response.data.total_contributions)
         processAssets(response.data)
       } else if (response.status == 204) {
         console.log("no assets found")
@@ -75,11 +77,24 @@ export default function ({ data, setData }) {
         <div>no assets found, add some to get started</div>
       ) : (
         <>
-          <div>TVL: {round(tvl,2)}</div>
-          <div className="overflow-x-auto">
-            <div className="min-w-screen bg-white shadow-md rounded my-6">
-              {/* Use grid layout for equal width columns */}
-              {/* <div className="grid grid-cols-7 text-gray-600 uppercase text-sm leading-normal">
+          <div>TVL: {round(tvl, 2)}</div>
+          <div>Contributions: {round(contributions, 2)}</div>
+          <div>
+            Total PNL:{" "}
+            <>
+              <span className={tvl - contributions > 0 ? "text-green-500" : "text-red-500"}>
+                {round(tvl, 2) - round(contributions, 2)}
+              </span>
+              <span> / </span>
+              <span className={tvl - contributions > 0 ? "text-green-500" : "text-red-500"}>
+                {round((tvl / contributions - 1) * 100, 2)}%
+              </span>
+            </>
+          </div>
+          {/* <div className="overflow-x-auto">
+            <div className="min-w-screen bg-white shadow-md rounded my-6"> */}
+          {/* Use grid layout for equal width columns */}
+          {/* <div className="grid grid-cols-7 text-gray-600 uppercase text-sm leading-normal">
                 <div className="py-3 px-6 text-left">Asset</div>
                 <div className="py-3 px-6 text-left">% of portfolio</div>
                 <div className="py-3 px-6 text-center">Total Value</div>
@@ -88,10 +103,10 @@ export default function ({ data, setData }) {
                 <div className="py-3 px-6 text-center">Avg Buy Price</div>
                 <div className="py-3 px-6 text-right">All time gainz</div>
               </div> */}
-              
-              <AssetTable data={data} tvl={tvl}/>
 
-              {/* <div className="grid grid-cols-7 text-gray-600 text-sm font-light">
+          <AssetTable data={data} tvl={tvl} />
+
+          {/* <div className="grid grid-cols-7 text-gray-600 text-sm font-light">
                 {data.map((holding, index) => (
                   <Fragment key={index}>
                     <div className="py-3 px-6 text-left whitespace-nowrap">
@@ -119,8 +134,8 @@ export default function ({ data, setData }) {
                   </Fragment>
                 ))}
               </div> */}
-            </div>
-          </div>
+          {/* </div>
+          </div> */}
         </>
       )}
     </div>
