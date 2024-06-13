@@ -99,6 +99,9 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
   }, [data])
 
   const handleModify = (key, field, value) => {
+    // if (isNaN(value)) {
+    //   value = 0 // Set a default value if the input is not a valid number
+    // }
     setCurrentData((prev) => ({
       ...prev,
       [key]: {

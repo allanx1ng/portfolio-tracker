@@ -23,6 +23,13 @@ class Portfolio {
       console.log(asset)
       //   console.log(req)
 
+      if (isNaN(asset.amount)) {
+        asset.amount = 0
+      }
+      if (isNaN(asset.price)) {
+        asset.price = 0
+      }
+
       const data = await db.queryDbValues(query, [
         uid,
         portfolio,
@@ -403,21 +410,32 @@ class Portfolio {
     const name = req.body.portfolio_name
     const assets = req.body.modifiedAssets
     // console.log(req.body)
+
     const sql = `UPDATE Portfolio_assets SET amount=$1, avg_price=$2 WHERE uid=$3 AND portfolio_name=$4 AND asset_ticker=$5 AND asset_name=$6`
+    const sql2 = `DELETE FROM Portfolio_assets WHERE uid=$1 AND portfolio_name=$2 AND asset_ticker=$3 AND asset_name=$4`
     try {
       const promises = []
       assets.forEach((asset) => {
-        // console.log(asset)
-        promises.push(
-          db.queryDbValues(sql, [
-            asset.total_amount,
-            asset.combined_avg_price,
-            uid,
-            name,
-            asset.asset_ticker,
-            asset.asset_name,
-          ])
-        )
+        console.log(asset)
+        if (isNaN(asset.total_amount) || !asset.total_amount || asset.total_amount == 0) {
+          // return res.status(500).json({message: "amount cant be 0, if you want to delete the asset, use the delete function"})
+          // throw new Error
+
+          promises.push(db.queryDbValues(sql2, [uid, name, asset.asset_ticker, asset.asset_name]))
+        } else if (isNaN(asset.combined_avg_price) || !asset.combined_avg_price) {
+          asset.combined_avg_price = 0
+        } else {
+          promises.push(
+            db.queryDbValues(sql, [
+              asset.total_amount,
+              asset.combined_avg_price,
+              uid,
+              name,
+              asset.asset_ticker,
+              asset.asset_name,
+            ])
+          )
+        }
       })
 
       const data = await Promise.all(promises)
