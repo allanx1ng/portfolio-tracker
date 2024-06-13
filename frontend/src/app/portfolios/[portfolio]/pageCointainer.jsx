@@ -129,7 +129,7 @@ export default function ({ params }) {
           </div> */}
 
           {edit ? (
-            <EditAssets data={data} setReload={setReload} />
+            <EditAssets data={data} setReload={setReload} portfolio_name={params.portfolio} setEdit={setEdit} />
           ) : (
             <AssetTable data={data} tvl={portfolio.tvl} />
           )}

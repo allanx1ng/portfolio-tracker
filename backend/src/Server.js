@@ -85,7 +85,7 @@ class Server {
     this.app.post("/portfolio/add-asset", Authentication.authenticateToken, Portfolio.addAsset)
     this.app.get("/portfolio-all", Authentication.authenticateToken, Portfolio.getAllAssets)
 
-    this.app.delete("/portfolio/assets", Authentication.authenticateToken, Portfolio.deleteAssets)
+    this.app.post("/portfolio/assets/delete", Authentication.authenticateToken, Portfolio.deleteAssets)
     this.app.put("/portfolio/assets", Authentication.authenticateToken, Portfolio.updateAssets)
 
     this.app.get("/search/search-assets", SearchAssets.search)

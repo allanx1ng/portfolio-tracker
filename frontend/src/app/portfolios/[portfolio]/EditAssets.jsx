@@ -4,66 +4,71 @@ import { round } from "@/util/util"
 import apiClient from "@/util/apiClient"
 import { errorMsg, successMsg, warnMsg } from "@/util/toastNotifications"
 
-export default function ({ data, setReload }) {
+export default function ({ data, setReload, portfolio_name, setEdit }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const modifiedAssets = Object.keys(currentData).reduce((acc, key) => {
-      if (
-        (currentData[key].total_amount !== initialData[key].total_amount ||
-          currentData[key].combined_avg_price !== initialData[key].combined_avg_price) &&
-        !deleteAssets.includes(key)
-      ) {
-        const [asset_ticker, asset_name] = key.split("-")
-        acc.push({
-          asset_ticker,
-          asset_name,
-          total_amount: currentData[key].total_amount,
-          combined_avg_price: currentData[key].combined_avg_price,
-        })
-      }
-      return acc
-    }, [])
+    const modifiedAssets = processModifyAssets()
 
-    const processedDeleteAssets = deleteAssets.map((key) => {
-      const [asset_ticker, asset_name] = key.split("-")
-      return { asset_ticker, asset_name }
-    })
+    const processedDeleteAssets = processDeleteAssets()
 
     try {
       setReload(false)
       setLoading(true)
-      console.log(modifiedAssets)
-      console.log(processedDeleteAssets)
+      //   console.log(modifiedAssets)
+      //   console.log(processedDeleteAssets)
 
       const promises = []
 
       if (modifiedAssets.length > 0) {
-        console.log("mod")
-        promises.push(apiClient.put("portfolio/assets", { modifiedAssets: modifiedAssets }))
+        // console.log("mod")
+        // console.log(portfolio_name)
+        promises.push(
+          apiClient.put("portfolio/assets", {
+            portfolio_name: portfolio_name,
+            modifiedAssets: modifiedAssets,
+          })
+        )
       }
       if (deleteAssets.length > 0) {
-        console.log("del")
-        promises.push(apiClient.delete("portfolio/assets", { deleteAssets: processedDeleteAssets }))
+        // console.log("del")
+        promises.push(
+          apiClient.post("portfolio/assets/delete", {
+            portfolio_name: portfolio_name,
+            deleteAssets: processedDeleteAssets,
+          })
+        )
       }
 
       if (promises.length == 0) {
-        console.log(promises)
+        // console.log(promises)
         warnMsg("no assets modified")
         return
       }
 
       const [res1, res2] = await Promise.all(promises)
 
-      if (res1.status == 200 && res2.status == 200) {
-        successMsg("Assets updated successfully")
-      } else if (res1.status == 200) {
-        warnMsg("Assets modified, deletion unsuccessful")
-      } else if (res2.status == 200) {
-        warnMsg("Assets deleted, modification unsuccessful")
-      } else {
-        return
+      if (res1 && res2) {
+        if (res1.status == 200 && res2.status == 200) {
+          successMsg("Assets updated successfully")
+        } else if (res1.status == 200) {
+          warnMsg("Assets modified, deletion unsuccessful")
+        } else if (res2.status == 200) {
+          warnMsg("Assets deleted, modification unsuccessful")
+        } else {
+          return
+        }
+      } else if (res1) {
+        if (res1.status == 200) {
+          successMsg("Assets updated successfully")
+        }
+      } else if (res2) {
+        if (res2.status == 200) {
+          successMsg("Assets deleted successfully")
+        }
       }
+
+      setEdit(false)
       setReload(true)
     } catch (error) {
       errorMsg(error.message)
@@ -108,24 +113,63 @@ export default function ({ data, setReload }) {
       if (!prev.includes(key)) {
         return [...prev, key]
       }
-      return prev
+      return prev.filter((item) => item !== key)
     })
+  }
+
+  const processDeleteAssets = () => {
+    return deleteAssets.map((key) => {
+      const [asset_ticker, asset_name] = key.split("-")
+      return { asset_ticker, asset_name }
+    })
+  }
+
+  const processModifyAssets = () => {
+    return Object.keys(currentData).reduce((acc, key) => {
+      if (
+        (currentData[key].total_amount !== initialData[key].total_amount ||
+          currentData[key].combined_avg_price !== initialData[key].combined_avg_price) &&
+        !deleteAssets.includes(key)
+      ) {
+        const [asset_ticker, asset_name] = key.split("-")
+        acc.push({
+          asset_ticker,
+          asset_name,
+          total_amount: currentData[key].total_amount,
+          combined_avg_price: currentData[key].combined_avg_price,
+        })
+      }
+      return acc
+    }, [])
   }
   return (
     <div>
+      <div className="grid grid-cols-5 text-gray-600 text-sm font-light">
+        <div>Delete?</div>
+        <div>name</div>
+        <div>amount</div>
+        <div>avg price</div>
+      </div>
       {Object.keys(currentData).map((key) => (
         <form key={key} className="grid grid-cols-5 text-gray-600 text-sm font-light">
-          <button
+          {/* <button
             type="button"
             className="rounded-full border-2 border-red-500 w-4 h-4"
             onClick={() => handleDelete(key)}
           >
             -
-          </button>
+          </button> */}
+          <input
+            type="checkbox"
+            className="form-checkbox h-4 w-4 text-red-500"
+            checked={deleteAssets.includes(key)}
+            onChange={() => handleDelete(key)}
+          />
           <div>{currentData[key].asset_name}</div>
           <div>
             <span>Amt:</span>
             <input
+              disabled={deleteAssets.includes(key)}
               type="number"
               value={currentData[key].total_amount}
               onChange={(e) => handleModify(key, "total_amount", parseFloat(e.target.value))}
@@ -136,6 +180,7 @@ export default function ({ data, setReload }) {
           <div>
             <span>avg price:</span>
             <input
+              disabled={deleteAssets.includes(key)}
               type="number"
               value={currentData[key].combined_avg_price}
               onChange={(e) => handleModify(key, "combined_avg_price", parseFloat(e.target.value))}

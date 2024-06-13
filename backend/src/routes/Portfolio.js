@@ -195,8 +195,8 @@ class Portfolio {
             portfolio_data: data[0],
             coindata: coins,
             stockdata: stocks,
-            tvl: roundedTVL,
-            contributions: roundedContributions,
+            tvl: tvl,
+            contributions: contributions,
           },
         })
       }
@@ -372,12 +372,66 @@ class Portfolio {
 
   static async deleteAssets(req, res) {
     // console.log(req)
-    res.status(500).json({})
+    const uid = req.user.uid
+    const name = req.body.portfolio_name
+    const assets = req.body.deleteAssets
+    console.log(req.body)
+    const sql = `DELETE FROM Portfolio_assets WHERE uid=$1 AND portfolio_name=$2 AND asset_ticker=$3 AND asset_name=$4`
+    try {
+      const promises = []
+      assets.forEach((asset) => {
+        promises.push(db.queryDbValues(sql, [uid, name, asset.asset_ticker, asset.asset_name]))
+      })
+      const data = await Promise.all(promises)
+      if (data.rowCount == 0) {
+        // console.log(204)
+        res.status(204).json({})
+        return
+      } else {
+        // console.log(200)
+        res.status(200).json({ message: "success" })
+        return
+      }
+    } catch (err) {
+      res.status(500).json({})
+    }
   }
 
   static async updateAssets(req, res) {
     // console.log(req)
-    res.status(500).json({})
+    const uid = req.user.uid
+    const name = req.body.portfolio_name
+    const assets = req.body.modifiedAssets
+    // console.log(req.body)
+    const sql = `UPDATE Portfolio_assets SET amount=$1, avg_price=$2 WHERE uid=$3 AND portfolio_name=$4 AND asset_ticker=$5 AND asset_name=$6`
+    try {
+      const promises = []
+      assets.forEach((asset) => {
+        // console.log(asset)
+        promises.push(
+          db.queryDbValues(sql, [
+            asset.total_amount,
+            asset.combined_avg_price,
+            uid,
+            name,
+            asset.asset_ticker,
+            asset.asset_name,
+          ])
+        )
+      })
+
+      const data = await Promise.all(promises)
+      console.log(data)
+      if (data.rowCount == 0) {
+        console.log(204)
+        res.status(204).json({})
+      } else {
+        console.log(200)
+        res.status(200).json({ message: "success" })
+      }
+    } catch (err) {
+      res.status(500).json({})
+    }
   }
 
   /*
