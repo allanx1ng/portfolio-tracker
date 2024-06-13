@@ -3,10 +3,11 @@ import { useState, useEffect, Fragment } from "react"
 import GetPortfolio from "./getPortfolio"
 import AddAssets from "./addAssets"
 import Error from "./error"
-import EditAsset from "./EditAsset"
+import EditButton from "./EditButton"
 import DeletePortfolio from "./DeletePortfolio"
 import { round } from "@/util/util"
 import AssetTable from "@/components/AssetTable"
+import EditAssets from "./EditAssets"
 
 export default function ({ params }) {
   const [reload, setReload] = useState(false)
@@ -127,9 +128,13 @@ export default function ({ params }) {
             ))}
           </div> */}
 
-          <AssetTable data={data} tvl={portfolio.tvl}/>
+          {edit ? (
+            <EditAssets data={data} setReload={setReload} />
+          ) : (
+            <AssetTable data={data} tvl={portfolio.tvl} />
+          )}
 
-          <EditAsset setEdit={setEdit} edit={edit} />
+          <EditButton setEdit={setEdit} edit={edit} />
         </div>
       )}
 

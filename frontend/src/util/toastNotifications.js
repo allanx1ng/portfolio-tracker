@@ -25,3 +25,7 @@ export const errorMsg = (msg, config = {}) => {
 };
 
 // Other types of notifications can be added similarly
+
+export const warnMsg = (msg, config = {}) => {
+  toast.warn(msg, { ...defaultConfig, ...config });
+};

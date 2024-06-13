@@ -50,7 +50,7 @@ class Portfolio {
       console.log(data)
 
       if (data.length == 0) {
-        res.status(204)
+        res.status(204).json({})
         return
       }
 
@@ -368,6 +368,16 @@ class Portfolio {
     } catch (err) {
       res.status(500).json({ message: err })
     }
+  }
+
+  static async deleteAssets(req, res) {
+    // console.log(req)
+    res.status(500).json({})
+  }
+
+  static async updateAssets(req, res) {
+    // console.log(req)
+    res.status(500).json({})
   }
 
   /*
