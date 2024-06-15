@@ -91,7 +91,7 @@ class Server {
     this.app.get("/search/search-assets", SearchAssets.search)
 
     // get wallet balances:
-    this.app.post('/fetch-sol-tokens', SolTokenFetch.fetchTokens)
+    this.app.post('/fetch-sol-tokens', Authentication.authenticateToken, SolTokenFetch.fetchTokens)
 
     this.app.post(
       "/login",

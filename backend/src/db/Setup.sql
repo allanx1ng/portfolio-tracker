@@ -44,11 +44,13 @@ CREATE TABLE Portfolio (
     portfolio_name VARCHAR(60),
     account_type VARCHAR(50), -- e.g., 'brokerage', 'exchange', 'wallet'
     provider VARCHAR(100), -- e.g., 'Wealthsimple', 'Binance'
+    wallet_address VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (uid, portfolio_name),
     FOREIGN KEY (uid) REFERENCES useraccount(uid)
 );
+CREATE UNIQUE INDEX unique_wallet_address ON Portfolio (wallet_address) WHERE wallet_address IS NOT NULL;
 
 CREATE TABLE Asset (
     asset_name VARCHAR(60),
