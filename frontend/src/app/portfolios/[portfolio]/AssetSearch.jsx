@@ -54,7 +54,7 @@ export default function ({ setAsset }) {
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full p-2 border rounded"
+        className="input input-bordered w-full max-w-xs"
         placeholder="Search for assets by name or ticker..."
       />
       {/* {isLoading && <div className="mt-2 text-gray-500">Loading...</div>} */}

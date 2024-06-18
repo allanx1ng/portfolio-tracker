@@ -39,10 +39,10 @@ export default function getAllPortfolios() {
         <div>no portfolios yet, add one to get started</div>
       ) : (
         portfolios.map((p, idx) => (
-          <li key={idx}>
-            <a href={`/portfolios/${p.portfolio_name}`}>{p.portfolio_name + " " + round(p.tvl, 2)}</a>
+          <div key={idx} className="grid grid-cols-1 p-4">
+            <a href={`/portfolios/${p.portfolio_name}`} className="btn btn-secondary w-100px my-1">{p.portfolio_name + " " + round(p.tvl, 2)}</a>
             {/* <div>{p.account_type}</div> */}
-          </li>
+          </div>
         ))
       )}
     </div>

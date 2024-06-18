@@ -147,14 +147,14 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
   }
   return (
     <div>
-      <div className="grid grid-cols-5 text-gray-600 text-sm font-light">
+      <div className="grid grid-cols-5 text-gray-600 text-sm font-light mx-2 p-8">
         <div>Delete?</div>
         <div>name</div>
         <div>amount</div>
         <div>avg price</div>
       </div>
       {Object.keys(currentData).map((key) => (
-        <form key={key} className="grid grid-cols-5 text-gray-600 text-sm font-light">
+        <form key={key} className="grid grid-cols-5 text-gray-600 text-sm font-light p-8 mx-2 items-center justify-center">
           {/* <button
             type="button"
             className="rounded-full border-2 border-red-500 w-4 h-4"
@@ -164,30 +164,32 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
           </button> */}
           <input
             type="checkbox"
-            className="form-checkbox h-4 w-4 text-red-500"
+            className=" text-red-500 checkbox"
             checked={deleteAssets.includes(key)}
             onChange={() => handleDelete(key)}
           />
           <div>{currentData[key].asset_name}</div>
           <div>
-            <span>Amt:</span>
+            {/* <span>Amt:</span> */}
             <input
               disabled={deleteAssets.includes(key)}
               type="number"
               value={currentData[key].total_amount}
               onChange={(e) => handleModify(key, "total_amount", parseFloat(e.target.value))}
-              className="border p-1"
+            //   className="border p-1"
+              className="input input-bordered max-w-xs appearance-none w-11/12"
             />
           </div>
 
           <div>
-            <span>avg price:</span>
+            {/* <span>avg price:</span> */}
             <input
               disabled={deleteAssets.includes(key)}
               type="number"
               value={currentData[key].combined_avg_price}
               onChange={(e) => handleModify(key, "combined_avg_price", parseFloat(e.target.value))}
-              className="border p-1"
+            //   className="border p-1"
+              className="input input-bordered max-w-xs appearance-none w-11/12"
             />
           </div>
         </form>
@@ -237,7 +239,7 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
         </form>
       ))} */}
 
-      <button disabled={loading} onClick={(e) => handleSubmit(e)}>
+      <button disabled={loading} onClick={(e) => handleSubmit(e)} className="btn btn-accent mx-8">
         Submit
       </button>
     </div>

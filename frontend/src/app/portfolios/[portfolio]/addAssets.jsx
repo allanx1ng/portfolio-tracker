@@ -56,9 +56,7 @@ export default function ({ name, setReload }) {
   return (
     <div>
         {/* <ToastContainer/> */}
-
-      add assets:
-      <button onClick={toggleVisiblity}>Add Asset</button>
+      <button onClick={toggleVisiblity} className="btn">Add Asset</button>
       <div className={visible ? "block" : "hidden"}>
         <form>
           <AssetSearch setAsset={setAsset} />

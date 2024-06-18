@@ -20,7 +20,7 @@ export default function ({ data, tvl }) {
             {data.map((holding, index) => (
               <Fragment key={index}>
                 <div className="py-3 px-6 text-left whitespace-nowrap">
-                  <a href={"asset/coin/" + holding.asset_ticker}>{holding.asset_name}</a>
+                  <a href={"/asset/coin/" + holding.asset_name}>{holding.asset_name}</a>
                 </div>
                 <div className="py-3 px-6 text-left">
                   {round((holding.current_value / tvl) * 100, 2) + "%"}

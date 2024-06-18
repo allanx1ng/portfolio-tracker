@@ -34,13 +34,14 @@ const CheckUser = () => {
             {user.email}
            
           </button> */}
-          <Dropdown/>
+          <Dropdown user={user}/>
           <>/</>
           {/* {contextMenu && <Dropdown/>} */}
           
           <a
             href="/login"
-            className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
+            // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
+            className="btn"
             onClick={handleLogout}
           >
             Logout
@@ -51,14 +52,16 @@ const CheckUser = () => {
         <div className="mr-8">
           <a
             href="/login"
-            className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
+            // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
+            className="btn"
           >
             Login
           </a>
           <>/</>
           <a
             href="/signup"
-            className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
+            // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
+            className="btn"
           >
             Sign Up
           </a>

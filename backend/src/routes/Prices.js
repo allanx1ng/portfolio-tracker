@@ -79,7 +79,7 @@ class Prices {
         },
         params: {
           convert: "USD",
-          limit: 500, // Adjust to the number of cryptocurrencies you want to track
+          limit: 5000, // Adjust to the number of cryptocurrencies you want to track
         },
       })
 
@@ -87,10 +87,10 @@ class Prices {
       const data = response.data.data
       this.coinDataArray = data
       data.forEach((coin) => {
-        this.priceCache[coin.symbol] = coin.quote.USD.price
+        this.priceCache[coin.name] = coin.quote.USD.price
       })
       data.forEach((coin) => {
-        this.coinDataCache[coin.symbol] = coin
+        this.coinDataCache[coin.name.toLowerCase()] = coin
       })
       // console.log(data)
       // console.log('Updated Prices:', this.priceCache);
@@ -138,16 +138,18 @@ class Prices {
     if (!assetClass) {
       res.status(400).json({ error: "bad req" })
     }
-    const assetReq = req.params.asset ? req.params.asset.toUpperCase() : null
+    const assetReq = req.params.asset ? req.params.asset.toLowerCase() : null
 
     if (!assetReq) {
       // Return all prices if no specific asset is requested
       res.json(this.coinDataCache)
     } else {
       if (assetClass === "coin") {
+        console.log(assetReq)
+        console.log(this.coinDataCache[assetReq])
         const asset = this.coinDataCache[assetReq]
         if (asset !== undefined) {
-          res.json({ [assetReq]: asset })
+          res.json({ asset: asset })
         } else {
           res.status(404).json({ error: "Asset not found" })
         }

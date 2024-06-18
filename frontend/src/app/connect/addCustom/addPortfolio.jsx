@@ -33,7 +33,7 @@ export default function addPortfolio({ setReload }) {
   }
   return (
     <form>
-      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="New Portfolio" />
+      <input value={name} onChange={(e) => setName(e.target.value)} placeholder="New Portfolio" className="input input-bordered w-full max-w-xs m-8"/>
       <button onClick={(e) => handleSubmit(e)}>save</button>
     </form>
   )

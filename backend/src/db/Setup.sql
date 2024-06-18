@@ -50,7 +50,7 @@ CREATE TABLE Portfolio (
     PRIMARY KEY (uid, portfolio_name),
     FOREIGN KEY (uid) REFERENCES useraccount(uid)
 );
-CREATE UNIQUE INDEX unique_wallet_address ON Portfolio (wallet_address) WHERE wallet_address IS NOT NULL;
+CREATE UNIQUE INDEX unique_wallet_address ON Portfolio (uid, wallet_address) WHERE wallet_address IS NOT NULL;
 
 CREATE TABLE Asset (
     asset_name VARCHAR(60),

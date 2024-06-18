@@ -364,6 +364,7 @@ class Portfolio {
         console.log(204)
         return
       }
+      console.log(tvl)
 
       res.status(200).json({
         coindata: coindata,
@@ -439,7 +440,7 @@ class Portfolio {
       })
 
       const data = await Promise.all(promises)
-      console.log(data)
+      // console.log(data)
       if (data.rowCount == 0) {
         console.log(204)
         res.status(204).json({})
@@ -495,7 +496,7 @@ class Portfolio {
 
   static async getTotalTVL(uid) {
     const sql = `SELECT
-          pa.uid = $1,
+          pa.uid,
           SUM(pa.amount * COALESCE(ca.latest_price, sa.latest_price)) AS total_usd_value
       FROM
           Portfolio_assets pa
@@ -503,11 +504,14 @@ class Portfolio {
           CryptoAsset ca ON pa.asset_name = ca.asset_name AND pa.asset_ticker = ca.asset_ticker
       LEFT JOIN
           StockAsset sa ON pa.asset_name = sa.asset_name AND pa.asset_ticker = sa.asset_ticker
+      WHERE
+          pa.uid = $1
       GROUP BY
           pa.uid;
       `
 
     const data = await db.queryDbValues(sql, [uid])
+    // console.log(data)
     if (data.length == 1) {
       return data[0].total_usd_value
     } else {

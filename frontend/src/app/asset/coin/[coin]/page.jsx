@@ -15,7 +15,7 @@ const Coin = async ({ params }) => {
   const initialData = await fetchAsset()
   let coin
   if (initialData) {
-    coin = initialData[asset.toUpperCase()]
+    coin = initialData.asset
   }
   return (
     <div className="w-screen">

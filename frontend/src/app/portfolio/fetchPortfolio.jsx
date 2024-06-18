@@ -7,12 +7,10 @@ import { errorMsg } from "@/util/toastNotifications"
 import { round } from "@/util/util"
 import AssetTable from "@/components/AssetTable"
 
-export default function ({ data, setData }) {
+export default function ({ data, setData, setTvl, setContributions, tvl, contributions }) {
   // const [data, setData] = useState([])
   const [stocks, setStocks] = useState([])
   const [coins, setCoins] = useState([])
-  const [tvl, setTvl] = useState(0)
-  const [contributions, setContributions] = useState(0)
   const [sort, setSort] = useState("Value")
   const [doSort, setDoSort] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -40,7 +38,7 @@ export default function ({ data, setData }) {
       setDoSort(false)
       setData(copyArray)
 
-      console.log(data)
+      // console.log(data)
     }
   }
 
@@ -54,6 +52,7 @@ export default function ({ data, setData }) {
         setTvl(response.data.tvl)
         setContributions(response.data.total_contributions)
         processAssets(response.data)
+        // console.log(data + "TESTDATA")
       } else if (response.status == 204) {
         console.log("no assets found")
       } else {

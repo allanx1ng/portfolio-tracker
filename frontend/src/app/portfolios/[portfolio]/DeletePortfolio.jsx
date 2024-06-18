@@ -36,7 +36,7 @@ export default function ({ name }) {
 
   return (
     <div>
-      <button onClick={() => setConfirmScreen(true)}>Delete Portfolio</button>
+      <button onClick={() => setConfirmScreen(true)} className="btn">Delete Portfolio</button>
       {confirmScreen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white w-96 h-72 p-6 rounded-lg shadow-lg flex flex-col justify-between">
