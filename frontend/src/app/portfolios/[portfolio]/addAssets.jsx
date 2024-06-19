@@ -56,7 +56,7 @@ export default function ({ name, setReload }) {
   return (
     <div>
         {/* <ToastContainer/> */}
-      <button onClick={toggleVisiblity} className="btn">Add Asset</button>
+      <button onClick={toggleVisiblity} className="btn w-full">Add Asset</button>
       <div className={visible ? "block" : "hidden"}>
         <form>
           <AssetSearch setAsset={setAsset} />

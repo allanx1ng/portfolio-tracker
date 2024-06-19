@@ -89,9 +89,9 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        <div className="navbar-center">
+        {/* <div className="navbar-center">
           <a className="btn">Button</a>
-        </div>
+        </div> */}
         <div className="navbar-end">
           <CheckUser />
         </div>

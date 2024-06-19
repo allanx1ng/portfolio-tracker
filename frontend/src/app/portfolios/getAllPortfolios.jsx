@@ -36,11 +36,11 @@ export default function getAllPortfolios() {
     <div>
       {/* <ToastContainer /> */}
       {portfolios.length == 0 ? (
-        <div>no portfolios yet, add one to get started</div>
+        <div>No portfolios yet, add one to get started</div>
       ) : (
         portfolios.map((p, idx) => (
           <div key={idx} className="grid grid-cols-1 p-4">
-            <a href={`/portfolios/${p.portfolio_name}`} className="btn btn-secondary w-100px my-1">{p.portfolio_name + " " + round(p.tvl, 2)}</a>
+            <a href={`/portfolios/${p.portfolio_name}`} className="btn btn-primary w-100px">{p.portfolio_name + "\n" + round(p.tvl, 2)}</a>
             {/* <div>{p.account_type}</div> */}
           </div>
         ))

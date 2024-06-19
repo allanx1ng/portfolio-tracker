@@ -75,16 +75,31 @@ export default function ({ data, setData, setTvl, setContributions, tvl, contrib
   }
 
   return loading ? (
-    <div>loading</div>
+    <span className="loading loading-dots loading-md"></span>
   ) : (
     <div className="mb-24">
       {data.length == 0 ? (
-        <div>no assets found, add some to get started</div>
+        <div role="alert" className="alert alert-info">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            className="stroke-current shrink-0 w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <span>No assets currently, add some to get started</span>
+        </div>
       ) : (
         <>
-          <div>TVL: {round(tvl, 2)}</div>
-          <div>Contributions: {round(contributions, 2)}</div>
-          <div>
+          {/* <div>TVL: {round(tvl, 2)}</div>
+          <div>Contributions: {round(contributions, 2)}</div> */}
+          {/* <div>
             Total PNL:{" "}
             <>
               <span className={tvl - contributions > 0 ? "text-green-500" : "text-red-500"}>
@@ -95,7 +110,7 @@ export default function ({ data, setData, setTvl, setContributions, tvl, contrib
                 {round((tvl / contributions - 1) * 100, 2)}%
               </span>
             </>
-          </div>
+          </div> */}
           {/* <div className="overflow-x-auto">
             <div className="min-w-screen bg-white shadow-md rounded my-6"> */}
           {/* Use grid layout for equal width columns */}

@@ -6,8 +6,8 @@ export default function ({ data, tvl }) {
   return (
     <>
       <div className="overflow-x-auto">
-        <div className="min-w-screen bg-white shadow-md rounded my-6">
-          <div className="grid grid-cols-7 text-gray-600 uppercase text-sm leading-normal">
+        <div className="min-w-screen bg-neutral text-neutral-content shadow-md rounded my-6">
+          <div className="grid grid-cols-7 uppercase text-sm leading-normal">
             <div className="py-3 px-6 text-left">Asset</div>
             <div className="py-3 px-6 text-left">% of portfolio</div>
             <div className="py-3 px-6 text-center">Total Value</div>
@@ -16,7 +16,7 @@ export default function ({ data, tvl }) {
             <div className="py-3 px-6 text-center">Avg Buy Price</div>
             <div className="py-3 px-6 text-right">All time gainz</div>
           </div>
-          <div className="grid grid-cols-7 text-gray-600 text-sm font-light">
+          <div className="grid grid-cols-7 text-sm font-light">
             {data.map((holding, index) => (
               <Fragment key={index}>
                 <div className="py-3 px-6 text-left whitespace-nowrap">
@@ -33,8 +33,8 @@ export default function ({ data, tvl }) {
                   <span
                     className={
                       holding.current_value - holding.total_contributed > 0
-                        ? "text-green-500"
-                        : "text-red-500"
+                        ? "text-success"
+                        : "text-error"
                     }
                   >
                     {round((holding.current_value / holding.total_contributed - 1) * 100, 2) + "%"}
@@ -43,8 +43,8 @@ export default function ({ data, tvl }) {
                   <span
                     className={
                       holding.current_value - holding.total_contributed > 0
-                        ? "text-green-500"
-                        : "text-red-500"
+                        ? "text-success"
+                        : "text-error"
                     }
                   >
                     {"$" + round(holding.current_value - holding.total_contributed, 2)}

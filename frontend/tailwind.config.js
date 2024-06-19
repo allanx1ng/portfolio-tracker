@@ -29,6 +29,10 @@ module.exports = {
         "300px": "300px",
         "400px": "400px",
         "500px": "500px",
+      },
+      gridTemplateColumns: {
+        'fixed': 'repeat(3, 200px)', // Two columns each 200px wide
+        'flex-fixed': '200px 1fr', // One fixed and one flexible column
       }
     },
   },

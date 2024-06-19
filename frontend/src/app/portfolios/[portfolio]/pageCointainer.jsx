@@ -60,7 +60,7 @@ export default function ({ params }) {
   return error ? (
     <Error error={error} />
   ) : (
-    <div>
+    <div className="m-8">
       {/* <ToastContainer/> */}
       <GetPortfolio
         name={params.portfolio}
@@ -79,10 +79,33 @@ export default function ({ params }) {
           {/* <ToastContainer /> */}
           <h1>{portfolio.portfolio_data.portfolio_name}</h1>
 
-          <div>{portfolio.portfolio_data.account_type}</div>
-          <div>TVL: {portfolio.tvl}</div>
-          <div>Total Contributions: {portfolio.contributions}</div>
-          <div>assets:</div>
+          <div>Portfolio type: {portfolio.portfolio_data.account_type}</div>
+          {/* <div>TVL: {portfolio.tvl}</div>
+          <div>Total Contributions: {portfolio.contributions}</div> */}
+
+          <div className="stats stats-vertical lg:stats-horizontal shadow text-primary bg-base-200">
+            <div className="stat">
+              <div className="stat-title">Total Value</div>
+              <div className="stat-value">${round(portfolio.tvl, 2)}</div>
+              <div className="stat-desc">Contributions: ${round(portfolio.contributions, 2)}</div>
+            </div>
+
+            <div className="stat">
+              <div className="stat-title">Net PNL ($)</div>
+              <div className="stat-value">${round(portfolio.tvl - portfolio.contributions, 2)}</div>
+              <div className="stat-desc"></div>
+            </div>
+
+            <div className="stat">
+              <div className="stat-title">Net PNL (%)</div>
+              <div className="stat-value">
+                {round((portfolio.tvl / portfolio.contributions - 1) * 100, 2)}%
+              </div>
+              <div className="stat-desc"></div>
+            </div>
+          </div>
+
+          <h2 className="mt-4">Assets:</h2>
           {/* {edit
             ? portfolio.assets.map((asset) => (
                 <div key={asset.asset_ticker}>
@@ -129,17 +152,25 @@ export default function ({ params }) {
           </div> */}
 
           {edit ? (
-            <EditAssets data={data} setReload={setReload} portfolio_name={params.portfolio} setEdit={setEdit} />
+            <EditAssets
+              data={data}
+              setReload={setReload}
+              portfolio_name={params.portfolio}
+              setEdit={setEdit}
+            />
           ) : (
             <AssetTable data={data} tvl={portfolio.tvl} />
           )}
-
-          <EditButton setEdit={setEdit} edit={edit} />
         </div>
       )}
-
-      <AddAssets name={params.portfolio} setReload={setReload} />
-      <DeletePortfolio name={params.portfolio} />
+      <>
+        <h2>Other actions: </h2>
+        <div className="grid grid-cols-fixed gap-4 justify-items-left w-1/2 my-2">
+          <EditButton setEdit={setEdit} edit={edit} className="w-200px" />
+          <AddAssets name={params.portfolio} setReload={setReload} className="w-200px" />
+          <DeletePortfolio name={params.portfolio} className="w-200px" />
+        </div>
+      </>
     </div>
   )
 }
