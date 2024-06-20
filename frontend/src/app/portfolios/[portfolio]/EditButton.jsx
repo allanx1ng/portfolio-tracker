@@ -1,8 +1,10 @@
-
-export default function ({edit, setEdit}) {
+export default function ({ edit, setEdit }) {
   return (
-    <div>
-      <button onClick={() => setEdit(!edit)} className="btn w-full">Edit assets:</button>
-    </div>
+    <button
+      onClick={() => setEdit(!edit)}
+      className={edit ? " btn-primary btn" : "btn btn-outline btn-primary"}
+    >
+      Edit assets:
+    </button>
   )
 }

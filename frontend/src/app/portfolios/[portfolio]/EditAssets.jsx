@@ -146,55 +146,56 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
     }, [])
   }
   return (
-    <div>
-      <div className="grid grid-cols-5 text-gray-600 text-sm font-light mx-2 p-8">
-        <div>Delete?</div>
-        <div>name</div>
-        <div>amount</div>
-        <div>avg price</div>
-      </div>
-      {Object.keys(currentData).map((key) => (
-        <form key={key} className="grid grid-cols-5 text-gray-600 text-sm font-light p-8 mx-2 items-center justify-center">
-          {/* <button
-            type="button"
-            className="rounded-full border-2 border-red-500 w-4 h-4"
-            onClick={() => handleDelete(key)}
-          >
-            -
-          </button> */}
-          <input
-            type="checkbox"
-            className=" text-red-500 checkbox"
-            checked={deleteAssets.includes(key)}
-            onChange={() => handleDelete(key)}
-          />
-          <div>{currentData[key].asset_name}</div>
-          <div>
-            {/* <span>Amt:</span> */}
-            <input
-              disabled={deleteAssets.includes(key)}
-              type="number"
-              value={currentData[key].total_amount}
-              onChange={(e) => handleModify(key, "total_amount", parseFloat(e.target.value))}
-            //   className="border p-1"
-              className="input input-bordered max-w-xs appearance-none w-11/12"
-            />
-          </div>
+    <div className="flex justify-between items-center transition-opacity duration-300 ease-in-out">
+      <div className="min-w-screen bg-base-200 shadow-md rounded my-6 pt-3">
+        <div className="grid grid-cols-5 font-light uppercase text-sm leading-normal h-10">
+          <div className="py-3 px-6 text-center">Delete?</div>
+          <div className="py-3 px-6 text-center">name</div>
+          <div className="py-3 px-6 text-center">amount</div>
+          <div className="py-3 px-6 text-center">avg price</div>
+        </div>
+        <div className="py-3">
+          {Object.keys(currentData).map((key) => (
+            <form
+              key={key}
+              className="grid grid-cols-5 text-sm font-light items-center text-center"
+            >
+              <div className="h-10 flex items-center justify-center py-3 px-6">
+                <input
+                  type="checkbox"
+                  className=" text-red-500 checkbox"
+                  checked={deleteAssets.includes(key)}
+                  onChange={() => handleDelete(key)}
+                />
+              </div>
+              <div className="py-3 px-6 h-10 flex items-center justify-center">
+                {currentData[key].asset_name}
+              </div>
+              <div className="py-3 px-6 h-10">
+                <input
+                  disabled={deleteAssets.includes(key)}
+                  type="number"
+                  value={currentData[key].total_amount}
+                  onChange={(e) => handleModify(key, "total_amount", parseFloat(e.target.value))}
+                  className="input input-bordered max-w-xs appearance-none w-11/12 h-6"
+                />
+              </div>
+              <div className="py-3 px-6 h-10">
+                <input
+                  disabled={deleteAssets.includes(key)}
+                  type="number"
+                  value={currentData[key].combined_avg_price}
+                  onChange={(e) =>
+                    handleModify(key, "combined_avg_price", parseFloat(e.target.value))
+                  }
+                  className="input input-bordered max-w-xs appearance-none w-11/12 h-6"
+                />
+              </div>
+            </form>
+          ))}
+        </div>
 
-          <div>
-            {/* <span>avg price:</span> */}
-            <input
-              disabled={deleteAssets.includes(key)}
-              type="number"
-              value={currentData[key].combined_avg_price}
-              onChange={(e) => handleModify(key, "combined_avg_price", parseFloat(e.target.value))}
-            //   className="border p-1"
-              className="input input-bordered max-w-xs appearance-none w-11/12"
-            />
-          </div>
-        </form>
-      ))}
-      {/* {data.map((asset) => (
+        {/* {data.map((asset) => (
         <form
           key={asset.asset_ticker}
           className="grid grid-cols-5 text-gray-600 text-sm font-light"
@@ -238,8 +239,8 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
           </div>
         </form>
       ))} */}
-
-      <button disabled={loading} onClick={(e) => handleSubmit(e)} className="btn btn-accent mx-8">
+      </div>
+      <button disabled={loading} onClick={(e) => handleSubmit(e)} className="btn btn-accent mx-6">
         Submit
       </button>
     </div>

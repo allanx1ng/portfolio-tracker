@@ -5,7 +5,7 @@ import apiClient from "@/util/apiClient"
 import { errorMsg } from "@/util/toastNotifications"
 // import { Fragment } from "react"
 import { round } from "@/util/util"
-import AssetTable from "@/components/AssetTable"
+import AssetTable from "@/components/tables/AssetTable"
 
 export default function ({ data, setData, setTvl, setContributions, tvl, contributions }) {
   // const [data, setData] = useState([])

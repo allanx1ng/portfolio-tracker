@@ -8,26 +8,6 @@ import FetchPortfolio from "./fetchPortfolio"
 import { round } from "@/util/util"
 
 const Portfolio = () => {
-  const holdings = [
-    {
-      asset: "Bitcoin",
-      portfolioPercentage: "66%",
-      totalValue: "$21312",
-      amount: "1.2 BTC",
-      currentPrice: "$20,000",
-      allTimeGains: "50%",
-      gainsAmount: "$12000",
-    },
-    {
-      asset: "TSLA",
-      portfolioPercentage: "20%",
-      totalValue: "$21312",
-      amount: "1.2 BTC",
-      currentPrice: "$20,000",
-      allTimeGains: "50%",
-      gainsAmount: "$12000",
-    },
-  ]
 
   const [data, setData] = useState([])
 

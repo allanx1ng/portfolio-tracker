@@ -5,17 +5,12 @@ import apiClient from "@/util/apiClient"
 import { errorMsg, successMsg } from "@/util/toastNotifications"
 import { ToastContainer } from "react-toastify"
 
-export default function ({ name, setReload }) {
+export default function ({ name, setReload, visible }) {
   const [asset, setAsset] = useState(null)
   const [price, setPrice] = useState(0)
   const [amount, setAmount] = useState(0)
-  const [visible, setVisible] = useState(false)
 
   const [loading, setLoading] = useState(false)
-
-  const toggleVisiblity = () => {
-    setVisible(!visible)
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -42,9 +37,9 @@ export default function ({ name, setReload }) {
       })
       if (response.status == 201) {
         setReload(true)
-        successMsg('success')
+        successMsg("success")
       } else {
-        errorMsg('err')
+        errorMsg("err")
       }
     } catch (err) {
       errorMsg(err.message)
@@ -54,45 +49,62 @@ export default function ({ name, setReload }) {
   }
 
   return (
-    <div>
-        {/* <ToastContainer/> */}
-      <button onClick={toggleVisiblity} className="btn w-full">Add Asset</button>
-      <div className={visible ? "block" : "hidden"}>
-        <form>
+    <dialog id="my_modal_2" className="modal">
+      <ToastContainer/>
+      <div className="modal-box">
+        <form className="gap-2 mb-4">
+          <h2 className="my-2">Search for an asset:</h2>
           <AssetSearch setAsset={setAsset} />
-          Asset
-          {/* <input className="h-8 rounded-lg px-2 border-teal-800 border-2" placeholder={"BTC"} />
-           */}
-          {asset ? (
-            <div>
-              Asset selected:
-              {asset.name}
-              {asset.ticker}
-              {asset.type}
+          <div className="flex items-center mt-4">
+            <p>Asset: </p>
+            {asset ? (
+              <kbd className="kbd">{asset.name + " (" + asset.ticker + ")"}</kbd>
+            ) : (
+              <div>No asset selected</div>
+            )}
+          </div>
+
+          <div className="bg-base-200 rounded-lg p-4 my-4">
+            <div className="grid grid-cols-2 gap-4 mb-2 text-center">
+              <div>Amount</div>
+              <div>Buy price</div>
             </div>
-          ) : (
-            <div>select an asset</div>
-          )}
-          Avg buy price
-          <input
-            className="h-8 rounded-lg px-2 border-teal-800 border-2"
-            placeholder={"50000.00"}
-            type="number"
-            onChange={(e) => {
-              setPrice(e.target.value)
-            }}
-          />
-          Amt
-          <input
-            className="h-8 rounded-lg px-2 border-teal-800 border-2"
-            placeholder={"0.1"}
-            onChange={(e) => {
-              setAmount(e.target.value)
-            }}
-          />
+            <div className="grid grid-cols-2 gap-4 mt-4 ">
+              <input
+                className="input input-primary"
+                placeholder={"0.1"}
+                onChange={(e) => {
+                  setAmount(e.target.value)
+                }}
+              />
+              <input
+                className="input input-primary"
+                placeholder={"50000.00"}
+                type="number"
+                onChange={(e) => {
+                  setPrice(e.target.value)
+                }}
+              />
+            </div>
+          </div>
         </form>
-        <button onClick={(e) => handleSubmit(e)} disabled={loading}>Add asset</button>
+        <div className="flex w-full justify-between">
+          <button
+            onClick={(e) => handleSubmit(e)}
+            disabled={loading}
+            className="btn btn-accent"
+          >
+            Add asset
+          </button>
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-outline btn-error">Close</button>
+          </form>
+        </div>
       </div>
-    </div>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
   )
 }

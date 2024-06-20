@@ -6,14 +6,16 @@ import Error from "./error"
 import EditButton from "./EditButton"
 import DeletePortfolio from "./DeletePortfolio"
 import { round } from "@/util/util"
-import AssetTable from "@/components/AssetTable"
+import AssetTable from "@/components/tables/AssetTable"
 import EditAssets from "./EditAssets"
+import AddAssetButton from "./AddAssetButton"
 
 export default function ({ params }) {
   const [reload, setReload] = useState(false)
   const [error, setError] = useState(false)
   const [portfolio, setPortfolio] = useState([])
   const [edit, setEdit] = useState(false)
+  const [addAsset, setAddAsset] = useState(false)
 
   // const [stocks, setStocks] = useState([])
   // const [coins, setCoins] = useState([])
@@ -151,25 +153,42 @@ export default function ({ params }) {
             ))}
           </div> */}
 
-          {edit ? (
-            <EditAssets
-              data={data}
-              setReload={setReload}
-              portfolio_name={params.portfolio}
-              setEdit={setEdit}
-            />
-          ) : (
-            <AssetTable data={data} tvl={portfolio.tvl} />
-          )}
+          <div className="relative">
+            {edit && (
+              <div className="absolute inset-0 transition-opacity duration-300 ease-in-out opacity-100">
+                <EditAssets
+                  data={data}
+                  setReload={() => {}}
+                  portfolio_name={"portfolio-name"}
+                  setEdit={setEdit}
+                />
+              </div>
+            )}
+            <div
+              className={`transition-opacity duration-300 ease-in-out ${
+                edit ? "opacity-0 pointer-events-none" : "opacity-100"
+              }`}
+            >
+              <AssetTable data={data} tvl={portfolio.tvl} />
+            </div>
+          </div>
         </div>
       )}
       <>
-        <h2>Other actions: </h2>
+        <div className="flex flex-col w-full">
+          <div className="divider divider-primary">Other Actions</div>
+        </div>
         <div className="grid grid-cols-fixed gap-4 justify-items-left w-1/2 my-2">
+          <AddAssetButton toggleVisiblity={setAddAsset} visibility={addAsset} className="w-200px" />
           <EditButton setEdit={setEdit} edit={edit} className="w-200px" />
-          <AddAssets name={params.portfolio} setReload={setReload} className="w-200px" />
           <DeletePortfolio name={params.portfolio} className="w-200px" />
         </div>
+        <AddAssets
+          name={params.portfolio}
+          setReload={setReload}
+          visible={addAsset}
+          className="w-200px"
+        />
       </>
     </div>
   )

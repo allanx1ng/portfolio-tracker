@@ -5,6 +5,7 @@ import { getPortfolios } from "@/util/getUserPortfolios"
 import { errorMsg, successMsg } from "@/util/toastNotifications"
 import Loading from "./loading"
 import { round } from "@/util/util"
+import PortfolioTable from "@/components/tables/PortfolioTable"
 
 export default function getAllPortfolios() {
   useEffect(() => {
@@ -38,12 +39,8 @@ export default function getAllPortfolios() {
       {portfolios.length == 0 ? (
         <div>No portfolios yet, add one to get started</div>
       ) : (
-        portfolios.map((p, idx) => (
-          <div key={idx} className="grid grid-cols-1 p-4">
-            <a href={`/portfolios/${p.portfolio_name}`} className="btn btn-primary w-100px">{p.portfolio_name + "\n" + round(p.tvl, 2)}</a>
-            {/* <div>{p.account_type}</div> */}
-          </div>
-        ))
+        <PortfolioTable data={portfolios}/>
+       
       )}
     </div>
   )

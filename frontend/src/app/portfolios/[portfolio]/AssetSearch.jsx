@@ -7,6 +7,17 @@ export default function ({ setAsset }) {
   const [isLoading, setIsLoading] = useState(false)
   const debounceTimeout = useRef(null)
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const currentItems = searchResults.slice(indexOfFirstItem, indexOfLastItem);
+
   const handleSearch = async (term) => {
     if (!term) {
       setSearchResults(null)
@@ -49,7 +60,7 @@ export default function ({ setAsset }) {
   }, [searchTerm])
 
   return (
-    <div className="p-4">
+    <div className="">
       <input
         type="text"
         value={searchTerm}
@@ -66,11 +77,12 @@ export default function ({ setAsset }) {
                 <div>
                   coins:{" "}
                   {searchResults.coins.map((asset, index) => (
-                    <li key={index} className="p-2 border-2 my-1">
-                      <button onClick={(e) => selectAsset(e, asset.name, asset.ticker, "coin")}>
+                    <kbd key={index} className="kbd w-full">
+                      <button onClick={(e) => selectAsset(e, asset.name, asset.ticker, "coin")}
+                        className="w-full">
                         {asset.name} ({asset.ticker.toUpperCase()})
                       </button>
-                    </li>
+                    </kbd>
                   ))}
                 </div>
               ) : (
