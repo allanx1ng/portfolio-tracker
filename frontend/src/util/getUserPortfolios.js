@@ -9,7 +9,7 @@ export const getPortfolios = async () => {
 
       if (response.status == 200) {
         // console.log(response.data.data)
-        return(response.data.data)
+        return(response.data)
       } else if (response.status == 204) {
         return []
       }

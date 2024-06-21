@@ -21,3 +21,14 @@ export const round = (num, maxDecimals) => {
   // If the number of decimal places is within the limit, return the original number
   return num
 }
+
+export const percentGainCalc = (val, contributions) => {
+  if (val == 0 && contributions == 0) {
+    return 0
+  }
+  return (val / contributions - 1) * 100
+}
+
+export const percentPortfolioCalc = (val, tvl) => {
+  return (val / tvl) * 100
+}

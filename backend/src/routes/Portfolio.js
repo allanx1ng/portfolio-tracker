@@ -62,6 +62,9 @@ class Portfolio {
       }
 
       const promises = []
+      // const contributionPromises = []
+      // const holdingsPromises = []
+      promises.push(Portfolio.getTotalTVL(uid))
       data.forEach((portfolio) => {
         promises.push(
           Portfolio.getPortfolioTVL(uid, portfolio.portfolio_name).then((res) => {
@@ -69,13 +72,27 @@ class Portfolio {
             return res
           })
         )
+        promises.push(
+          Portfolio.getPortfolioContributions(uid, portfolio.portfolio_name).then((res) => {
+            portfolio.contributions = res
+            return res
+          })
+        )
+        promises.push(
+          Portfolio.getPortfolioUniqueHoldings(uid, portfolio.portfolio_name).then((res) => {
+            portfolio.holdings = res
+            return res
+          })
+        )
       })
 
       const tvls = await Promise.all(promises)
+      const tvl = tvls[0]
+      // console.log(tvl)
       // console.log(tvls)
       // console.log(data)
 
-      res.status(200).json({ message: "portfolio fetched for user: " + uid, data: data })
+      res.status(200).json({ message: "portfolio fetched for user: " + uid, data: data, tvl: tvl })
     } catch (err) {
       res.status(500).json({ error: err })
     }
@@ -528,7 +545,7 @@ class Portfolio {
           pa.uid = $1 AND pa.portfolio_name = $2;
       `
     const data = await db.queryDbValues(sql, [uid, name])
-    if (data.length == 1) {
+    if (data[0].total_contributed) {
       return data[0].total_contributed
     } else {
       return 0
@@ -544,7 +561,7 @@ class Portfolio {
         pa.uid = $1;
     `
     const data = await db.queryDbValues(sql, [uid])
-    if (data.length == 1) {
+    if (data[0].total_contributed) {
       return data[0].total_contributed
     } else {
       return 0
@@ -554,28 +571,37 @@ class Portfolio {
   static async getPortfolioUniqueHoldings(uid, name) {
     const query = `
     SELECT
-        COUNT(DISTINCT pa.asset_name, pa.asset_ticker) AS unique_holdings
+        COUNT(DISTINCT pa.asset_name || '-' || pa.asset_ticker) AS unique_holdings
     FROM
         Portfolio_assets pa
     WHERE
         pa.uid = $1 AND pa.portfolio_name = $2;
   `
     const values = [uid, name]
-    return await db.queryDbValues(query, values)
+    const data = await db.queryDbValues(query, values)
+    if (data[0].unique_holdings) {
+      return data[0].unique_holdings
+    } else {
+      return 0
+    }
   }
 
   static async getUniqueHoldings(uid) {
     const query = `
     SELECT
-        COUNT(DISTINCT pa.asset_name, pa.asset_ticker) AS unique_holdings
+        COUNT(DISTINCT pa.asset_name || '-' || pa.asset_ticker) AS unique_holdings
     FROM
         Portfolio_assets pa
     WHERE
         pa.uid = $1;
   `
     const values = [uid]
-
-    return await db.queryDbValues(query, values)
+    const data = await db.queryDbValues(query, values)
+    if (data[0].unique_holdings) {
+      return data[0].unique_holdings
+    } else {
+      return 0
+    }
   }
 
   static round(num, maxDecimals) {

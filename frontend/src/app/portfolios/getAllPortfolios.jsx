@@ -12,6 +12,7 @@ export default function getAllPortfolios() {
     fetchAllPortfolios()
   }, [])
   const [portfolios, setPortfolios] = useState([])
+  const [tvl, setTvl] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -19,7 +20,8 @@ export default function getAllPortfolios() {
     try {
       setError(false)
       const data = await getPortfolios()
-      setPortfolios(data)
+      setPortfolios(data.data)
+      setTvl(data.tvl)
       setLoading(false)
       // successMsg("success")
     } catch (err) {
@@ -39,7 +41,7 @@ export default function getAllPortfolios() {
       {portfolios.length == 0 ? (
         <div>No portfolios yet, add one to get started</div>
       ) : (
-        <PortfolioTable data={portfolios}/>
+        <PortfolioTable data={portfolios} tvl={tvl}/>
        
       )}
     </div>

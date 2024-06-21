@@ -1,6 +1,6 @@
 // "use client"
 import { Fragment } from "react"
-import { round } from "@/util/util"
+import { percentGainCalc, percentPortfolioCalc, round } from "@/util/util"
 
 export default function ({ data, tvl }) {
   return (
@@ -19,16 +19,20 @@ export default function ({ data, tvl }) {
           <div className="grid grid-cols-7 text-sm font-light py-3">
             {data.map((holding, index) => (
               <Fragment key={index}>
-                <div className="py-3 px-6 h-10 text-center whitespace-nowrap">
-                  <a href={"/asset/coin/" + holding.asset_name}>{holding.asset_name}</a>
+                <div className="py-3 px-6 h-10 text-center whitespace-nowrap flex items-center justify-center">
+                  <a href={"/asset/coin/" + holding.asset_name} className="kbd max-w-full">
+                    <div className="truncate">{holding.asset_name}</div>
+                  </a>
                 </div>
                 <div className="py-3 px-6 h-10 text-center">
-                  {round((holding.current_value / tvl) * 100, 2) + "%"}
+                  {round(percentPortfolioCalc(holding.current_value, tvl), 2) + "%"}
                 </div>
                 <div className="py-3 px-6 h-10 text-center">{round(holding.current_value, 2)}</div>
                 <div className="py-3 px-6 h-10 text-center">{round(holding.total_amount, 2)}</div>
                 <div className="py-3 px-6 h-10 text-center">{round(holding.current_price, 2)}</div>
-                <div className="py-3 px-6 h-10 text-center">{round(holding.combined_avg_price, 2)}</div>
+                <div className="py-3 px-6 h-10 text-center">
+                  {round(holding.combined_avg_price, 2)}
+                </div>
                 <div className="py-3 px-6 h-10 text-center flex justify-center space-x-1">
                   <span
                     className={
@@ -37,7 +41,8 @@ export default function ({ data, tvl }) {
                         : "text-error"
                     }
                   >
-                    {round((holding.current_value / holding.total_contributed - 1) * 100, 2) + "%"}
+                    {round(percentGainCalc(holding.current_value, holding.total_contributed), 2) +
+                      "%"}
                   </span>
                   <span>/</span>
                   <span

@@ -82,8 +82,8 @@ const Auth = () => {
         </button>
       </form>
       {isLoading && <div>loading</div>}
-      <div>{email} email</div>
-      <p>{password} pass</p>
+      {/* <div>{email} email</div>
+      <p>{password} pass</p> */}
     </div>
   )
 }

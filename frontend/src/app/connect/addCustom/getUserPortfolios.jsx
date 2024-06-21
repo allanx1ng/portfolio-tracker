@@ -26,7 +26,7 @@ export default function getUserPortfolios({ reload }) {
 
       if (response) {
         console.log(response)
-        setPortfolios(response)
+        setPortfolios(response.data)
       }
     } catch (err) {
       errorMsg(err)
