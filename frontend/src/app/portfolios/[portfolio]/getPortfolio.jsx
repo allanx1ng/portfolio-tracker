@@ -8,7 +8,9 @@ import Error from "./error"
 
 export default function ({ name, reload, error, setError, portfolio, setPortfolio }) {
   useEffect(() => {
+    // console.log(reload)
     if (reload) {
+      // console.log("reloading")
       fetchPortfolio()
     }
   }, [reload])
@@ -24,7 +26,7 @@ export default function ({ name, reload, error, setError, portfolio, setPortfoli
     try {
       const data = await getPortfolio(name)
       if (data) {
-        console.log(data)
+        // console.log(data)
         setPortfolio(data)
         setError(false)
         // setLoading(false)

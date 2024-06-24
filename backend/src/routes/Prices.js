@@ -79,7 +79,7 @@ class Prices {
         },
         params: {
           convert: "USD",
-          limit: 5000, // Adjust to the number of cryptocurrencies you want to track
+          limit: 500, // Adjust to the number of cryptocurrencies you want to track
         },
       })
 

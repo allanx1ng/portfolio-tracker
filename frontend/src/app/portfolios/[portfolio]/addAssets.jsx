@@ -44,13 +44,14 @@ export default function ({ name, setReload, visible }) {
     } catch (err) {
       errorMsg(err.message)
     } finally {
+      setReload(true)
       setLoading(false)
     }
   }
 
   return (
     <dialog id="my_modal_2" className="modal">
-      <ToastContainer/>
+      {/* <ToastContainer/> */}
       <div className="modal-box">
         <form className="gap-2 mb-4">
           <h2 className="my-2">Search for an asset:</h2>

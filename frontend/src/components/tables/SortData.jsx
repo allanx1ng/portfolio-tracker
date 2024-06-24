@@ -8,15 +8,15 @@ export default function ({ data, displayData, setDisplayData }) {
     if (doSort) {
       sortData()
     }
-  }, [data, sort])
+  }, [sort])
   useEffect(() => {
     sortData()
-  }, [])
+  }, [data])
 
   const sortData = () => {
     if (data.length > 0) {
       const copyArray = [...data]
-      console.log(copyArray)
+      // console.log(copyArray)
       copyArray.sort((a, b) => {
         switch (sort) {
           case "Percent":

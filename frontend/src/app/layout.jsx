@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
     <html lang="en" data-theme="dark">
       <AuthProvider>
         <body className={`${inter.className} min-h-screen h-screen`}>
-          <ToastContainer className="toast-container" />
+          <ToastContainer />
           <Navbar />
           {children}
           <Footer />

@@ -41,7 +41,6 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
       }
 
       if (promises.length == 0) {
-        // console.log(promises)
         warnMsg("no assets modified")
         return
       }
@@ -76,6 +75,7 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
       //   console.error("Error submitting data:", error)
     } finally {
       setLoading(false)
+      setReload(true)
     }
   }
 
@@ -147,6 +147,7 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
   }
   return (
     <div className="flex justify-between items-center transition-opacity duration-300 ease-in-out">
+        {/* <ToastContainer/> */}
       <div className="min-w-screen bg-base-200 shadow-md rounded my-6 pt-3">
         <div className="grid grid-cols-5 font-light uppercase text-sm leading-normal h-10">
           <div className="py-3 px-6 text-center">Delete?</div>
