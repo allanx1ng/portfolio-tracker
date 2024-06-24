@@ -2,12 +2,18 @@
 
 import { useEffect, useState } from "react"
 import apiClient from "@/util/apiClient"
-import { errorMsg } from "@/util/toastNotifications"
-// import { Fragment } from "react"
-import { round } from "@/util/util"
 import AssetTable from "@/components/tables/AssetTable"
+import ErrorCode from "@/components/ErrorCode"
 
-export default function ({ data, setData, setTvl, setContributions, tvl, contributions }) {
+export default function ({
+  data,
+  setData,
+  setTvl,
+  setContributions,
+  tvl,
+  contributions,
+  setError,
+}) {
   // const [data, setData] = useState([])
   const [stocks, setStocks] = useState([])
   const [coins, setCoins] = useState([])
@@ -57,10 +63,15 @@ export default function ({ data, setData, setTvl, setContributions, tvl, contrib
         console.log("no assets found")
       } else {
         // errorMsg(err)
-        console.log("error fetching data")
+        setError(response.status)
+        console.log("error fetching data" + response.status)
       }
     } catch (err) {
-      console.log("error fetching data")
+      console.log("error fetching data" + err)
+      if (err.response.status) {
+        setError(err.response.status)
+      }
+
       // errorMsg(err)
     } finally {
       setLoading(false)
@@ -77,24 +88,9 @@ export default function ({ data, setData, setTvl, setContributions, tvl, contrib
   return loading ? (
     <span className="loading loading-dots loading-md"></span>
   ) : (
-    <div className="mb-24">
+    <div className="my-8">
       {data.length == 0 ? (
-        <div role="alert" className="alert alert-info">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            className="stroke-current shrink-0 w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-          <span>No assets currently, add some to get started</span>
-        </div>
+        <ErrorCode error={204} text={"No assets currently, add some to get started"} />
       ) : (
         <>
           {/* <div>TVL: {round(tvl, 2)}</div>
