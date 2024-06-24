@@ -1,6 +1,6 @@
 "use client"
 export default function ({ error, text }) {
-  console.log(error)
+//   console.log(error)
   switch (error) {
     case 204:
       return (

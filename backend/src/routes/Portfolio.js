@@ -145,7 +145,8 @@ class Portfolio {
       cpv.current_price,
       cpv.cmc_id
   FROM
-      CurrentPortfolioValue cpv;`
+      CurrentPortfolioValue cpv
+  ORDER BY cpv.current_value;`
 
     const stockSQL = `WITH CombinedAssets AS (
         SELECT
@@ -185,7 +186,8 @@ class Portfolio {
         cpv.current_value,
         cpv.current_price
     FROM
-        CurrentPortfolioValue cpv;`
+        CurrentPortfolioValue cpv
+        ORDER BY cpv.current_value;`
 
     try {
       //   const sql = "SELECT uid FROM UserAccount WHERE email = $1;"
@@ -315,7 +317,8 @@ class Portfolio {
       cpv.current_price,
       cpv.cmc_id
   FROM
-      CurrentPortfolioValue cpv;`
+      CurrentPortfolioValue cpv
+  ORDER BY cpv.current_value;`
 
     const stockSQL = `WITH CombinedAssets AS (
         SELECT
@@ -354,7 +357,8 @@ class Portfolio {
         cpv.current_value,
         cpv.current_price
     FROM
-        CurrentPortfolioValue cpv;`
+        CurrentPortfolioValue cpv
+    ORDER BY cpv.current_value;`
 
     try {
       const promises = []

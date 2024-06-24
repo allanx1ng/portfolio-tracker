@@ -7,6 +7,7 @@ import BarChart from "./barchart"
 import FetchPortfolio from "./fetchPortfolio"
 import { round } from "@/util/util"
 import ErrorCode from "@/components/ErrorCode"
+import AssetTable from "@/components/tables/AssetTable"
 
 const Portfolio = () => {
   const [data, setData] = useState([])
@@ -14,10 +15,15 @@ const Portfolio = () => {
   const [tvl, setTvl] = useState(0)
   const [contributions, setContributions] = useState(0)
   const [error, setError] = useState(null)
+
+  // const [stocks, setStocks] = useState([])
+  // const [coins, setCoins] = useState([])
+
   return error ? (
     <ErrorCode error={error} />
   ) : (
     <div>
+      <h1 className="m-16">Portfolio</h1>
       <div className="m-24 w-1/2 min-h-1/2 ">
         <BarChart assetData={data} />
       </div>
@@ -48,10 +54,17 @@ const Portfolio = () => {
           setData={setData}
           setContributions={setContributions}
           setTvl={setTvl}
-          tvl={tvl}
-          contributions={contributions}
           setError={setError}
         />
+        <div className="my-8">
+          {data.length == 0 ? (
+            <ErrorCode error={204} text={"No assets currently, add some to get started"} />
+          ) : (
+            <>
+              <AssetTable data={data} tvl={tvl} />
+            </>
+          )}
+        </div>
       </div>
 
       <a href="/portfolios" className="btn m-8">

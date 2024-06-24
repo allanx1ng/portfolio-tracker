@@ -1,8 +1,8 @@
 import { percentGainCalc, percentPortfolioCalc, round } from "@/util/util"
 
 export default function ({ data, tvl }) {
-  console.log(data)
-  console.log(tvl)
+//   console.log(data)
+//   console.log(tvl)
   return (
     <>
       <div className="overflow-x-auto">

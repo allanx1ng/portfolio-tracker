@@ -9,9 +9,9 @@ export default function Home() {
               Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi
               exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
             </p>
-            <button className="btn btn-primary">
-              <a href="/portfolio">Get Started</a>
-            </button>
+            <a className="btn btn-primary" href="/portfolio">
+              Get Started
+            </a>
           </div>
         </div>
       </div>
