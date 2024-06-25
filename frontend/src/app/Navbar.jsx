@@ -37,6 +37,9 @@ const Navbar = () => {
               <li>
                 <a href="/portfolio">Portfolio</a>
               </li>
+              <li>
+                <a href="/donate">Donate</a>
+              </li>
             </ul>
           </div>
           <a className="btn btn-ghost text-xl" href="/">

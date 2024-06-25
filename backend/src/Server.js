@@ -1,13 +1,9 @@
 const express = require("express")
-const { Pool } = require("pg")
 const cors = require("cors")
 const passport = require("passport")
 const session = require("express-session")
 const io = require("socket.io")
 const http = require("http")
-const jwt = require("jsonwebtoken")
-
-const secretKey = process.env.JWT_SECRET_KEY
 
 const Account = require("./routes/Account.js")
 const Authentication = require("./routes/Authentication.js")
@@ -18,6 +14,7 @@ const passportConfig = require("./middleware/PassportConfig")
 const AddPortfolio = require("./routes/AddPortfolio.js")
 const SearchAssets = require("./routes/SearchAssets.js")
 const Portfolio = require("./routes/Portfolio.js")
+const Payments = require("./routes/Payments.js")
 
 class Server {
   constructor(port) {
@@ -112,6 +109,8 @@ class Server {
       },
       Authentication.login
     )
+
+    this.app.post('/donation', Authentication.authenticateToken, Payments.donateMoney)
   }
 
   start() {

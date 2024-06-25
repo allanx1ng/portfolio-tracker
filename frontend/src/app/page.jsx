@@ -6,8 +6,7 @@ export default function Home() {
           <div className="max-w-md">
             <h1 className="text-5xl font-bold">All your finances in one place</h1>
             <p className="py-6">
-              Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi
-              exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.
+              AppName is currently in beta, new features will be coming soon, such as direct integration with crypto wallets, exchanges, and stock brokerages. 
             </p>
             <a className="btn btn-primary" href="/portfolio">
               Get Started
@@ -16,11 +15,11 @@ export default function Home() {
         </div>
       </div>
 
-      <h1>All your finances in one place</h1>
+      {/* <h1>All your finances in one place</h1>
       <div>
         view portfolio:
         <a href="/portfolio">portfolios</a>
-      </div>
+      </div> */}
     </div>
     // <RootLayout>
 
