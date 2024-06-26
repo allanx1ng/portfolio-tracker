@@ -20,14 +20,18 @@ export default function getAllPortfolios() {
     try {
       setError(false)
       const data = await getPortfolios()
-      setPortfolios(data.data)
-      setTvl(data.tvl)
-      setLoading(false)
+      if (data) {
+        setPortfolios(data.data)
+        setTvl(data.tvl)
+        // setLoading(false)
+      }
       // successMsg("success")
     } catch (err) {
       // errorMsg(err)
-      setLoading(false)
+      // setLoading(false)
       setError(true)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -41,8 +45,7 @@ export default function getAllPortfolios() {
       {portfolios.length == 0 ? (
         <div>No portfolios yet, add one to get started</div>
       ) : (
-        <PortfolioTable data={portfolios} tvl={tvl}/>
-       
+        <PortfolioTable data={portfolios} tvl={tvl} />
       )}
     </div>
   )

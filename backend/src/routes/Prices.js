@@ -18,7 +18,7 @@ class Prices {
 
     // Fetch prices immediately and every 5 minutes (300,000 ms)
     this.fetchAndUpdateStats()
-    // setInterval(() => this.fetchAndUpdateStats(), 300000);
+    setInterval(() => this.fetchAndUpdateStats(), 600000);
   }
 
   async fetchAndUpdateStats() {

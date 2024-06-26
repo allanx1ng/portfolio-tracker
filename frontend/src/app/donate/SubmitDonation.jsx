@@ -5,7 +5,6 @@ import { errorMsg } from "@/util/toastNotifications"
 import { useRouter } from "next/navigation"
 
 export default function ({ price }) {
-  const { user } = useAuth()
   const router = useRouter()
 
   const handleSubmit = async () => {

@@ -11,7 +11,7 @@ export const getPortfolios = async () => {
         // console.log(response.data.data)
         return(response.data)
       } else if (response.status == 204) {
-        return []
+        return null
       }
       throw new Error(response.status)
     } catch (err) {

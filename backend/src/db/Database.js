@@ -10,6 +10,9 @@ class DatabaseInstance {
       database: process.env.DB_NAME,
       password: process.env.DB_PASS,
       port: process.env.DB_PORT,
+      ssl: {
+        rejectUnauthorized: false,
+      },
     })
   }
 

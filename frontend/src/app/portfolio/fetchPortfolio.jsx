@@ -40,7 +40,7 @@ export default function ({
       }
     } catch (err) {
       console.log("error fetching data" + err)
-      if (err.response.status) {
+      if (err.response && err.response.status) {
         setError(err.response.status)
       }
 
