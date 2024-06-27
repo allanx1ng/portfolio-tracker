@@ -474,6 +474,32 @@ class Portfolio {
     }
   }
 
+  static async getSingleAsset(req, res) {
+    const uid = req.user.uid
+    const { asset_name, asset_ticker } = req.query
+
+    if (!asset_name || !asset_ticker || !uid) {
+      return res.status(400).json({ message: "error no user or asset specified" })
+    }
+
+    const sql = `SELECT 
+        SUM(amount) AS total_amount
+    FROM 
+        Portfolio_assets
+    WHERE 
+        uid = $1 AND
+        asset_name = $2 AND
+        asset_ticker = $3;
+    `
+
+    try {
+      const data = await db.queryDbValues(sql, [uid, asset_name, asset_ticker])
+      res.status(200).json({ data: data[0].total_amount })
+    } catch (err) {
+      res.status(500).json({ message: err.message })
+    }
+  }
+
   /*
   
   ----------------------------- UTIL FUNCTIONS BELOW ------------------------------------

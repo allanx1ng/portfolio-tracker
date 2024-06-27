@@ -5,7 +5,11 @@ import { useAuth } from "@/context/AuthContext"
 import apiClient from "@/util/apiClient"
 import { successMsg, errorMsg } from "@/util/toastNotifications"
 import Loading from "@/components/loading"
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+const NODE_ENV = process.env.NODE_ENV
+const BACKEND_URL =
+  NODE_ENV == "development"
+    ? process.env.NEXT_PUBLIC_BACKEND_URL_DEV
+    : process.env.NEXT_PUBLIC_BACKEND_URL
 const LOGIN_URL = `${BACKEND_URL}/login`
 const Auth = () => {
   const [email, setEmail] = useState("")

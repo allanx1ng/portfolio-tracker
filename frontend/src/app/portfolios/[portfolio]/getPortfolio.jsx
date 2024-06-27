@@ -32,9 +32,14 @@ export default function ({ name, reload, error, setError, portfolio, setPortfoli
         // setLoading(false)
       }
     } catch (err) {
-      // console.log(err)
-      errorMsg(err.response.status)
-      setError(err.response.status)
+      console.log(err)
+      if (err.response && err.response.status) {
+        errorMsg(err.response.status)
+      } else {
+        errorMsg(err.message)
+      }
+      // errorMsg(errerr.response.status)
+      // setError(err.response.status)
       // setLoading(false)
     } finally {
       setLoading(false)

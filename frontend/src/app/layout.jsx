@@ -14,7 +14,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" data-theme="dark">
+    <html lang="en" data-theme="emerald">
       <AuthProvider>
         <body className={`${inter.className} min-h-screen h-screen`}>
           <ToastContainer />

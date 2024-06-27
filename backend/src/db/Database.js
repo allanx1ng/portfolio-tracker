@@ -3,17 +3,32 @@ require("dotenv").config()
 
 class DatabaseInstance {
   static instance = null
+
   constructor() {
-    this.pool = new Pool({
-      user: process.env.DB_USER,
-      host: process.env.DB_HOST,
-      database: process.env.DB_NAME,
-      password: process.env.DB_PASS,
-      port: process.env.DB_PORT,
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    })
+    const ENV = process.env.NODE_ENV
+    if (ENV === "production") {
+      this.pool = new Pool({
+        user: process.env.DB_USER,
+        host: process.env.DB_HOST,
+        database: process.env.DB_NAME,
+        password: process.env.DB_PASS,
+        port: process.env.DB_PORT,
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      })
+    } else if (ENV === "development") {
+      this.pool = new Pool({
+        user: process.env.DB_USER,
+        host: process.env.DB_HOST,
+        database: process.env.DB_NAME,
+        password: process.env.DB_PASS,
+        port: process.env.DB_PORT,
+        // ssl: {
+        //   rejectUnauthorized: false,
+        // },
+      })
+    }
   }
 
   static getInstance() {
