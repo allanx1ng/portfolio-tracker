@@ -1,25 +1,17 @@
 "use client"
 import Dropdown from "@/components/Dropdown"
 // import { useState, useEffect } from "react"
-import { AuthProvider, useAuth } from "@/context/AuthContext"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useAuth } from "@/context/AuthContext"
+// import { useState } from "react"
 
 const CheckUser = () => {
   const { user, logout } = useAuth()
-  const [contextMenu, setContextMenu] = useState(false)
+  // const [contextMenu, setContextMenu] = useState(false)
 
-  const router = useRouter()
   if (user) {
     // console.log("Logged in with token: " + user["token"])
   }
 
-  const handleLogout = (event) => {
-    event.preventDefault()
-    logout()
-    router.push("/login")
-    // router.push("/")
-  }
   return (
     <div>
       {user ? (
@@ -34,18 +26,18 @@ const CheckUser = () => {
             {user.email}
            
           </button> */}
-          <Dropdown user={user}/>
-          <>/</>
+          <Dropdown user={user} logout={logout} />
+          {/* <>/</> */}
           {/* {contextMenu && <Dropdown/>} */}
-          
-          <a
+
+          {/* <a
             href="/login"
             // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
-            className="btn"
+            className="btn btn-sm btn-primary mx-2"
             onClick={handleLogout}
           >
             Logout
-          </a>
+          </a> */}
           {/* {contextMenu && <div className="w-400px h-500px bg-cyan-200">contextmenu</div>} */}
         </div>
       ) : (
@@ -53,7 +45,7 @@ const CheckUser = () => {
           <a
             href="/login"
             // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
-            className="btn"
+            className="btn btn-sm btn-secondary mx-2"
           >
             Login
           </a>
@@ -61,7 +53,7 @@ const CheckUser = () => {
           <a
             href="/signup"
             // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
-            className="btn"
+            className="btn btn-sm btn-secondary mx-2"
           >
             Sign Up
           </a>

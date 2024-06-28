@@ -86,9 +86,9 @@ class Prices {
       // Initialize or update the price cache
       const data = response.data.data
       this.coinDataArray = data
-      data.forEach((coin) => {
-        this.priceCache[coin.name] = coin.quote.USD.price
-      })
+      // data.forEach((coin) => {
+      //   this.priceCache[coin.name] = coin.quote.USD.price
+      // })
       data.forEach((coin) => {
         this.coinDataCache[coin.name.toLowerCase()] = coin
       })
@@ -117,12 +117,17 @@ class Prices {
         try {
           const response = await axios.get(url)
           if (response.data.results) {
-            this.stockDataCache = response.data.results
+            // this.stockDataCache = response.data.results
+            // console.log(response.data.result)
+            for (let stock of response.data.results) {
+              // console.log(stock.T)
+              this.stockDataCache[stock.T] = stock
+            }
           } else {
             console.log("stock fetching error")
           }
         } catch (error) {
-          console.error(`Error fetching fundamental data for ${ticker}:`, error)
+          console.error(`Error fetching fundamental data for ${ticker}:`, error.message)
           return { ticker, error: error.message }
         }
       }
@@ -155,15 +160,15 @@ class Prices {
         }
       } else if (assetClass === "stock") {
         try {
-          console.log(this.stockDataCache)
-          const asset = this.stockDataCache.find((item) => item.T === assetReq)
+          // console.log(this.stockDataCache)
+          const asset = this.stockDataCache[assetReq.toUpperCase()]
           if (asset) {
             res.json({ [assetReq]: asset })
           } else {
             res.status(404).json({ error: "Asset not found" })
           }
         } catch (err) {
-          console.log(err)
+          console.log(err.message)
         }
       }
     }

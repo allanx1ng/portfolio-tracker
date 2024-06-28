@@ -404,7 +404,7 @@ class Portfolio {
     const uid = req.user.uid
     const name = req.body.portfolio_name
     const assets = req.body.deleteAssets
-    console.log(req.body)
+    // console.log(req.body)
     const sql = `DELETE FROM Portfolio_assets WHERE uid=$1 AND portfolio_name=$2 AND asset_ticker=$3 AND asset_name=$4`
     try {
       const promises = []

@@ -28,7 +28,7 @@ const Stock = async ({ params }) => {
             <h2 className="text-4xl ml-4">Bitcoin</h2>
             <h3 className="text-3xl ml-4 text-gray-500 bottom-0">BTC</h3>
           </div>
-          <h1 className="text-6xl mt-4">${initialData[asset.toUpperCase()].c}</h1>
+          <h1 className="text-6xl mt-4">${initialData[asset.toUpperCase()]}</h1>
 
           <h3 className="text-xl mt-8">Total Holdings:</h3>
           <h1 className="text-4xl">$60000.00</h1>

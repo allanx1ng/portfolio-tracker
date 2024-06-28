@@ -63,13 +63,14 @@ export default function ({ data, displayData, setDisplayData }) {
   return (
     <>
       <details className="dropdown">
-        <summary className="btn m-1">open or close</summary>
-        <ul className="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+        <summary className="btn m-1">Sort table:</summary>
+        <ul className={"menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow"}>
           <li
             onClick={() => {
               setSort("Value")
               setDoSort(true)
             }}
+            className={sort == "Value" ? "bg-base-200 rounded-md" : "rounded-md"}
           >
             <a>Value (Default)</a>
           </li>
@@ -78,6 +79,7 @@ export default function ({ data, displayData, setDisplayData }) {
               setSort("ValueAsc")
               setDoSort(true)
             }}
+            className={sort == "ValueAsc" ? "bg-base-200 rounded-md" : "rounded-md"}
           >
             <a>Value Ascending</a>
           </li>
@@ -86,6 +88,7 @@ export default function ({ data, displayData, setDisplayData }) {
               setSort("Percent")
               setDoSort(true)
             }}
+            className={sort == "Percent" ? "bg-base-200 rounded-md" : "rounded-md"}
           >
             <a>Percent Gain</a>
           </li>
@@ -94,6 +97,7 @@ export default function ({ data, displayData, setDisplayData }) {
               setSort("PercentAsc")
               setDoSort(true)
             }}
+            className={sort == "PercentAsc" ? "bg-base-200 rounded-md" : "rounded-md"}
           >
             <a>Percent Gain Descending</a>
           </li>
@@ -102,16 +106,18 @@ export default function ({ data, displayData, setDisplayData }) {
               setSort("Gain")
               setDoSort(true)
             }}
+            className={sort == "Gain" ? "bg-base-200 rounded-md" : "rounded-md"}
           >
-            <a>Total Gain Descending</a>
+            <a>Total Gain</a>
           </li>
           <li
             onClick={() => {
               setSort("GainAsc")
               setDoSort(true)
             }}
+            className={sort == "GainAsc" ? "bg-base-200 rounded-md" : "rounded-md"}
           >
-            <a>Total Gain Descending</a>
+            <a>Total Gain Ascending</a>
           </li>
         </ul>
       </details>

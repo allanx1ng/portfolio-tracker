@@ -4,6 +4,7 @@ import Navbar from "./Navbar"
 import { AuthProvider } from "@/context/AuthContext"
 import { ToastContainer } from "react-toastify"
 import Footer from "./Footer"
+import { ThemeProvider } from "@/context/ThemeContext"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -14,15 +15,17 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" data-theme="emerald">
-      <AuthProvider>
-        <body className={`${inter.className} min-h-screen h-screen`}>
-          <ToastContainer />
-          <Navbar />
-          {children}
-          <Footer />
-        </body>
-      </AuthProvider>
+    <html lang="en" data-theme="light">
+      <ThemeProvider>
+        <AuthProvider>
+          <body className={`${inter.className} min-h-screen h-screen`}>
+            <ToastContainer />
+            <Navbar />
+            {children}
+            <Footer />
+          </body>
+        </AuthProvider>
+      </ThemeProvider>
     </html>
   )
 }
