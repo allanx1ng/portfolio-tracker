@@ -33,8 +33,11 @@ module.exports = {
         "flex-fixed": "200px 1fr", // One fixed and one flexible column
       },
     },
+    variants: {
+      backdropFilter: ["responsive"], // Add this line
+    },
   },
-  plugins: [require("daisyui")],
+  plugins: [require("daisyui"), require("tailwindcss-filters")],
   daisyui: {
     themes: [
       "light",
@@ -69,6 +72,116 @@ module.exports = {
       "dim",
       "nord",
       "sunset",
+      {
+        moon_night: {
+          primary: "#3855CC",
+
+          secondary: "#66B3FF",
+
+          accent: "#cceeff",
+
+          neutral: "#2c3141",
+
+          "base-100": "#2c3141",
+
+          info: "#38bdf8",
+
+          success: "#4ade80",
+
+          warning: "#fb923c",
+
+          error: "#ef4444",
+        },
+      },
+      {
+        custom_light_2: {
+          primary: "#a855f7",
+
+          secondary: "#d8b4fe",
+
+          accent: "#2dd4bf",
+
+          neutral: "#d1d5db",
+
+          "base-100": "#ffffff",
+
+          info: "#7dd3fc",
+
+          success: "#4ade80",
+
+          warning: "#fbbf24",
+
+          error: "#f43f5e",
+        },
+      },
+      {
+        custom_light: {
+          primary: "#065f46",
+
+          secondary: "#34d399",
+
+          accent: "#fb923c",
+
+          neutral: "#d1d5db",
+
+          "base-100": "#f3f4f6",
+
+          info: "#7dd3fc",
+
+          success: "#4ade80",
+
+          warning: "#fbbf24",
+
+          error: "#f43f5e",
+        },
+      },
+      {
+        custom_dark: {
+          primary: "#10b981",
+
+          secondary: "#a7f3d0",
+
+          accent: "#fb923c",
+
+          neutral: "#6b7280",
+
+          "base-100": "#1f2937",
+
+          info: "#7dd3fc",
+
+          success: "#4ade80",
+
+          warning: "#fbbf24",
+
+          error: "#f43f5e",
+        },
+      },
+      {
+        firey: {
+          primary: "#FF4B5C",
+
+          secondary: "#FFB500",
+
+          tertiary: "#FF6F61",
+
+          accent: "#00BFA5",
+
+          // neutral: "#FFF5F5",
+          // neutral: "#f5f5f5",
+
+          neutral: "#FFF5F5",
+
+          "base-100": "#f5f5f5",
+
+          info: "#7dd3fc",
+
+          success: "#4ade80",
+
+          warning: "#fbbf24",
+
+          error: "#f43f5e",
+        },
+      },
     ],
   },
 }

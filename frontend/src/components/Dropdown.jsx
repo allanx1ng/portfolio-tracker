@@ -95,11 +95,11 @@ const Dropdown = ({ user, logout }) => {
         className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
       >
         <li>
-          <a>Item 1</a>
+          <a href="/profile">Profile</a>
         </li>
-        <li>
+        {/* <li>
           <a>Item 2</a>
-        </li>
+        </li> */}
         <li>
           <ToggleDarkmode/>
         </li>

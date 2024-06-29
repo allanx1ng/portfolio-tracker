@@ -8,8 +8,8 @@ export default function ({ data, tvl }) {
   return (
     <>
       <SortData data={data} displayData={displayData} setDisplayData={setDisplayData} />
-      <div className="overflow-x-auto transition-opacity duration-300 ease-in-out">
-        <div className="min-w-screen bg-base-200 shadow-md rounded my-6 pt-3">
+      <div className="overflow-x-auto transition-opacity duration-300 ease-in-out text-black grid grid-cols-1 gap-2 p-4">
+        {/* <div className="min-w-screen bg-base-200 shadow-md rounded my-6 pt-3">
           <div className="grid grid-cols-7 uppercase text-sm leading-normal h-10">
             <div className="py-3 px-6 text-center">Asset</div>
             <div className="py-3 px-6 text-center">% of portfolio</div>
@@ -64,7 +64,54 @@ export default function ({ data, tvl }) {
               </Fragment>
             ))}
           </div>
-        </div>
+        </div> */}
+
+        <>
+          <div className="grid grid-cols-7 uppercase text-sm leading-normal h-10 px-10 py-5">
+            <div className="text-center col-span-2 justify-self-start">Asset</div>
+            <div className="text-right justify-self-end">Asset Price</div>
+            <div className="text-right justify-self-end">Avg entry price</div>
+            <div className="text-right justify-self-end">Contributions</div>
+            <div className="text-center col-span-2 justify-self-end">Current Value / Gains</div>
+          </div>
+
+          {displayData.map((holding, index) => (
+            <div className="grid grid-cols-7 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-5">
+              <div className="flex items-center col-span-2">
+                <img src={""} alt={`Icon`} className="w-8 h-8 mr-4" />
+                <div>
+                  <div className="font-semibold">{holding.asset_name}</div>
+                  <div className="text-sm text-gray-600">
+                    {round(holding.total_amount, 2)} {holding.asset_ticker} | (
+                    {round(percentPortfolioCalc(holding.current_value, tvl), 2) + "%"} of portfolio)
+                  </div>
+                </div>
+              </div>
+              <div className="text-sm justify-self-end">${round(holding.current_price, 2)}</div>
+              <div className="text-sm justify-self-end">
+                ${round(holding.combined_avg_price, 2)}
+              </div>
+              <div className="text-sm justify-self-end">${round(holding.total_contributed, 2)}</div>
+              <div className="flex justify-end justify-self-end col-span-2">
+                <div>
+                  <div className="font-semibold text-right">${round(holding.current_value, 2)}</div>
+                  <div
+                    className={
+                      holding.current_value - holding.total_contributed > 0
+                        ? "text-success text-sm"
+                        : "text-error text-sm"
+                    }
+                  >
+                    {"$" + round(holding.current_value - holding.total_contributed, 2)} (
+                    {round(percentGainCalc(holding.current_value, holding.total_contributed), 2) +
+                      "%"}
+                    )
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </>
       </div>
     </>
   )

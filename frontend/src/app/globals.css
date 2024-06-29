@@ -18,13 +18,13 @@
   } */
 }
 
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-input[type='number'] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -33,9 +33,18 @@ input[type='number'] {
   z-index: 9999; /* Ensure this is higher than any other z-index in your app */
 }
 
+.gradient-bg {
+  background: linear-gradient(135deg, #ff4b5c 0%, #ffb500 125%);
+  backdrop-filter: blur(10px);
+}
+.bg-triple-gradient {
+  background: linear-gradient(to bottom, #ff4b5c, transparent 50%),
+    linear-gradient(to top left, #00bfa5, transparent 75%),
+    linear-gradient(to top right, #ffb500, transparent 75%);
+}
 
 /* body { */
-  /* color: rgb(var(--foreground-rgb));
+/* color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
       transparent,

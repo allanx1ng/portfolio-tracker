@@ -10,10 +10,19 @@ module.exports = (passport) => {
         passwordField: "password", // This is optional if you are using 'password' as the field name, it's by default expected
       },
       function verifyCredentials(email, password, done) {
-        const db = DatabaseInstance.getInstance()
+        // console.log("trying db connection111")
+        // const db = DatabaseInstance.getInstance()
+        // console.log("trying db connection")
         const query = "SELECT * FROM login WHERE email=$1" // Changed from username to email
 
         try {
+          // console.log("Trying to get the DB instance");
+          const db = DatabaseInstance.getInstance()
+
+          if (!db) {
+            console.error("Database instance is null")
+            return done(null, false, { message: "Database connection error", status: 500 })
+          }
           db.queryDbValues(query, [email]).then((data) => {
             if (data.length === 0) {
               return done(null, false, {
@@ -39,6 +48,7 @@ module.exports = (passport) => {
             })
           })
         } catch (err) {
+          console.error("Error during verifyCredentials:", err);
           return done(err)
         }
       }
@@ -50,10 +60,11 @@ module.exports = (passport) => {
   })
 
   passport.deserializeUser(async (email, done) => {
-    const db = DatabaseInstance.getInstance()
     const query = "SELECT * FROM login WHERE email=$1"
 
     try {
+      console.log("deserializeUser")
+      const db = DatabaseInstance.getInstance()
       const data = await db.queryDbValues(query, [email])
       if (data.length === 0) {
         return done(null, false, { message: "No account with that email found.", status: 404 })
@@ -61,7 +72,8 @@ module.exports = (passport) => {
 
       return done(null, data[0])
     } catch (err) {
-      done(err, false) // In case of an error
+      console.error("Error during deserializeUser:", err);
+      return done(err, false) // In case of an error
     }
   })
 }

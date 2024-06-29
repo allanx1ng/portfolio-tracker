@@ -14,8 +14,18 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+  const setThemeScript = `
+    (function() {
+      const theme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  `
   return (
     <html lang="en" data-theme="light">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: setThemeScript }} />
+      </head>
+
       <ThemeProvider>
         <AuthProvider>
           <body className={`${inter.className} min-h-screen h-screen`}>

@@ -1,8 +1,8 @@
 import { percentGainCalc, percentPortfolioCalc, round } from "@/util/util"
 
 export default function ({ data, tvl }) {
-//   console.log(data)
-//   console.log(tvl)
+  //   console.log(data)
+  //   console.log(tvl)
   return (
     <>
       <div className="overflow-x-auto">
@@ -14,7 +14,6 @@ export default function ({ data, tvl }) {
             <div className="py-3 px-6 text-center">Contributions</div>
             <div className="py-3 px-6 text-center">PNL</div>
             <div className="py-3 px-6 text-center">Portfolio Type</div>
-            {/* <div className="py-3 px-6 text-right">Delete</div> */}
           </div>
 
           {data.map((p, idx) => (
@@ -50,6 +49,47 @@ export default function ({ data, tvl }) {
               <div className="py-3 px-6 text-center">{p.account_type}</div>
             </div>
           ))}
+
+          <>
+            <div className="grid grid-cols-6 uppercase text-sm leading-normal h-10 px-10 py-5">
+              <div className="text-center col-span-2 justify-self-start">Asset</div>
+              <div className="text-right justify-self-end">Portfolio Type</div>
+              <div className="text-right justify-self-end">Contributions</div>
+              <div className="text-center col-span-2 justify-self-end">Current Value / Gains</div>
+            </div>
+
+            {data.map((p, idx) => (
+              <div
+                key={idx}
+                className="grid grid-cols-6 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-5"
+              >
+                <div className="flex items-center col-span-2">
+                  <img src={""} alt={`Icon`} className="w-8 h-8 mr-4" />
+                  <div>
+                    <div className="font-semibold">{p.portfolio_name}</div>
+                    <div className="text-sm text-gray-600">
+                      {round(percentPortfolioCalc(p.tvl, tvl), 2)} % of total assets
+                    </div>
+                  </div>
+                </div>
+                <div className="text-sm justify-self-end">${round(p.contributions, 2)}</div>
+                <div className="text-sm justify-self-end">${round(p.contributions, 2)}</div>
+                <div className="flex justify-end justify-self-end col-span-2">
+                  <div>
+                    <div className="font-semibold text-right">${round(p.tvl, 2)}</div>
+                    <div
+                      className={
+                        p.tvl - p.contributions > 0 ? "text-success text-sm" : "text-error text-sm"
+                      }
+                    >
+                      ${round(p.tvl - p.contributions, 2)} (
+                      {round(percentGainCalc(p.tvl, p.contributions), 2)}% )
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
         </div>
       </div>
     </>

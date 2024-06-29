@@ -57,6 +57,7 @@ const Auth = () => {
         // Something else happened in setting up the request
         errorMsg(`Error: ${error.message}`)
       }
+      setIsLoading(false)
     } finally {
     }
   }

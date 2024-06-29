@@ -53,32 +53,30 @@ CREATE TABLE Portfolio (
 CREATE UNIQUE INDEX unique_wallet_address ON Portfolio (uid, wallet_address) WHERE wallet_address IS NOT NULL;
 
 CREATE TABLE Asset (
+    asset_id VARCHAR(20) PRIMARY KEY,
     asset_name VARCHAR(60),
     asset_ticker VARCHAR(20),
-    asset_type VARCHAR(20) CHECK (asset_type IN ('coin', 'stock')),
-    PRIMARY KEY (asset_name, asset_ticker)
+    asset_type VARCHAR(20) CHECK (asset_type IN ('coin', 'stock'))
 );
 
 CREATE TABLE CryptoAsset (
+    asset_id VARCHAR(20) PRIMARY KEY,
     asset_name VARCHAR(60),
     asset_ticker VARCHAR(20),
-    cmc_id int,
     decimals int,
     latest_price NUMERIC(36, 18),
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (asset_name, asset_ticker),
-    FOREIGN KEY (asset_name, asset_ticker) REFERENCES Asset(asset_name, asset_ticker)
+    FOREIGN KEY (asset_id, asset_name, asset_ticker) REFERENCES Asset(asset_id, asset_name, asset_ticker)
 );
 
 CREATE TABLE StockAsset (
+    asset_id VARCHAR(20) PRIMARY KEY,
     asset_name VARCHAR(60),
     asset_ticker VARCHAR(20),
     exchange VARCHAR(60),
-    industry VARCHAR(60),
     latest_price NUMERIC(36, 18),
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (asset_name, asset_ticker),
-    FOREIGN KEY (asset_name, asset_ticker) REFERENCES Asset(asset_name, asset_ticker)
+    FOREIGN KEY (asset_id, asset_name, asset_ticker) REFERENCES Asset(asset_id, asset_name, asset_ticker)
 );
 
 
