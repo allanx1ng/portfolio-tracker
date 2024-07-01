@@ -67,7 +67,7 @@ export default function ({ data, tvl }) {
         </div> */}
 
         <>
-          <div className="grid grid-cols-7 uppercase text-sm leading-normal h-10 px-10 py-5">
+          <div className="grid grid-cols-7 uppercase leading-normal px-10 py-2 text-white rounded-full font-bold">
             <div className="text-center col-span-2 justify-self-start">Asset</div>
             <div className="text-right justify-self-end">Asset Price</div>
             <div className="text-right justify-self-end">Avg entry price</div>
@@ -76,11 +76,19 @@ export default function ({ data, tvl }) {
           </div>
 
           {displayData.map((holding, index) => (
-            <div className="grid grid-cols-7 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-5">
+            <div
+              key={index}
+              className="grid grid-cols-7 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-4 font-semibold"
+            >
               <div className="flex items-center col-span-2">
-                <img src={""} alt={`Icon`} className="w-8 h-8 mr-4" />
+                {/* {console.log(holding)} */}
+                
+                <a href={"/asset/" + (holding.asset_type == "coin" ? "coin/" : "stock/") + holding.asset_id}>
+                  <img src={"https://s2.coinmarketcap.com/static/img/coins/128x128/" + holding.asset_id + ".png"} alt={`Icon`} className="w-12 h-12 mr-4 rounded-full" />
+                </a>
+
                 <div>
-                  <div className="font-semibold">{holding.asset_name}</div>
+                  <div className="font-bold">{holding.asset_name}</div>
                   <div className="text-sm text-gray-600">
                     {round(holding.total_amount, 2)} {holding.asset_ticker} | (
                     {round(percentPortfolioCalc(holding.current_value, tvl), 2) + "%"} of portfolio)
@@ -94,7 +102,7 @@ export default function ({ data, tvl }) {
               <div className="text-sm justify-self-end">${round(holding.total_contributed, 2)}</div>
               <div className="flex justify-end justify-self-end col-span-2">
                 <div>
-                  <div className="font-semibold text-right">${round(holding.current_value, 2)}</div>
+                  <div className="font-bold text-right">${round(holding.current_value, 2)}</div>
                   <div
                     className={
                       holding.current_value - holding.total_contributed > 0

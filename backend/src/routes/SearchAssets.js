@@ -32,7 +32,7 @@ class SearchAssets {
     //         }
     //     ]
     // }
-    const sql = `SELECT asset_name as name, asset_ticker as ticker, asset_type as type FROM asset`
+    const sql = `SELECT asset_id as id, asset_name as name, asset_ticker as ticker, asset_type as type FROM asset`
   
     
     const searchAssets = async (term) => {

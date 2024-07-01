@@ -86,8 +86,9 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
 
   useEffect(() => {
     const formattedData = data.reduce((acc, asset) => {
-      const key = `${asset.asset_ticker}-${asset.asset_name}`
+      const key = asset.asset_id
       acc[key] = {
+        asset_id: asset.asset_id,
         asset_name: asset.asset_name,
         total_amount: round(asset.total_amount, 2) || 0,
         combined_avg_price: round(asset.combined_avg_price, 2) || 0,
@@ -99,9 +100,6 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
   }, [data])
 
   const handleModify = (key, field, value) => {
-    // if (isNaN(value)) {
-    //   value = 0 // Set a default value if the input is not a valid number
-    // }
     setCurrentData((prev) => ({
       ...prev,
       [key]: {
@@ -122,8 +120,7 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
 
   const processDeleteAssets = () => {
     return deleteAssets.map((key) => {
-      const [asset_ticker, asset_name] = key.split("-")
-      return { asset_ticker, asset_name }
+      return { asset_id: key }
     })
   }
 
@@ -134,10 +131,8 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
           currentData[key].combined_avg_price !== initialData[key].combined_avg_price) &&
         !deleteAssets.includes(key)
       ) {
-        const [asset_ticker, asset_name] = key.split("-")
         acc.push({
-          asset_ticker,
-          asset_name,
+          asset_id: key,
           total_amount: currentData[key].total_amount,
           combined_avg_price: currentData[key].combined_avg_price,
         })
@@ -145,9 +140,10 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
       return acc
     }, [])
   }
+
   return (
     <div className="flex justify-between items-center transition-opacity duration-300 ease-in-out">
-        {/* <ToastContainer/> */}
+      {/* <ToastContainer/> */}
       <div className="min-w-screen bg-base-200 shadow-md rounded my-6 pt-3">
         <div className="grid grid-cols-5 font-light uppercase text-sm leading-normal h-10">
           <div className="py-3 px-6 text-center">Delete?</div>

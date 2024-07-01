@@ -36,24 +36,22 @@ class Prices {
       // DO UPDATE SET
       //     asset_type = EXCLUDED.asset_type,
       //     last_updated = EXCLUDED.last_updated
-      const sql = `INSERT INTO Asset (asset_name, asset_ticker, asset_type)
-      VALUES ($1, $2, $3)
+      const sql = `INSERT INTO Asset (asset_id, asset_name, asset_ticker, asset_type)
+      VALUES ($1, $2, $3, $4)
       ON CONFLICT DO NOTHING
       ;`
-      const sql2 = `INSERT INTO CryptoAsset (asset_name, asset_ticker, cmc_id, latest_price)
-      VALUES ($1, $2, $3, $4) 
-      ON CONFLICT (asset_name, asset_ticker)
+      const sql2 = `INSERT INTO CryptoAsset (asset_id, latest_price)
+      VALUES ($1, $2) 
+      ON CONFLICT (asset_id)
       DO UPDATE SET latest_price = EXCLUDED.latest_price;`
 
       // console.log(this.stockDataCache)
       this.coinDataArray.forEach((item) => {
         // console.log(item.name)
         const entry = this.db
-          .queryDbValues(sql, [item.name, item.symbol, "coin"])
+          .queryDbValues(sql, [item.id, item.name, item.symbol, "coin"])
           .then((res) => {
             return this.db.queryDbValues(sql2, [
-              item.name,
-              item.symbol,
               item.id,
               item.quote.USD.price,
             ])
@@ -90,7 +88,7 @@ class Prices {
       //   this.priceCache[coin.name] = coin.quote.USD.price
       // })
       data.forEach((coin) => {
-        this.coinDataCache[coin.name.toLowerCase()] = coin
+        this.coinDataCache[coin.id] = coin
       })
       // console.log(data)
       // console.log('Updated Prices:', this.priceCache);
@@ -143,7 +141,7 @@ class Prices {
     if (!assetClass) {
       res.status(400).json({ error: "bad req" })
     }
-    const assetReq = req.params.asset ? req.params.asset.toLowerCase() : null
+    const assetReq = req.params.asset ? req.params.asset : null
 
     if (!assetReq) {
       // Return all prices if no specific asset is requested

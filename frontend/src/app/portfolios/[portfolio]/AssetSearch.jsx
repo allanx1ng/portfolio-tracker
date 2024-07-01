@@ -35,12 +35,13 @@ export default function ({ setAsset }) {
     }
   }
 
-  const selectAsset = (event, name, ticker, type) => {
+  const selectAsset = (event, name, ticker, type, id) => {
     event.preventDefault()
     setAsset({
         type: type,
         name: name,
-        ticker: ticker.toUpperCase()
+        ticker: ticker.toUpperCase(),
+        id: id
     })
   }
 
@@ -78,7 +79,7 @@ export default function ({ setAsset }) {
                   coins:{" "}
                   {searchResults.coins.map((asset, index) => (
                     <kbd key={index} className="kbd w-full">
-                      <button onClick={(e) => selectAsset(e, asset.name, asset.ticker, "coin")}
+                      <button onClick={(e) => selectAsset(e, asset.name, asset.ticker, "coin", asset.id)}
                         className="w-full">
                         {asset.name} ({asset.ticker.toUpperCase()})
                       </button>
@@ -95,7 +96,7 @@ export default function ({ setAsset }) {
                   stocks:{" "}
                   {searchResults.stocks.map((asset) => (
                     <li key={asset.ticker} className="p-2 border-2 my-1">
-                      <button onClick={(e) => selectAsset(e, asset.name, asset.ticker, "stock")}>
+                      <button onClick={(e) => selectAsset(e, asset.name, asset.ticker, "stock", asset.id)}>
                         {asset.name} ({asset.ticker.toUpperCase()})
                       </button>
                     </li>

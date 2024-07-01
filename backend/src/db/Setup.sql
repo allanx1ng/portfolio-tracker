@@ -61,22 +61,22 @@ CREATE TABLE Asset (
 
 CREATE TABLE CryptoAsset (
     asset_id VARCHAR(20) PRIMARY KEY,
-    asset_name VARCHAR(60),
-    asset_ticker VARCHAR(20),
+    -- asset_name VARCHAR(60),
+    -- asset_ticker VARCHAR(20),
     decimals int,
     latest_price NUMERIC(36, 18),
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (asset_id, asset_name, asset_ticker) REFERENCES Asset(asset_id, asset_name, asset_ticker)
+    FOREIGN KEY (asset_id) REFERENCES Asset(asset_id)
 );
 
 CREATE TABLE StockAsset (
     asset_id VARCHAR(20) PRIMARY KEY,
-    asset_name VARCHAR(60),
-    asset_ticker VARCHAR(20),
+    -- asset_name VARCHAR(60),
+    -- asset_ticker VARCHAR(20),
     exchange VARCHAR(60),
     latest_price NUMERIC(36, 18),
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (asset_id, asset_name, asset_ticker) REFERENCES Asset(asset_id, asset_name, asset_ticker)
+    FOREIGN KEY (asset_id) REFERENCES Asset(asset_id)
 );
 
 
@@ -85,14 +85,15 @@ CREATE TABLE Portfolio_assets (
 
     uid integer,
     portfolio_name VARCHAR(60),
-    asset_name VARCHAR(60),
-    asset_ticker VARCHAR(20),
+    asset_id VARCHAR(20),
+    -- asset_name VARCHAR(60),
+    -- asset_ticker VARCHAR(20),
     amount NUMERIC(36, 18),
     avg_price NUMERIC(36, 18),
-    PRIMARY KEY (uid, portfolio_name, asset_name, asset_ticker),
+    PRIMARY KEY (uid, portfolio_name, asset_id),
     -- FOREIGN KEY (uid) REFERENCES useraccount(uid),
     FOREIGN KEY (uid, portfolio_name) REFERENCES Portfolio(uid, portfolio_name),
-    FOREIGN KEY (asset_name, asset_ticker) REFERENCES Asset(asset_name, asset_ticker)
+    FOREIGN KEY (asset_id) REFERENCES Asset(asset_id)
 );
 
 

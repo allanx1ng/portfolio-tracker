@@ -33,9 +33,15 @@ input[type="number"] {
   z-index: 9999; /* Ensure this is higher than any other z-index in your app */
 }
 
-.gradient-bg {
+/* .gradient-bg {
   background: linear-gradient(135deg, #ff4b5c 0%, #ffb500 125%);
   backdrop-filter: blur(10px);
+  z-index: -9999;
+} */
+.gradient-bg {
+  background: linear-gradient(135deg, #70e000 0%, #007200 125%);
+  backdrop-filter: blur(10px);
+  z-index: -9999;
 }
 .bg-triple-gradient {
   background: linear-gradient(to bottom, #ff4b5c, transparent 50%),

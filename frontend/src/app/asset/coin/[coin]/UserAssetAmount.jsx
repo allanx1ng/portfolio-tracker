@@ -4,7 +4,7 @@ import { useAuth } from "@/context/AuthContext"
 import { useEffect, useState } from "react"
 import { round } from "@/util/util"
 
-export default function ({ asset_name, asset_ticker }) {
+export default function ({ asset_id, asset_ticker }) {
   const { user } = useAuth()
   const [amount, setAmount] = useState(0)
 
@@ -23,8 +23,7 @@ export default function ({ asset_name, asset_ticker }) {
       // console.log("trying req")
       const res = await apiClient.get("/single-asset", {
         params: {
-          asset_name: asset_name,
-          asset_ticker: asset_ticker,
+          asset_id: asset_id,
         },
       })
       if (res.status == 200) {

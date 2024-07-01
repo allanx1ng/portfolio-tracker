@@ -25,7 +25,7 @@ const Coin = async ({ params }) => {
           <div className="my-3">
             <div className="flex items-center">
               <img
-                src={"https://s2.coinmarketcap.com/static/img/coins/200x200/" + coin.id + ".png"}
+                src={"https://s2.coinmarketcap.com/static/img/coins/128x128/" + coin.id + ".png"}
                 alt="error"
                 className="w-16 rounded-full"
               ></img>
@@ -37,7 +37,7 @@ const Coin = async ({ params }) => {
 
           <div className="my-3">
             <h3 className="text-xl">Total Holdings:</h3>
-            <UserAssetAmount asset_name={coin.name} asset_ticker={coin.symbol} />
+            <UserAssetAmount asset_id={asset} asset_ticker={coin.symbol}/>
           </div>
 
           {/* <h1 className="text-4xl">$60000.00</h1> */}

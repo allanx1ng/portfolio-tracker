@@ -41,7 +41,7 @@ const CheckUser = () => {
           {/* {contextMenu && <div className="w-400px h-500px bg-cyan-200">contextmenu</div>} */}
         </div>
       ) : (
-        <div className="mr-8">
+        <div className="">
           <a
             href="/login"
             // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"

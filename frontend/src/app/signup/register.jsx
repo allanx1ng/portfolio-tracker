@@ -43,7 +43,7 @@ const Register = () => {
         setTimeout(() => {
           setIsLoading(false)
           router.push("/")
-        }, 2000)
+        }, 500)
       } else {
         errorMsg(response.status)
       }

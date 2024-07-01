@@ -7,7 +7,7 @@ export default function ({ data, tvl }) {
     <>
       <div className="overflow-x-auto">
         <div className="min-w-screen bg-base-200 shadow-md rounded my-6">
-          <div className="grid grid-cols-6 uppercase text-sm leading-normal">
+          {/* <div className="grid grid-cols-6 uppercase text-sm leading-normal">
             <div className="py-3 px-6 text-center">Portfolio</div>
             <div className="py-3 px-6 text-center">Portfolio Value</div>
             <div className="py-3 px-6 text-center">Portfolio Value (%)</div>
@@ -48,10 +48,10 @@ export default function ({ data, tvl }) {
               </div>
               <div className="py-3 px-6 text-center">{p.account_type}</div>
             </div>
-          ))}
+          ))} */}
 
           <>
-            <div className="grid grid-cols-6 uppercase text-sm leading-normal h-10 px-10 py-5">
+            <div className="grid grid-cols-6 uppercase leading-normal px-10 py-2 font-bold">
               <div className="text-center col-span-2 justify-self-start">Asset</div>
               <div className="text-right justify-self-end">Portfolio Type</div>
               <div className="text-right justify-self-end">Contributions</div>
@@ -61,22 +61,22 @@ export default function ({ data, tvl }) {
             {data.map((p, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-6 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-5"
+                className="grid grid-cols-6 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-5 font-semibold"
               >
-                <div className="flex items-center col-span-2">
+                <a className="flex items-center col-span-2" href={`/portfolios/${p.portfolio_name}`}>
                   <img src={""} alt={`Icon`} className="w-8 h-8 mr-4" />
                   <div>
-                    <div className="font-semibold">{p.portfolio_name}</div>
+                    <div className="font-bold">{p.portfolio_name}</div>
                     <div className="text-sm text-gray-600">
                       {round(percentPortfolioCalc(p.tvl, tvl), 2)} % of total assets
                     </div>
                   </div>
-                </div>
+                </a>
                 <div className="text-sm justify-self-end">${round(p.contributions, 2)}</div>
                 <div className="text-sm justify-self-end">${round(p.contributions, 2)}</div>
                 <div className="flex justify-end justify-self-end col-span-2">
                   <div>
-                    <div className="font-semibold text-right">${round(p.tvl, 2)}</div>
+                    <div className="font-bold text-right">${round(p.tvl, 2)}</div>
                     <div
                       className={
                         p.tvl - p.contributions > 0 ? "text-success text-sm" : "text-error text-sm"

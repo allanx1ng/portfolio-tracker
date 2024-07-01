@@ -29,8 +29,7 @@ export default function ({ name, setReload, visible }) {
         portfolio: name,
         asset: {
           type: asset.type,
-          name: asset.name,
-          ticker: asset.ticker,
+          id: asset.id,
           amount: amount,
           price: price,
         },
