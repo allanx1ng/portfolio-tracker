@@ -19,9 +19,9 @@ const Coin = async ({ params }) => {
     coin = initialData.asset
   }
   return (
-    <div className="">
+    <div className="text-white bg-primary">
       {initialData ? (
-        <div className="ml-40 mt-20 gap-y-6 py-6 ">
+        <div className="ml-40 gap-y-6 py-6 pt-20">
           <div className="my-3">
             <div className="flex items-center">
               <img
@@ -29,15 +29,17 @@ const Coin = async ({ params }) => {
                 alt="error"
                 className="w-16 rounded-full"
               ></img>
-              <h2 className="text-4xl ml-4">{coin.name}</h2>
-              <h3 className="text-3xl ml-4 text-gray-500 bottom-0">{coin.symbol}</h3>
+              <div className="flex items-baseline">
+                <h2 className="text-4xl ml-4">{coin.name}</h2>
+                <h3 className="text-3xl ml-4 text-secondary bottom-0">{coin.symbol}</h3>
+              </div>
             </div>
             <h1 className="text-6xl mt-4">${coin.quote.USD.price}</h1>
           </div>
 
           <div className="my-3">
             <h3 className="text-xl">Total Holdings:</h3>
-            <UserAssetAmount asset_id={asset} asset_ticker={coin.symbol}/>
+            <UserAssetAmount asset_id={asset} asset_ticker={coin.symbol} />
           </div>
 
           {/* <h1 className="text-4xl">$60000.00</h1> */}
@@ -92,7 +94,7 @@ const Coin = async ({ params }) => {
               ? coin.total_supply * coin.quote.USD.price
               : "unknown"}
           </h2> */}
-          <div className="stats stats-vertical shadow my-3">
+          <div className="stats stats-vertical shadow my-3 bg-secondary text-primary">
             <h2 className="stat">Stats:</h2>
             <div className="stat">
               <div className="stat-title">Market Cap</div>

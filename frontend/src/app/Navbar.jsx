@@ -7,7 +7,7 @@ import ToggleDarkmode from "@/components/ToggleDarkmode"
 const Navbar = () => {
   return (
     <>
-      <div className="navbar gradient-bg">
+      <div className="navbar top-0 bg-primary">
         <div className="navbar-start">
           {/* <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -41,20 +41,26 @@ const Navbar = () => {
               </li>
             </ul>
           </div> */}
-          <a className="btn btn-ghost text-xl" href="/">
+          <a className="btn btn-ghost text-xl text-secondary" href="/">
             AppName
           </a>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 text-white font-bold bg-primary rounded-full">
+          <ul className="menu menu-horizontal px-2 text-primary font-bold bg-white rounded-xl">
             <li>
-              <a href="/">Home</a>
+              <a href="/" className="">
+                Home
+              </a>
             </li>
             <li>
-              <a href="/portfolio">Portfolio</a>
+              <a href="/portfolio" className="">
+                Portfolio
+              </a>
             </li>
             <li>
-              <a href="/donate">Donate</a>
+              <a href="/donate" className="">
+                Donate
+              </a>
             </li>
           </ul>
         </div>
@@ -65,6 +71,7 @@ const Navbar = () => {
           <CheckUser />
         </div>
       </div>
+      {/* <div className="w-full mb-0 bg-primary h-1"></div> */}
     </>
   )
 }

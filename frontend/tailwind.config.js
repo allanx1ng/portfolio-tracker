@@ -33,9 +33,9 @@ module.exports = {
         "flex-fixed": "200px 1fr", // One fixed and one flexible column
       },
     },
-    variants: {
-      backdropFilter: ["responsive"], // Add this line
-    },
+    // variants: {
+    //   backdropFilter: ["responsive"], // Add this line
+    // },
   },
   plugins: [require("daisyui"), require("tailwindcss-filters")],
   daisyui: {
@@ -168,6 +168,27 @@ module.exports = {
 
           // neutral: "#FFF5F5",
           // neutral: "#f5f5f5",
+
+          neutral: "#FFF5F5",
+
+          "base-100": "#f5f5f5",
+
+          info: "#7dd3fc",
+
+          success: "#4ade80",
+
+          warning: "#fbbf24",
+
+          error: "#f43f5e",
+        },
+      },
+      {
+        green: {
+          primary: "#0d9488",
+
+          secondary: "#ccfbf1",
+
+          accent: "#FF4B5C",
 
           neutral: "#FFF5F5",
 

@@ -8,7 +8,7 @@ export default function ({ data, tvl }) {
   return (
     <>
       <SortData data={data} displayData={displayData} setDisplayData={setDisplayData} />
-      <div className="overflow-x-auto transition-opacity duration-300 ease-in-out text-black grid grid-cols-1 gap-2 p-4">
+      <div className="overflow-x-auto transition-opacity duration-300 ease-in-out text-primary grid grid-cols-1 gap-2 py-4">
         {/* <div className="min-w-screen bg-base-200 shadow-md rounded my-6 pt-3">
           <div className="grid grid-cols-7 uppercase text-sm leading-normal h-10">
             <div className="py-3 px-6 text-center">Asset</div>
@@ -84,7 +84,7 @@ export default function ({ data, tvl }) {
                 {/* {console.log(holding)} */}
                 
                 <a href={"/asset/" + (holding.asset_type == "coin" ? "coin/" : "stock/") + holding.asset_id}>
-                  <img src={"https://s2.coinmarketcap.com/static/img/coins/128x128/" + holding.asset_id + ".png"} alt={`Icon`} className="w-12 h-12 mr-4 rounded-full" />
+                  <img src={"https://s2.coinmarketcap.com/static/img/coins/128x128/" + holding.asset_id + ".png"} alt={`Icon`} className="w-12 h-12 mr-4 bg-white rounded-full" />
                 </a>
 
                 <div>

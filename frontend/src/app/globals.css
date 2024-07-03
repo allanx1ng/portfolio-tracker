@@ -40,8 +40,6 @@ input[type="number"] {
 } */
 .gradient-bg {
   background: linear-gradient(135deg, #70e000 0%, #007200 125%);
-  backdrop-filter: blur(10px);
-  z-index: -9999;
 }
 .bg-triple-gradient {
   background: linear-gradient(to bottom, #ff4b5c, transparent 50%),
