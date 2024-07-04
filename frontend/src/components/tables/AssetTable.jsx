@@ -67,7 +67,7 @@ export default function ({ data, tvl }) {
         </div> */}
 
         <>
-          <div className="grid grid-cols-7 uppercase leading-normal px-10 py-2 text-white rounded-full font-bold">
+          <div className="grid grid-cols-7 uppercase leading-normal px-10 py-2 text-black rounded-full font-bold">
             <div className="text-center col-span-2 justify-self-start">Asset</div>
             <div className="text-right justify-self-end">Asset Price</div>
             <div className="text-right justify-self-end">Avg entry price</div>

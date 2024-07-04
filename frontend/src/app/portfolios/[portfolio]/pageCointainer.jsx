@@ -145,7 +145,7 @@ export default function ({ params }) {
           <div className="divider divider-secondary">Other Actions</div>
         </div>
         <div className="flex gap-4 justify-items-left py-4 bg-white justify-center rounded-3xl">
-        {/* <div> */}
+          {/* <div> */}
           <AddAssetButton toggleVisiblity={setAddAsset} visibility={addAsset} className="w-200px" />
           <EditButton setEdit={setEdit} edit={edit} className="w-200px" />
           <DeletePortfolio name={params.portfolio} className="w-200px" />

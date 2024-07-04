@@ -3,17 +3,17 @@ import { ResponsivePie } from "@nivo/pie"
 import { useEffect, useState } from "react"
 import { percentPortfolioCalc, round } from "@/util/util"
 import { usePortfolio } from "@/context/TotalAssetContext"
-import { useSpring, animated } from "@react-spring/web"
+import { animated } from "@react-spring/web"
 
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
 // no chart will be rendered.
 // website examples showcase many properties,
 // you'll often use just a few of them.
-const PieChart = ({state}) => {
+const PieChart = ({ state }) => {
   const { data, tvl } = usePortfolio()
-//   const state = "percent"
-  //   console.log(data)
+  //   const state = "percent"
+  //   console.log(data)]
 
   const [displayData, setDisplayData] = useState([])
   useEffect(() => {
@@ -47,14 +47,32 @@ const PieChart = ({state}) => {
     }
   }
 
+  const CenteredMetric = ({ centerX, centerY }) => (
+    <text
+      x={centerX}
+      y={centerY}
+      textAnchor="middle"
+      dominantBaseline="central"
+      className="font-semibold text-xl flex gap-10"
+    >
+      <tspan x={centerX} dy="-2rem">
+        Net Worth:
+      </tspan>
+      <tspan x={centerX} dy="2rem" className="text-4xl">
+        ${round(tvl, 2)}
+      </tspan>
+    </text>
+  )
+
   return (
     <ResponsivePie
       data={displayData}
       margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
-      innerRadius={0.5}
+      innerRadius={0.6}
       padAngle={0.7}
       cornerRadius={3}
       activeOuterRadiusOffset={8}
+      //   activeInnerRadiusOffset={8}
       borderWidth={1}
       borderColor={{
         from: "color",
@@ -121,6 +139,7 @@ const PieChart = ({state}) => {
           spacing: 10,
         },
       ]}
+      layers={["arcs", "arcLabels", "arcLinkLabels", CenteredMetric]}
       // fill={[
       //   {
       //     match: {

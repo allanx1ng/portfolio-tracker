@@ -27,6 +27,8 @@ module.exports = {
         "300px": "300px",
         "400px": "400px",
         "500px": "500px",
+        "600px": "600px",
+        "800px": "800px",
       },
       gridTemplateColumns: {
         fixed: "repeat(3, 200px)", // Two columns each 200px wide
@@ -186,9 +188,9 @@ module.exports = {
         green: {
           primary: "#0d9488",
 
-          secondary: "#ccfbf1",
+          secondary: "#d1fae5",
 
-          accent: "#FF4B5C",
+          accent: "#d9480d",
 
           neutral: "#FFF5F5",
 

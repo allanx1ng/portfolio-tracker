@@ -6,7 +6,7 @@ export default function ({ children }) {
     <>
       <PortfolioProvider>
         <PortfoliosProvider>
-          <div className="bg-primary top-0 p-16">{children}</div>
+          <div className="bg-white top-0 p-16">{children}</div>
         </PortfoliosProvider>
       </PortfolioProvider>
     </>

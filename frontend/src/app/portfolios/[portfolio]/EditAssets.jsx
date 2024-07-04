@@ -90,6 +90,7 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
       acc[key] = {
         asset_id: asset.asset_id,
         asset_name: asset.asset_name,
+        asset_ticker: asset.asset_ticker,
         total_amount: round(asset.total_amount, 2) || 0,
         combined_avg_price: round(asset.combined_avg_price, 2) || 0,
       }
@@ -142,57 +143,58 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
   }
 
   return (
-    <div className="flex justify-between items-center transition-opacity duration-300 ease-in-out">
-      {/* <ToastContainer/> */}
-      <div className="min-w-screen bg-base-200 shadow-md rounded my-6 pt-3">
-        <div className="grid grid-cols-5 font-light uppercase text-sm leading-normal h-10">
-          <div className="py-3 px-6 text-center">Delete?</div>
-          <div className="py-3 px-6 text-center">name</div>
-          <div className="py-3 px-6 text-center">amount</div>
-          <div className="py-3 px-6 text-center">avg price</div>
-        </div>
-        <div className="py-3">
-          {Object.keys(currentData).map((key) => (
-            <form
-              key={key}
-              className="grid grid-cols-5 text-sm font-light items-center text-center"
-            >
-              <div className="h-10 flex items-center justify-center py-3 px-6">
-                <input
-                  type="checkbox"
-                  className=" text-red-500 checkbox"
-                  checked={deleteAssets.includes(key)}
-                  onChange={() => handleDelete(key)}
-                />
-              </div>
-              <div className="py-3 px-6 h-10 flex items-center justify-center">
-                {currentData[key].asset_name}
-              </div>
-              <div className="py-3 px-6 h-10">
-                <input
-                  disabled={deleteAssets.includes(key)}
-                  type="number"
-                  value={currentData[key].total_amount}
-                  onChange={(e) => handleModify(key, "total_amount", parseFloat(e.target.value))}
-                  className="input input-bordered max-w-xs appearance-none w-11/12 h-6"
-                />
-              </div>
-              <div className="py-3 px-6 h-10">
-                <input
-                  disabled={deleteAssets.includes(key)}
-                  type="number"
-                  value={currentData[key].combined_avg_price}
-                  onChange={(e) =>
-                    handleModify(key, "combined_avg_price", parseFloat(e.target.value))
-                  }
-                  className="input input-bordered max-w-xs appearance-none w-11/12 h-6"
-                />
-              </div>
-            </form>
-          ))}
-        </div>
+    <>
+      <div className="transition-opacity duration-300 ease-in-out text-primary">
+        {/* <ToastContainer/> */}
+        <div className="min-w-screen bg-secondary shadow-md rounded-3xl my-6 pt-3">
+          <div className="grid grid-cols-4 uppercase text-sm leading-normal h-10">
+            <div className="py-3 px-6 text-center">Delete?</div>
+            <div className="py-3 px-6 text-center">name</div>
+            <div className="py-3 px-6 text-center">amount</div>
+            <div className="py-3 px-6 text-center">avg price</div>
+          </div>
+          <div className="py-3">
+            {Object.keys(currentData).map((key) => (
+              <form
+                key={key}
+                className="grid grid-cols-4 text-sm font-normal items-center text-center"
+              >
+                <div className="h-10 flex items-center justify-center py-3 px-6">
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-error"
+                    checked={deleteAssets.includes(key)}
+                    onChange={() => handleDelete(key)}
+                  />
+                </div>
+                <div className="py-3 px-6 h-10 flex items-center justify-center">
+                  {currentData[key].asset_name} ({currentData[key].asset_ticker})
+                </div>
+                <div className="py-3 px-6 h-10">
+                  <input
+                    disabled={deleteAssets.includes(key)}
+                    type="number"
+                    value={currentData[key].total_amount}
+                    onChange={(e) => handleModify(key, "total_amount", parseFloat(e.target.value))}
+                    className="input input-bordered input-primary max-w-xs appearance-none w-11/12 h-6"
+                  />
+                </div>
+                <div className="py-3 px-6 h-10">
+                  <input
+                    disabled={deleteAssets.includes(key)}
+                    type="number"
+                    value={currentData[key].combined_avg_price}
+                    onChange={(e) =>
+                      handleModify(key, "combined_avg_price", parseFloat(e.target.value))
+                    }
+                    className="input input-bordered input-primary max-w-xs appearance-none w-11/12 h-6"
+                  />
+                </div>
+              </form>
+            ))}
+          </div>
 
-        {/* {data.map((asset) => (
+          {/* {data.map((asset) => (
         <form
           key={asset.asset_ticker}
           className="grid grid-cols-5 text-gray-600 text-sm font-light"
@@ -236,10 +238,11 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
           </div>
         </form>
       ))} */}
+        </div>
       </div>
-      <button disabled={loading} onClick={(e) => handleSubmit(e)} className="btn btn-accent mx-6">
-        Submit
+      <button disabled={loading} onClick={(e) => handleSubmit(e)} className="btn btn-secondary">
+        Submit Changes
       </button>
-    </div>
+    </>
   )
 }
