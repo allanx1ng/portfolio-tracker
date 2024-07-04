@@ -1,9 +1,9 @@
 import { Inter } from "next/font/google"
 import "./globals.css"
-import Navbar from "./Navbar"
+import Navbar from "@/components/Navigation/Navbar"
 import { AuthProvider } from "@/context/AuthContext"
 import { ToastContainer } from "react-toastify"
-import Footer from "./Footer"
+import Footer from "@/components/Navigation/Footer"
 import { ThemeProvider } from "@/context/ThemeContext"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
 
       <ThemeProvider>
         <AuthProvider>
-          <body className={`${inter.className} min-h-screen h-screen`}>
+          <body className={`${inter.className} min-h-screen h-screen font-semibold`}>
             <ToastContainer />
             <Navbar />
             {children}

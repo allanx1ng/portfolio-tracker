@@ -87,7 +87,7 @@ const Dropdown = ({ user, logout }) => {
     //   )}
     // </div>
     <div className="dropdown dropdown-end">
-      <div tabIndex={0} role="button" className="btn btn-sm btn-secondary m-1">
+      <div tabIndex={0} role="button" className="btn btn-sm btn-secondary m-1 text-primary">
         Hello, {user.email}
       </div>
       <ul

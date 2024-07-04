@@ -49,22 +49,22 @@ export default function ({ name, setReload, visible }) {
   }
 
   return (
-    <dialog id="my_modal_2" className="modal">
+    <dialog id="my_modal_2" className="modal text-primary">
       {/* <ToastContainer/> */}
-      <div className="modal-box">
+      <div className="modal-box bg-secondary">
         <form className="gap-2 mb-4">
           <h2 className="my-2">Search for an asset:</h2>
           <AssetSearch setAsset={setAsset} />
-          <div className="flex items-center mt-4">
-            <p>Asset: </p>
+          <div className="flex items-center mt-4 gap-1 align-baseline">
+            <div>{"Asset: "}</div>
             {asset ? (
-              <kbd className="kbd">{asset.name + " (" + asset.ticker + ")"}</kbd>
+              <kbd className="kbd bg-white border-primary">{asset.name + " (" + asset.ticker + ")"}</kbd>
             ) : (
               <div>No asset selected</div>
             )}
           </div>
 
-          <div className="bg-base-200 rounded-lg p-4 my-4">
+          <div className="bg-secondary rounded-lg p-4 my-4">
             <div className="grid grid-cols-2 gap-4 mb-2 text-center">
               <div>Amount</div>
               <div>Buy price</div>
@@ -92,13 +92,13 @@ export default function ({ name, setReload, visible }) {
           <button
             onClick={(e) => handleSubmit(e)}
             disabled={loading}
-            className="btn btn-accent"
+            className="btn btn-primary text-white w-full"
           >
             Add asset
           </button>
           <form method="dialog">
             {/* if there is a button in form, it will close the modal */}
-            <button className="btn btn-outline btn-error">Close</button>
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
           </form>
         </div>
       </div>

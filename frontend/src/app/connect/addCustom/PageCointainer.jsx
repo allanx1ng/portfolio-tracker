@@ -6,7 +6,7 @@ import UserPortfolios from "./getUserPortfolios"
 export default function () {
   const [reload, setReload] = useState(false)
   return (
-    <div className="m-8">
+    <div className="bg-white p-8">
       <h2>Custom portfolios:</h2>
 
       <div>

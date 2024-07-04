@@ -10,6 +10,7 @@ import AssetTable from "@/components/tables/AssetTable"
 import EditAssets from "./EditAssets"
 import AddAssetButton from "./AddAssetButton"
 import ErrorCode from "@/components/ErrorCode"
+import PieChart from "@/components/charts/PieChart"
 
 export default function ({ params }) {
   const [reload, setReload] = useState(false)
@@ -61,7 +62,7 @@ export default function ({ params }) {
   // }
 
   return (
-    <div className="m-8">
+    <div className="p-8 bg-primary text-white">
       {/* <ToastContainer/> */}
       <GetPortfolio
         name={params.portfolio}
@@ -84,7 +85,9 @@ export default function ({ params }) {
           {/* <div>TVL: {portfolio.tvl}</div>
           <div>Total Contributions: {portfolio.contributions}</div> */}
 
-          <div className="stats stats-vertical lg:stats-horizontal shadow text-primary bg-base-200">
+          {/* <PieChart data={data}/> */}
+
+          <div className="stats stats-vertical lg:stats-horizontal shadow text-primary bg-secondary">
             <div className="stat">
               <div className="stat-title">Total Value</div>
               <div className="stat-value">${round(portfolio.tvl, 2)}</div>
@@ -139,9 +142,10 @@ export default function ({ params }) {
       )}
       <>
         <div className="flex flex-col w-full">
-          <div className="divider divider-primary">Other Actions</div>
+          <div className="divider divider-secondary">Other Actions</div>
         </div>
-        <div className="grid grid-cols-fixed gap-4 justify-items-left w-1/2 my-2">
+        <div className="flex gap-4 justify-items-left py-4 bg-white justify-center rounded-3xl">
+        {/* <div> */}
           <AddAssetButton toggleVisiblity={setAddAsset} visibility={addAsset} className="w-200px" />
           <EditButton setEdit={setEdit} edit={edit} className="w-200px" />
           <DeletePortfolio name={params.portfolio} className="w-200px" />

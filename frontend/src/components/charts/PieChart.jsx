@@ -10,7 +10,7 @@ import { useSpring, animated } from "@react-spring/web"
 // no chart will be rendered.
 // website examples showcase many properties,
 // you'll often use just a few of them.
-const MyResponsivePie = ({state}) => {
+const PieChart = ({state}) => {
   const { data, tvl } = usePortfolio()
 //   const state = "percent"
   //   console.log(data)
@@ -204,4 +204,4 @@ const MyResponsivePie = ({state}) => {
   )
 }
 
-export default MyResponsivePie
+export default PieChart

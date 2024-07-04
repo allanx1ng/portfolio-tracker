@@ -1,4 +1,15 @@
 export const round = (num, maxDecimals) => {
+  // Ensure num is a number
+  if (isNaN(num)) {
+    return 0
+  }
+  num = Number(num)
+
+  // If the number is less than 1, round to significant digits
+  if (Math.abs(num) < 1) {
+    return parseFloat(num.toPrecision(maxDecimals))
+  }
+
   // Convert the number to a string
   let numStr = num.toString()
 

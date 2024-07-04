@@ -36,11 +36,11 @@ export default function ({ name }) {
 
   return (
     <div>
-      <button onClick={() => setConfirmScreen(true)} className="btn w-full btn-error btn-outline">Delete Portfolio</button>
+      <button onClick={() => setConfirmScreen(true)} className="btn w-full btn-error text-white">Delete Portfolio</button>
       {confirmScreen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white w-96 h-72 p-6 rounded-lg shadow-lg flex flex-col justify-between">
-            <div className="text-center mb-4">This action cannot be undone</div>
+            <div className="text-center mb-4 text-black">This action cannot be undone</div>
             <div className="flex justify-between mt-auto">
               <button
                 className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-700"

@@ -5,8 +5,8 @@ export default function ({ data, tvl }) {
   //   console.log(tvl)
   return (
     <>
-      <div className="overflow-x-auto">
-        <div className="min-w-screen bg-base-200 shadow-md rounded my-6">
+      {/* <div className="overflow-x-auto transition-opacity duration-300 ease-in-out text-primary grid grid-cols-1 gap-2 py-4"> */}
+        <div className="overflow-x-auto transition-opacity duration-300 ease-in-out grid grid-cols-1 gap-2 py-4 bg-primary p-8 my-8 rounded-3xl">
           {/* <div className="grid grid-cols-6 uppercase text-sm leading-normal">
             <div className="py-3 px-6 text-center">Portfolio</div>
             <div className="py-3 px-6 text-center">Portfolio Value</div>
@@ -51,9 +51,10 @@ export default function ({ data, tvl }) {
           ))} */}
 
           <>
-            <div className="grid grid-cols-6 uppercase leading-normal px-10 py-2 font-bold">
+            <div className="grid grid-cols-7 uppercase leading-normal px-10 py-2 font-bold text-white">
               <div className="text-center col-span-2 justify-self-start">Asset</div>
               <div className="text-right justify-self-end">Portfolio Type</div>
+              <div className="text-right justify-self-end">Num. Holdings</div>
               <div className="text-right justify-self-end">Contributions</div>
               <div className="text-center col-span-2 justify-self-end">Current Value / Gains</div>
             </div>
@@ -61,7 +62,7 @@ export default function ({ data, tvl }) {
             {data.map((p, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-6 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-5 font-semibold"
+                className="grid grid-cols-7 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-4 font-semibold"
               >
                 <a className="flex items-center col-span-2" href={`/portfolios/${p.portfolio_name}`}>
                   <img src={""} alt={`Icon`} className="w-8 h-8 mr-4" />
@@ -72,7 +73,8 @@ export default function ({ data, tvl }) {
                     </div>
                   </div>
                 </a>
-                <div className="text-sm justify-self-end">${round(p.contributions, 2)}</div>
+                <div className="text-sm justify-self-end">{p.account_type.toUpperCase()}</div>
+                <div className="text-sm justify-self-end">{p.holdings}</div>
                 <div className="text-sm justify-self-end">${round(p.contributions, 2)}</div>
                 <div className="flex justify-end justify-self-end col-span-2">
                   <div>
@@ -91,7 +93,7 @@ export default function ({ data, tvl }) {
             ))}
           </>
         </div>
-      </div>
+      {/* </div> */}
     </>
   )
 }

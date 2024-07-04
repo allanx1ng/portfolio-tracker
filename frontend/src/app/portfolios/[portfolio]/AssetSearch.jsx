@@ -66,7 +66,7 @@ export default function ({ setAsset }) {
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="input input-bordered w-full max-w-xs"
+        className="input input-bordered w-full max-w-xs input-primary"
         placeholder="Search for assets by name or ticker..."
       />
       {/* {isLoading && <div className="mt-2 text-gray-500">Loading...</div>} */}
@@ -78,7 +78,7 @@ export default function ({ setAsset }) {
                 <div>
                   coins:{" "}
                   {searchResults.coins.map((asset, index) => (
-                    <kbd key={index} className="kbd w-full">
+                    <kbd key={index} className="kbd w-full bg-white border-primary my-0.5">
                       <button onClick={(e) => selectAsset(e, asset.name, asset.ticker, "coin", asset.id)}
                         className="w-full">
                         {asset.name} ({asset.ticker.toUpperCase()})

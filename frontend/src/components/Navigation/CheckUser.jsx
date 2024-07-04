@@ -13,7 +13,7 @@ const CheckUser = () => {
   }
 
   return (
-    <div>
+    <div className="">
       {user ? (
         <div>
           {/* <button
@@ -45,7 +45,7 @@ const CheckUser = () => {
           <a
             href="/login"
             // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
-            className="btn btn-sm btn-secondary mx-2"
+            className="btn btn-sm btn-secondary mx-2 text-primary"
           >
             Login
           </a>
@@ -53,7 +53,7 @@ const CheckUser = () => {
           <a
             href="/signup"
             // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
-            className="btn btn-sm btn-secondary mx-2"
+            className="btn btn-sm btn-secondary mx-2 text-primary"
           >
             Sign Up
           </a>
