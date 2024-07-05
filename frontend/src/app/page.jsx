@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <div>
-      <div className="hero min-h-screen bg-white text-primary">
+      <div className="hero min-h-screen bg-white text-black">
         <div className="hero-content text-center rounded-3xl p-20">
           <div className="max-w-md">
             <h1 className="text-5xl font-bold">All your finances in one place</h1>
@@ -15,19 +15,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="gradient-bg w-100px h-100px rounded-3xl">
+      {/* <div className="gradient-bg w-100px h-100px rounded-3xl">
 
-      </div>
-
-      {/* <h1>All your finances in one place</h1>
-      <div>
-        view portfolio:
-        <a href="/portfolio">portfolios</a>
       </div> */}
     </div>
-    // <RootLayout>
-
-    // <div>hello world</div>
-    // </RootLayout>
   )
 }

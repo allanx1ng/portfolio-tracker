@@ -19,7 +19,7 @@ const Coin = async ({ params }) => {
     coin = initialData.asset
   }
   return (
-    <div className="text-white bg-primary">
+    <div className="text-black">
       {initialData ? (
         <div className="ml-40 gap-y-6 py-6 pt-20">
           <div className="my-3">
@@ -31,7 +31,7 @@ const Coin = async ({ params }) => {
               ></img>
               <div className="flex items-baseline">
                 <h2 className="text-4xl ml-4">{coin.name}</h2>
-                <h3 className="text-3xl ml-4 text-secondary bottom-0">{coin.symbol}</h3>
+                <h3 className="text-3xl ml-4 text-gray-500 bottom-0">{coin.symbol}</h3>
               </div>
             </div>
             <h1 className="text-6xl mt-4">${coin.quote.USD.price}</h1>
@@ -94,27 +94,27 @@ const Coin = async ({ params }) => {
               ? coin.total_supply * coin.quote.USD.price
               : "unknown"}
           </h2> */}
-          <div className="stats stats-vertical shadow my-3 bg-secondary text-primary">
+          <div className="stats stats-vertical shadow my-3 bg-secondary text-black">
             <h2 className="stat">Stats:</h2>
             <div className="stat">
-              <div className="stat-title">Market Cap</div>
+              <div className="stat-title text-primary">Market Cap</div>
               <div className="stat-value">${coin.quote.USD.market_cap}</div>
             </div>
 
             <div className="stat">
-              <div className="stat-title">24h Volume</div>
+              <div className="stat-title text-primary">24h Volume</div>
               <div className="stat-value">${coin.quote.USD.volume_24h}</div>
             </div>
 
             <div className="stat">
-              <div className="stat-title">Circulating Supply</div>
+              <div className="stat-title text-primary">Circulating Supply</div>
               <div className="stat-value">
                 {coin.circulating_supply} {coin.symbol}
               </div>
             </div>
           </div>
           <div>
-            <div className="my-3 btn btn-accent btn-sm">
+            <div className="my-3 btn btn-info btn-sm">
               <a target="_blank" href={"https://coinmarketcap.com/currencies/" + coin.name + "/"}>
                 More info
               </a>

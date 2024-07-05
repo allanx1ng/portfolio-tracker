@@ -5,15 +5,15 @@ import { usePortfolio } from "@/context/IndividualPortfolioAssetContext"
 import { round, percentPortfolioCalc } from "@/util/util"
 
 export default function () {
-  const { portfolio, data } = usePortfolio()
+  const { data, tvl } = usePortfolio()
 
-  const [tvl, setTvl] = useState(0)
+//   const [tvl, setTvl] = useState(0)
 
   const [chartDisplayState, setDisplayState] = useState("dollar")
   const [chartDisplayData, setChartDisplayData] = useState([])
 
   useEffect(() => {
-    setTvl(portfolio.tvl)
+    // setTvl(portfolio.tvl)
     processData()
   }, [data])
 
@@ -38,14 +38,14 @@ export default function () {
 
   const processData = () => {
 
-    const temp = []
+    // const temp = []
     let totalAmt = 0
     let totalPercentage = 0
     for (let i = 0; i < data.length; i++) {
       const item = data[i]
         // console.log(item)
       if (totalPercentage > 90) {
-        temp[i] = {
+        chartDisplayData[i] = {
           id: "Other",
           label: "Other",
           value:
@@ -57,7 +57,7 @@ export default function () {
       }
       totalPercentage += round(percentPortfolioCalc(item.current_value, tvl), 2)
       totalAmt += Number(item.current_value)
-      temp[i] = {
+      chartDisplayData[i] = {
         id: item.asset_name,
         label: item.asset_ticker,
         value:
@@ -67,7 +67,7 @@ export default function () {
       }
     }
     // console.log(temp)
-    setChartDisplayData(temp)
+    // setChartDisplayData(chartDisplayData)
   }
   return (
     <PieChart data={chartDisplayData} CenteredMetric={CenteredMetric} state={chartDisplayState} />

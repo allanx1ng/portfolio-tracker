@@ -47,6 +47,20 @@ input[type="number"] {
     linear-gradient(to top right, #ffb500, transparent 75%);
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 /* body { */
 /* color: rgb(var(--foreground-rgb));
   background: linear-gradient(

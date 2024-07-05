@@ -6,7 +6,7 @@ export default function ({ data, tvl }) {
   return (
     <>
       {/* <div className="overflow-x-auto transition-opacity duration-300 ease-in-out text-primary grid grid-cols-1 gap-2 py-4"> */}
-        <div className="overflow-x-auto transition-opacity duration-300 ease-in-out grid grid-cols-1 gap-2 py-4 bg-primary p-8 my-8 rounded-3xl">
+        <div className="overflow-x-auto transition-opacity duration-300 ease-in-out grid grid-cols-1 gap-2 py-4 pb-8 bg-secondary p-8 my-8 rounded-3xl">
           {/* <div className="grid grid-cols-6 uppercase text-sm leading-normal">
             <div className="py-3 px-6 text-center">Portfolio</div>
             <div className="py-3 px-6 text-center">Portfolio Value</div>
@@ -51,7 +51,7 @@ export default function ({ data, tvl }) {
           ))} */}
 
           <>
-            <div className="grid grid-cols-7 uppercase leading-normal px-10 py-2 font-bold text-white">
+            <div className="grid grid-cols-7 uppercase leading-normal px-10 py-2 font-bold text-black">
               <div className="text-center col-span-2 justify-self-start">Asset</div>
               <div className="text-right justify-self-end">Portfolio Type</div>
               <div className="text-right justify-self-end">Num. Holdings</div>

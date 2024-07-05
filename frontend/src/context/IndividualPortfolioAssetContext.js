@@ -1,7 +1,6 @@
 "use client"
 
 import React, { createContext, useState, useEffect } from "react"
-import apiClient from "@/util/apiClient"
 import { getPortfolio } from "@/util/getUserPortfolios"
 
 const PortfolioContext = createContext()
@@ -9,6 +8,7 @@ const PortfolioContext = createContext()
 export const PortfolioProvider = ({ children, name }) => {
   const [portfolio, setPortfolio] = useState([])
   const [data, setData] = useState([])
+  const [tvl, setTvl] = useState(0)
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
   const [reload, setReload] = useState(false)
@@ -57,16 +57,19 @@ export const PortfolioProvider = ({ children, name }) => {
       if (data) {
         // console.log(data)
         setPortfolio(data)
+        // console.log(data.tvl)
+        setTvl(data.tvl)
         setError(false)
         // setLoading(false)
       }
     } catch (err) {
       console.log(err)
       if (err.response && err.response.status) {
-        errorMsg(err.response.status)
+        // errorMsg(err.response.status)
         setError(err.response.status)
       } else {
-        errorMsg(err.message)
+        // errorMsg(err.message)
+        console.log(err.message)
       }
       // errorMsg(errerr.response.status)
       // setError(err.response.status)
@@ -77,7 +80,7 @@ export const PortfolioProvider = ({ children, name }) => {
   }
 
   return (
-    <PortfolioContext.Provider value={{ portfolio, data, loading, error, setReload }}>
+    <PortfolioContext.Provider value={{ portfolio, data, tvl, loading, error, setReload }}>
       {children}
     </PortfolioContext.Provider>
   )

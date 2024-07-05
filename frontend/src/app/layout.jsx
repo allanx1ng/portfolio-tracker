@@ -30,9 +30,11 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <body className={`${inter.className} min-h-screen h-screen font-semibold`}>
             <ToastContainer />
-            <Navbar />
-            {children}
-            <Footer />
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </div>
           </body>
         </AuthProvider>
       </ThemeProvider>

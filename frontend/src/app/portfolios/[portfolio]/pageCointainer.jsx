@@ -26,12 +26,13 @@ export default function ({ params }) {
   if (error) return <ErrorCode error={error} />
 
   return (
-    <div className="p-8 bg-white text-black">
+    <div className="bg-white text-black">
+      <h1 className="mt-8 text-black">Portfolio: {params.portfolio}</h1>
       {data.length == 0 ? (
-        <ErrorCode error={204} />
+        <ErrorCode error={204} text={"No assets in this portfolio, add some to get started!"} />
       ) : (
         <>
-          <h1 className="mt-8 text-black">Portfolio</h1>
+          
           <div className="grid w-full grid-cols-1 lg:grid-cols-2 py-8 gap-8 h-600px">
             <div className="w-full min-h-1/2 bg-white rounded-3xl flex items-center justify-center col-span-2">
               {/* <BarChart assetData={data} /> */}

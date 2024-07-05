@@ -2,6 +2,7 @@
 import Dropdown from "@/components/Dropdown"
 // import { useState, useEffect } from "react"
 import { useAuth } from "@/context/AuthContext"
+import { Fragment } from "react"
 // import { useState } from "react"
 
 const CheckUser = () => {
@@ -16,32 +17,10 @@ const CheckUser = () => {
     <div className="">
       {user ? (
         <div>
-          {/* <button
-            className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
-            // href="/profile"
-            onClick={() => {
-              setContextMenu(!contextMenu)
-            }}
-          >
-            {user.email}
-           
-          </button> */}
           <Dropdown user={user} logout={logout} />
-          {/* <>/</> */}
-          {/* {contextMenu && <Dropdown/>} */}
-
-          {/* <a
-            href="/login"
-            // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
-            className="btn btn-sm btn-primary mx-2"
-            onClick={handleLogout}
-          >
-            Logout
-          </a> */}
-          {/* {contextMenu && <div className="w-400px h-500px bg-cyan-200">contextmenu</div>} */}
         </div>
       ) : (
-        <div className="">
+        <div className="text-white">
           <a
             href="/login"
             // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"

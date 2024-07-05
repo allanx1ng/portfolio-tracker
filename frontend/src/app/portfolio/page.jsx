@@ -1,6 +1,4 @@
 "use client"
-import Settings from "./Settings"
-
 import { percentGainCalc, round } from "@/util/util"
 import ErrorCode from "@/components/ErrorCode"
 import AssetTable from "@/components/tables/AssetTable"
@@ -167,7 +165,7 @@ export default function () {
         </div>
       </div>
 
-      <Settings />
+      {/* <Settings /> */}
     </div>
   )
 }
