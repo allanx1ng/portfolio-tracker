@@ -1,8 +1,8 @@
 "use client"
 import { ResponsivePie } from "@nivo/pie"
 import { useEffect, useState } from "react"
-import { percentPortfolioCalc, round } from "@/util/util"
-import { usePortfolio } from "@/context/TotalAssetContext"
+// import { percentPortfolioCalc, round } from "@/util/util"
+// import { usePortfolio } from "@/context/TotalAssetContext"
 import { animated } from "@react-spring/web"
 
 // make sure parent container have a defined height when using
@@ -10,63 +10,17 @@ import { animated } from "@react-spring/web"
 // no chart will be rendered.
 // website examples showcase many properties,
 // you'll often use just a few of them.
-const PieChart = ({ state }) => {
-  const { data, tvl } = usePortfolio()
+const PieChart = ({ data, CenteredMetric, state }) => {
+//   const { data, tvl } = usePortfolio()
   //   const state = "percent"
   //   console.log(data)]
 
-  const [displayData, setDisplayData] = useState([])
-  useEffect(() => {
-    processData()
-  }, [data])
 
-  const processData = () => {
-    let totalAmt = 0
-    let totalPercentage = 0
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i]
-      //   console.log(item)
-      if (totalPercentage > 90) {
-        displayData[i] = {
-          id: "Other",
-          label: "Other",
-          value: state == "dollar" ? round(tvl - totalAmt, 0) : round(100 - totalPercentage, 2),
-        }
-        break
-      }
-      totalPercentage += round(percentPortfolioCalc(item.current_value, tvl), 2)
-      totalAmt += Number(item.current_value)
-      displayData[i] = {
-        id: item.asset_name,
-        label: item.asset_ticker,
-        value:
-          state == "dollar"
-            ? round(item.current_value, 0)
-            : round(percentPortfolioCalc(item.current_value, tvl), 2),
-      }
-    }
-  }
-
-  const CenteredMetric = ({ centerX, centerY }) => (
-    <text
-      x={centerX}
-      y={centerY}
-      textAnchor="middle"
-      dominantBaseline="central"
-      className="font-semibold text-xl flex gap-10"
-    >
-      <tspan x={centerX} dy="-2rem">
-        Net Worth:
-      </tspan>
-      <tspan x={centerX} dy="2rem" className="text-4xl">
-        ${round(tvl, 2)}
-      </tspan>
-    </text>
-  )
+  
 
   return (
     <ResponsivePie
-      data={displayData}
+      data={data}
       margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
       innerRadius={0.6}
       padAngle={0.7}
@@ -80,6 +34,14 @@ const PieChart = ({ state }) => {
       }}
       arcLinkLabelsSkipAngle={0}
       arcLinkLabelsTextColor={{ from: "color", modifiers: [["darker", 0.6]] }}
+      theme={{
+        labels: {
+          text: {
+            fontSize: "1rem", // Set the desired font size
+            fontWeight: "semibold",
+          },
+        },
+      }}
       //   arcLinkLabelsThickness={2}
       //   arcLinkLabelsColor={{ from: "color" }}
       //   arcLabelsTextColor={{

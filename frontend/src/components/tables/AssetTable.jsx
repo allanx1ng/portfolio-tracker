@@ -7,7 +7,7 @@ export default function ({ data, tvl }) {
   const [displayData, setDisplayData] = useState([])
   return (
     <>
-      <SortData data={data} displayData={displayData} setDisplayData={setDisplayData} />
+      {/* <SortData data={data} displayData={displayData} setDisplayData={setDisplayData} /> */}
       <div className="overflow-x-auto transition-opacity duration-300 ease-in-out text-primary grid grid-cols-1 gap-2 py-4">
         {/* <div className="min-w-screen bg-base-200 shadow-md rounded my-6 pt-3">
           <div className="grid grid-cols-7 uppercase text-sm leading-normal h-10">
@@ -75,7 +75,7 @@ export default function ({ data, tvl }) {
             <div className="text-center col-span-2 justify-self-end">Current Value / Gains</div>
           </div>
 
-          {displayData.map((holding, index) => (
+          {data.map((holding, index) => (
             <div
               key={index}
               className="grid grid-cols-7 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-4 font-semibold"

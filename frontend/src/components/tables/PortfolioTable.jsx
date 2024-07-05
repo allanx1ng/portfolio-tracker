@@ -65,7 +65,7 @@ export default function ({ data, tvl }) {
                 className="grid grid-cols-7 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-4 font-semibold"
               >
                 <a className="flex items-center col-span-2" href={`/portfolios/${p.portfolio_name}`}>
-                  <img src={""} alt={`Icon`} className="w-8 h-8 mr-4" />
+                  {/* <img src={""} alt={`Icon`} className="w-8 h-8 mr-4" /> */}
                   <div>
                     <div className="font-bold">{p.portfolio_name}</div>
                     <div className="text-sm text-gray-600">

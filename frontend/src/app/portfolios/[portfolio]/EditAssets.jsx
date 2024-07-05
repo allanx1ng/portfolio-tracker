@@ -3,8 +3,10 @@ import { useState, useEffect } from "react"
 import { round } from "@/util/util"
 import apiClient from "@/util/apiClient"
 import { errorMsg, successMsg, warnMsg } from "@/util/toastNotifications"
+import { usePortfolio } from "@/context/IndividualPortfolioAssetContext"
 
-export default function ({ data, setReload, portfolio_name, setEdit }) {
+export default function ({ portfolio_name, setEdit }) {
+  const { data, setReload } = usePortfolio()
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -146,7 +148,7 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
     <>
       <div className="transition-opacity duration-300 ease-in-out text-primary">
         {/* <ToastContainer/> */}
-        <div className="min-w-screen bg-secondary shadow-md rounded-3xl my-6 pt-3">
+        <div className="min-w-screen bg-white shadow-md rounded-3xl my-6 pt-3">
           <div className="grid grid-cols-4 uppercase text-sm leading-normal h-10">
             <div className="py-3 px-6 text-center">Delete?</div>
             <div className="py-3 px-6 text-center">name</div>
@@ -240,7 +242,7 @@ export default function ({ data, setReload, portfolio_name, setEdit }) {
       ))} */}
         </div>
       </div>
-      <button disabled={loading} onClick={(e) => handleSubmit(e)} className="btn btn-secondary">
+      <button disabled={loading} onClick={(e) => handleSubmit(e)} className="btn btn-primary text-white">
         Submit Changes
       </button>
     </>

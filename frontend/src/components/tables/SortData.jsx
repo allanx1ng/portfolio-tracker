@@ -99,7 +99,7 @@ export default function ({ data, displayData, setDisplayData }) {
             }}
             className={sort == "PercentAsc" ? "bg-base-200 rounded-md" : "rounded-md"}
           >
-            <a>Percent Gain Descending</a>
+            <a>Percent Gain Ascending</a>
           </li>
           <li
             onClick={() => {
