@@ -67,7 +67,7 @@ export default function () {
       }
     }
     // console.log(temp)
-    // setChartDisplayData(temp)
+    setChartDisplayData(temp)
   }
   return (
     <PieChart data={chartDisplayData} CenteredMetric={CenteredMetric} state={chartDisplayState} />
