@@ -92,8 +92,11 @@ CREATE TABLE Portfolio_assets (
     avg_price NUMERIC(36, 18),
     PRIMARY KEY (uid, portfolio_name, asset_id),
     -- FOREIGN KEY (uid) REFERENCES useraccount(uid),
+    
     FOREIGN KEY (uid, portfolio_name) REFERENCES Portfolio(uid, portfolio_name),
+    ON DELETE CASCADE,
     FOREIGN KEY (asset_id) REFERENCES Asset(asset_id)
+    ON DELETE CASCADE
 );
 
 

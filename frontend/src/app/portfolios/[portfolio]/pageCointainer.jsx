@@ -31,7 +31,7 @@ export default function ({ params }) {
   return (
     <div className="bg-white text-black">
       <h1 className="mt-8 text-black">Portfolio: {params.portfolio}</h1>
-      {portfolio.portfolio_data.account_type == "wallet" && (
+      {/* {portfolio.portfolio_data.account_type == "wallet" && (
         <div className="flex items-center align-baseline gap-x-2 my-4">
           <img
             src={wallets[portfolio.portfolio_data.provider].icon}
@@ -40,7 +40,7 @@ export default function ({ params }) {
           />
           <div> Wallet address: {portfolio.portfolio_data.wallet_address}</div>
         </div>
-      )}
+      )} */}
       {/* <h3>{portfolio.portfolio_data.account_type}</h3> */}
 
       {data.length == 0 ? (

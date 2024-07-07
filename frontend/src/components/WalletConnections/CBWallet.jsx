@@ -1,12 +1,12 @@
-'use client'
+"use client"
 import React, { useState } from "react"
 import { ethers } from "ethers"
 import WalletLink from "@coinbase/wallet-sdk"
-import { errorMsg } from "@/util/toastNotifications"
+import { successMsg, errorMsg } from "@/util/toastNotifications"
 
-const ConnectCoinbaseWallet = () => {
+const CBWallet = ({ name, callback }) => {
   const [account, setAccount] = useState(null)
-  const [balance, setBalance] = useState(null)
+  // const [balance, setBalance] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const connectCoinbaseWallet = async () => {
@@ -34,19 +34,22 @@ const ConnectCoinbaseWallet = () => {
 
         setAccount(publicKey)
 
+        const ethTokens = await callback(publicKey)
+
         // Initialize ethers provider
-        const provider = new ethers.BrowserProvider(ethereum)
+        // const provider = new ethers.BrowserProvider(ethereum)
 
-        // Fetch balance
-        const balanceBigNumber = await provider.getBalance(publicKey)
-        const balance = ethers.formatEther(balanceBigNumber)
+        // // Fetch balance
+        // const balanceBigNumber = await provider.getBalance(publicKey)
+        // const balance = ethers.formatEther(balanceBigNumber)
 
-        setBalance(balance)
+        // setBalance(balance)
+        successMsg("Connected to Coinbase Wallet")
       } else {
         console.error("No accounts found")
       }
     } catch (err) {
-        errorMsg("error connecting cb wallet")
+      // errorMsg("error connecting cb wallet")
       console.error("Error connecting to Coinbase wallet:", err)
     } finally {
       setIsLoading(false)
@@ -61,11 +64,10 @@ const ConnectCoinbaseWallet = () => {
       {account && (
         <div>
           <h3>Connected Account: {account}</h3>
-          <p>Balance: {balance !== null ? `${balance} ETH` : "Loading..."}</p>
         </div>
       )}
     </div>
   )
 }
 
-export default ConnectCoinbaseWallet
+export default CBWallet

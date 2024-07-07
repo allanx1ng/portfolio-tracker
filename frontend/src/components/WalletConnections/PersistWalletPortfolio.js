@@ -8,10 +8,18 @@ export const persistWalletPortfolio = async (provider, portfolioName, publicKey,
         provider: provider,
         portfolioName: portfolioName,
         walletAddress: publicKey,
+        chain: "sol"
       })
       return response
     } else if (chain == "btc") {
     } else if (chain == "eth") {
+      const response = await apiClient.post("/fetch-sol-tokens", {
+        provider: provider,
+        portfolioName: portfolioName,
+        walletAddress: publicKey,
+        chain: "eth"
+      })
+      return response
     } else {
     }
 

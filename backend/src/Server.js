@@ -8,7 +8,7 @@ const http = require("http")
 const Account = require("./routes/Account.js")
 const Authentication = require("./routes/Authentication.js")
 const Prices = require("./routes/Prices.js")
-const SolTokenFetch = require("./routes/SolTokenFetch.js")
+const FetchWalletBalance = require("./routes/FetchWalletBalance.js")
 
 const passportConfig = require("./middleware/PassportConfig")
 const AddPortfolio = require("./routes/AddPortfolio.js")
@@ -102,7 +102,7 @@ class Server {
     this.app.get("/single-asset", Authentication.authenticateToken, Portfolio.getSingleAsset)
 
     // get wallet balances:
-    this.app.post("/fetch-sol-tokens", Authentication.authenticateToken, SolTokenFetch.fetchTokens)
+    this.app.post("/fetch-sol-tokens", Authentication.authenticateToken, FetchWalletBalance.fetchTokens)
 
     this.app.post(
       "/login",

@@ -1,18 +1,32 @@
 const { Connection, PublicKey } = require("@solana/web3.js")
 const DatabaseInstance = require("../db/Database")
 const db = DatabaseInstance.getInstance()
+const { ethers } = require("ethers")
 
 const SOLANA_RPC_URL = "https://api.mainnet-beta.solana.com"
+const EVM_RPC_ENDPOINTS = {
+  ethereum: "https://rpc.ankr.com/eth",
+  polygon: "https://polygon-rpc.com",
+  bsc: "https://bsc-dataseed.binance.org/",
+}
 const SPL_TOKEN_PROGRAM_ID = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
 
-class SolTokenFetch {
+class FetchWalletBalance {
   static fetchTokens = async (req, res) => {
     const uid = req.user.uid
-    const { provider, portfolioName, walletAddress } = req.body
-    if (!walletAddress || !provider || !portfolioName) {
+    const { provider, portfolioName, walletAddress, chain } = req.body
+    if (!walletAddress || !provider || !portfolioName || !chain) {
       return res.status(400).send({ error: "Wallet address is required" })
     }
 
+    if (chain == "sol") {
+      return FetchWalletBalance.fetchSolTokens(uid, provider, portfolioName, walletAddress, res)
+    } else if (chain == "eth") {
+      return FetchWalletBalance.fetchEVMTokens(uid, provider, portfolioName, walletAddress, res)
+    }
+  }
+
+  static fetchSolTokens = async (uid, provider, portfolioName, walletAddress, res) => {
     try {
       const connection = new Connection(SOLANA_RPC_URL)
 
@@ -37,11 +51,12 @@ class SolTokenFetch {
       // return balance / 1e9
       console.log(balance)
       // console.log("sending tokens" + tokens)
-      const data = await SolTokenFetch.persistWalletToDb(
+      const data = await FetchWalletBalance.persistWalletToDb(
         uid,
         provider,
         portfolioName,
         walletAddress,
+        "sol",
         balance
       )
 
@@ -54,6 +69,40 @@ class SolTokenFetch {
       return res.status(200).json({ name: "Solana", ticker: "SOL", bal: balance })
     } catch (error) {
       console.log("Error fetching token accounts:", error)
+      return res.status(500).send({ error: "Failed to fetch token accounts" })
+    }
+  }
+
+  static fetchEVMTokens = async (uid, walletProvider, portfolioName, walletAddress, res) => {
+    const provider = new ethers.JsonRpcProvider(EVM_RPC_ENDPOINTS.ethereum)
+
+    try {
+      // Get balance
+      const balance = await provider.getBalance(walletAddress)
+      // console.log(balance)
+      const balanceInEth = ethers.formatEther(balance);
+      console.log(balanceInEth)
+
+      const data = await FetchWalletBalance.persistWalletToDb(
+        uid,
+        walletProvider,
+        portfolioName,
+        walletAddress,
+        "eth",
+        balanceInEth
+      )
+
+      if (data == "wallet-conflict") {
+        return res.status(409).json({ message: "Wallet address already exists under another name" })
+      } else if (data == "name-conflict") {
+        return res.status(409).json({ message: "Portfolio name already exists" })
+      }
+
+      return res.status(200).json({ name: "Ethereum", ticker: "ETH", bal: balanceInEth })
+
+      // console.log(`Code at Address: ${code}`);
+    } catch (error) {
+      console.error("Error fetching wallet info:", error)
       return res.status(500).send({ error: "Failed to fetch token accounts" })
     }
   }
@@ -83,7 +132,7 @@ class SolTokenFetch {
     }
   }
 
-  static persistWalletToDb = async (uid, provider, portfolioName, walletAddress, solBalance) => {
+  static persistWalletToDb = async (uid, provider, portfolioName, walletAddress, chain, balance) => {
     const sql = `SELECT * FROM portfolio WHERE uid=$1 AND portfolio_name=$2`
     const sql2 = `SELECT * FROM portfolio WHERE wallet_address=$1`
     try {
@@ -136,11 +185,17 @@ class SolTokenFetch {
 
       const data = await db.queryDbValues(query, [uid, portfolioName, provider, walletAddress])
 
-      const d2 = await db.queryDbValues(upsertAssetQuery, [uid, portfolioName, 5426, solBalance, 0])
+      if (chain == "sol") {
+        const d2 = await db.queryDbValues(upsertAssetQuery, [uid, portfolioName, 5426, balance, 0])
+      } else if (chain == "eth") {
+        const d2 = await db.queryDbValues(upsertAssetQuery, [uid, portfolioName, 1027, balance, 0])
+      }
+
+      
       // res.status(200).json({ message: "successlly connected wallet: " + walletAddress })
     } catch (err) {
       throw err
     }
   }
 }
-module.exports = SolTokenFetch
+module.exports = FetchWalletBalance

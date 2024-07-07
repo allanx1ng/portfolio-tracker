@@ -67,22 +67,12 @@ const Phantom = ({ name, callback }) => {
 
   return (
     <div>
-      {/* <ToastContainer /> */}
-
       <button onClick={connectPhantomWallet} disabled={isLoading}>
         {isLoading ? "Connecting..." : "Connect Phantom Wallet"}
       </button>
-
       {account && (
         <div>
           <h3>Connected Account: {account}</h3>
-          {/* <div>
-            {tokens.map((token, index) => (
-              <p key={index}>
-                Mint: {token.name} Balance: {token.bal}
-              </p>
-            ))}
-          </div> */}
         </div>
       )}
     </div>

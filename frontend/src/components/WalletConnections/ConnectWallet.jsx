@@ -6,6 +6,8 @@ import { errorMsg, infoMsg, successMsg } from "@/util/toastNotifications"
 import bs58 from "bs58"
 import Phantom from "./Phantom"
 import { persistWalletPortfolio } from "./PersistWalletPortfolio"
+import CBWallet from "./CBWallet"
+import Metamask from "./Metamask"
 
 // Function to check if an address is an EVM-compatible address
 const isEVMAddress = (address) => /^0x[a-fA-F0-9]{40}$/.test(address)
@@ -36,6 +38,10 @@ export default function ({ wallet }) {
       }
 
       if (isEVMAddress(publicKey)) {
+        infoMsg(publicKey)
+        const response = await persistWalletPortfolio(wallet.provider, name, publicKey, "eth")
+        // console.log(response)
+        return response.data
       } else if (isSolanaAddress(publicKey)) {
         infoMsg(publicKey)
         const response = await persistWalletPortfolio(wallet.provider, name, publicKey, "sol")
@@ -74,6 +80,8 @@ export default function ({ wallet }) {
       >
         <div>
           {wallet.provider == "phantom" && <Phantom name={name} callback={persistWalletData} />}
+          {wallet.provider == "cb_wallet" && <CBWallet name={name} callback={persistWalletData} />}
+          {wallet.provider == "metamask" && <Metamask name={name} callback={persistWalletData} />}
         </div>
         <div>OR</div>
         <div>
