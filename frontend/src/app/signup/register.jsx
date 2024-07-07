@@ -196,7 +196,7 @@ const Register = () => {
           />
         </label>
 
-        <button className="btn btn-accent btn-outline" onClick={signUp} disabled={isLoading}>
+        <button className="btn btn-success btn-outline" onClick={signUp} disabled={isLoading}>
           Sign Up
         </button>
       </form>

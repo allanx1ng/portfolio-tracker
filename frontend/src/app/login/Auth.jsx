@@ -105,7 +105,7 @@ const Auth = () => {
             required
           />
         </label>
-        <button disabled={isLoading} className="btn btn-accent btn-outline" onClick={handleLogin}>
+        <button disabled={isLoading} className="btn btn-success btn-outline" onClick={handleLogin}>
           {!isLoading && "Login"}
           {isLoading && <Loading />}
         </button>

@@ -10,9 +10,15 @@ export const PortfoliosProvider = ({ children }) => {
   const [tvl, setTvl] = useState(0)
   const [loadingPortfolios, setLoading] = useState(true)
   const [errorPortfolios, setError] = useState(false)
+  const [reload, setReload] = useState(false)
   useEffect(() => {
     fetchAllPortfolios()
   }, [])
+  useEffect(() => {
+    if (reload) {
+      fetchAllPortfolios()
+    }
+  }, [reload])
 
   const fetchAllPortfolios = async () => {
     try {
@@ -35,7 +41,9 @@ export const PortfoliosProvider = ({ children }) => {
   }
 
   return (
-    <PortfolioContext.Provider value={{ portfolios, tvl, loadingPortfolios, errorPortfolios }}>
+    <PortfolioContext.Provider
+      value={{ portfolios, tvl, loadingPortfolios, errorPortfolios, setReload }}
+    >
       {children}
     </PortfolioContext.Provider>
   )

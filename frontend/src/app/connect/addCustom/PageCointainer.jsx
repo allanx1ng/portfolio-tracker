@@ -1,20 +1,31 @@
 "use client"
-import { useState } from "react"
 import AddPortfolio from "./addPortfolio"
-import UserPortfolios from "./getUserPortfolios"
+import { usePortfolios } from "@/context/PortfoliosContext"
 
 export default function () {
-  const [reload, setReload] = useState(false)
+  // const [reload, setReload] = useState(false)
+  const { portfolios, tvl } = usePortfolios()
+  console.log(portfolios)
   return (
     <div className="bg-white p-8">
       <h2>Custom portfolios:</h2>
 
       <div>
-        <UserPortfolios reload={reload} />
+        {portfolios.map(
+          (p) =>
+            p.account_type == "custom" && (
+              <li key={p.uid + p.portfolio_name}>
+                <a href={`/portfolios/${p.portfolio_name}`}>{p.portfolio_name}</a>
+                {/* <div>{p.account_type}</div> */}
+              </li>
+            )
+        )}
       </div>
+
+      <div>{/* <UserPortfolios reload={reload} /> */}</div>
       {/* <button>add custom portfolio</button> */}
       <div>
-        <AddPortfolio setReload={setReload} />
+        <AddPortfolio />
       </div>
     </div>
   )

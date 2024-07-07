@@ -29,3 +29,7 @@ export const errorMsg = (msg, config = {}) => {
 export const warnMsg = (msg, config = {}) => {
   toast.warn(msg, { ...defaultConfig, ...config });
 };
+
+export const infoMsg = (msg, config = {}) => {
+  toast.info(msg, { ...defaultConfig, ...config });
+}

@@ -10,6 +10,7 @@ import AddAssetButton from "./AddAssetButton"
 import ErrorCode from "@/components/ErrorCode"
 import { usePortfolio } from "@/context/IndividualPortfolioAssetContext"
 import ChartProcessing from "./ChartProcessing"
+import { wallets } from "@/util/Constants"
 
 export default function ({ params }) {
   const { portfolio, data, loading, error, setReload } = usePortfolio()
@@ -25,14 +26,27 @@ export default function ({ params }) {
   if (loading) return <span className="loading loading-dots loading-md"></span>
   if (error) return <ErrorCode error={error} />
 
+  console.log(portfolio)
+
   return (
     <div className="bg-white text-black">
       <h1 className="mt-8 text-black">Portfolio: {params.portfolio}</h1>
+      {portfolio.portfolio_data.account_type == "wallet" && (
+        <div className="flex items-center align-baseline gap-x-2 my-4">
+          <img
+            src={wallets[portfolio.portfolio_data.provider].icon}
+            alt={`Icon`}
+            className="w-10 h-10 mr-4 rounded-full"
+          />
+          <div> Wallet address: {portfolio.portfolio_data.wallet_address}</div>
+        </div>
+      )}
+      {/* <h3>{portfolio.portfolio_data.account_type}</h3> */}
+
       {data.length == 0 ? (
         <ErrorCode error={204} text={"No assets in this portfolio, add some to get started!"} />
       ) : (
         <>
-          
           <div className="grid w-full grid-cols-1 lg:grid-cols-2 py-8 gap-8 h-600px">
             <div className="w-full min-h-1/2 bg-white rounded-3xl flex items-center justify-center col-span-2">
               {/* <BarChart assetData={data} /> */}

@@ -7,7 +7,7 @@ export default function() {
             All portfolios:
         </h1>
         <GetAllPortfolios/>
-        <a href="/connect/addCustom" className="btn btn-primary text-white">Add portfolios:</a>
+        <a href="/connect" className="btn btn-primary text-white">Add portfolios:</a>
         <BackButton url={'/portfolio'}/>
     </div>
 }

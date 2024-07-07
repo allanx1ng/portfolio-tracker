@@ -76,6 +76,7 @@ export const PortfolioProvider = ({ children, name }) => {
       // setLoading(false)
     } finally {
       setLoading(false)
+      setReload(false)
     }
   }
 

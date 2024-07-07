@@ -18,7 +18,7 @@ export default function () {
 
   return (
     <div className="">
-      <h1 className="mt-8 text-black">Portfolio</h1>
+      <h1 className="mt-8 text-black">All Assets</h1>
       <div className="grid w-full grid-cols-1 lg:grid-cols-2 py-8 gap-8 h-600px">
         <div className="w-full min-h-1/2 bg-white rounded-3xl flex items-center justify-center col-span-2">
           {/* <BarChart assetData={data} /> */}
@@ -142,7 +142,7 @@ export default function () {
                   {!loadingPortfolios &&
                     portfolios.map((e, index) => {
                       if (index > 3) {
-                        return <div key={"more"}>{portfolios.length - index} More</div>
+                        return
                       } else {
                         return (
                           <div key={index}>
@@ -154,6 +154,7 @@ export default function () {
                         )
                       }
                     })}
+                  {portfolios.length > 3 && <div>{portfolios.length - 4} More</div>}
                 </div>
                 <a href="/portfolios" className="btn my-4 col-span-2 btn-primary text-white">
                   View All Portfolios

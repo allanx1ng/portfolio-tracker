@@ -37,12 +37,24 @@ class SolTokenFetch {
       // return balance / 1e9
       console.log(balance)
       // console.log("sending tokens" + tokens)
-      const data = await SolTokenFetch.persistWalletToDb(uid, provider, portfolioName, walletAddress, balance)
+      const data = await SolTokenFetch.persistWalletToDb(
+        uid,
+        provider,
+        portfolioName,
+        walletAddress,
+        balance
+      )
 
-      res.status(200).json({ name: "Solana", ticker: "SOL", bal: balance })
+      if (data == "wallet-conflict") {
+        return res.status(409).json({ message: "Wallet address already exists under another name" })
+      } else if (data == "name-conflict") {
+        return res.status(409).json({ message: "Portfolio name already exists" })
+      }
+
+      return res.status(200).json({ name: "Solana", ticker: "SOL", bal: balance })
     } catch (error) {
       console.log("Error fetching token accounts:", error)
-      res.status(500).send({ error: "Failed to fetch token accounts" })
+      return res.status(500).send({ error: "Failed to fetch token accounts" })
     }
   }
 
@@ -78,17 +90,36 @@ class SolTokenFetch {
       const query = `
       INSERT INTO Portfolio (uid, portfolio_name, account_type, provider, wallet_address)
       VALUES ($1, $2, 'wallet', $3, $4) 
+      ON CONFLICT DO NOTHING
     `
       const upsertAssetQuery = `
-      INSERT INTO Portfolio_assets (uid, portfolio_name, asset_name, asset_ticker, amount, avg_price)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      ON CONFLICT (uid, portfolio_name, asset_name, asset_ticker)
+      INSERT INTO Portfolio_assets (uid, portfolio_name, asset_id, amount, avg_price)
+      VALUES ($1, $2, $3, $4, $5)
+      ON CONFLICT (uid, portfolio_name, asset_id)
       DO UPDATE SET amount = EXCLUDED.amount
     `
 
       try {
-        const data = await db.queryDbValues(sql, [uid, portfolioName])
-        const data2 = await db.queryDbValues(sql2, [walletAddress])
+        try {
+          const data = await db.queryDbValues(sql, [uid, portfolioName])
+          if (data.length > 0) {
+            console.log(409 + "ERROR")
+            return "name-conflict"
+          }
+        } catch (err) {
+          console.log(409 + "ERROR")
+          return "name-conflict"
+        }
+        try {
+          const data2 = await db.queryDbValues(sql2, [walletAddress])
+          if (data2.length > 0) {
+            console.log(409 + "ERROR")
+            return "wallet-conflict"
+          }
+        } catch (err) {
+          console.log(409 + "ERROR")
+          return "wallet-conflict"
+        }
       } catch (err) {
         // res
         //   .status(500)
@@ -105,14 +136,7 @@ class SolTokenFetch {
 
       const data = await db.queryDbValues(query, [uid, portfolioName, provider, walletAddress])
 
-      const d2 = await db.queryDbValues(upsertAssetQuery, [
-        uid,
-        portfolioName,
-        "Solana",
-        "SOL",
-        solBalance,
-        0,
-      ])
+      const d2 = await db.queryDbValues(upsertAssetQuery, [uid, portfolioName, 5426, solBalance, 0])
       // res.status(200).json({ message: "successlly connected wallet: " + walletAddress })
     } catch (err) {
       throw err

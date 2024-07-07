@@ -3,8 +3,10 @@ import apiClient from "@/util/apiClient"
 
 import { useState } from "react"
 import { successMsg, errorMsg } from "@/util/toastNotifications"
+import { usePortfolios } from "@/context/PortfoliosContext"
 
-export default function addPortfolio({ setReload }) {
+export default function addPortfolio() {
+  const {setReload} = usePortfolios()
   const [name, setName] = useState("")
   const handleSubmit = async (e) => {
     e.preventDefault()
