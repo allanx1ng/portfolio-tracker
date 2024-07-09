@@ -21,7 +21,7 @@ const Coin = async ({ params }) => {
   return (
     <div className="text-black">
       {initialData ? (
-        <div className="ml-40 gap-y-6 py-6 pt-20">
+        <div className=" gap-y-6 py-6 ">
           <div className="my-3">
             <div className="flex items-center">
               <img

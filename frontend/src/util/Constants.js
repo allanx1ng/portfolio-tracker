@@ -16,4 +16,9 @@ export const wallets = {
     name: "Phantom",
     icon: IMAGE_PATH + "Phantom-Icon_Square_512x512.png",
   },
+  custom: {
+    provider: "custom",
+    name: "Custom",
+    icon: null,
+  },
 }

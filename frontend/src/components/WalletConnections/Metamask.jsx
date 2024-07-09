@@ -5,7 +5,7 @@ import { BrowserProvider, formatEther } from "ethers"
 import { successMsg, errorMsg } from "@/util/toastNotifications"
 import { ToastContainer } from "react-toastify"
 
-const Metamask = () => {
+const Metamask = ({callback}) => {
   const [account, setAccount] = useState(null)
   const [balance, setBalance] = useState(null)
 
@@ -38,12 +38,14 @@ const Metamask = () => {
           }
 
           const account = accounts[0].address
-          console.log("Connected account:", account)
-          setAccount(account)
 
-          const balance = await provider.getBalance(account)
-          console.log("Account balance (wei):", balance.toString())
-          setBalance(formatEther(balance))
+          const res = await callback(account)
+          // console.log("Connected account:", account)
+          // setAccount(account)
+
+          // const balance = await provider.getBalance(account)
+          // console.log("Account balance (wei):", balance.toString())
+          // setBalance(formatEther(balance))
 
           successMsg("Connected Successfully")
         } else {

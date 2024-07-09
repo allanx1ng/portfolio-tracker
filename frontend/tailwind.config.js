@@ -188,7 +188,7 @@ module.exports = {
         green: {
           primary: "#0d9488",
 
-          secondary: "#dcfce7",
+          secondary: "#ccfbf1",
 
           accent: "#d9480d",
 

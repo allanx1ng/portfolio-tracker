@@ -45,6 +45,7 @@ export default function ({ wallet }) {
       } else if (isSolanaAddress(publicKey)) {
         infoMsg(publicKey)
         const response = await persistWalletPortfolio(wallet.provider, name, publicKey, "sol")
+        successMsg("success")
         // console.log(response)
         return response.data
       } else if (isBitcoinAddress(publicKey)) {
@@ -58,34 +59,47 @@ export default function ({ wallet }) {
       } else {
         errorMsg("Failed to connect to Phantom Wallet")
       }
-      throw err
     }
   }
 
   return (
     <>
-      <div>Choose a name for this portfolio</div>
+      <div>Choose a name for this portfolio:</div>
       <input
-        placeholder="Phantom"
+        placeholder="Wallet"
         value={name}
         onChange={(e) => {
           setName(e.target.value)
         }}
-        className="input input-primary"
+        className="input input-primary my-1"
       />
       <div
-        className={`transition-opacity duration-200 ease-in-out ${
+        className={`transition-opacity duration-200 ease-in-out my-8 ${
           name == "" ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
       >
+        {wallet.provider != "custom" && (
+          <div className="btn btn-primary text-white">
+            {wallet.provider == "phantom" && <Phantom name={name} callback={persistWalletData} />}
+            {wallet.provider == "cb_wallet" && (
+              <CBWallet name={name} callback={persistWalletData} />
+            )}
+            {wallet.provider == "metamask" && <Metamask callback={persistWalletData} />}
+          </div>
+        )}
+        {wallet.provider != "custom" && <div className=" my-2">OR</div>}
         <div>
-          {wallet.provider == "phantom" && <Phantom name={name} callback={persistWalletData} />}
-          {wallet.provider == "cb_wallet" && <CBWallet name={name} callback={persistWalletData} />}
-          {wallet.provider == "metamask" && <Metamask name={name} callback={persistWalletData} />}
-        </div>
-        <div>OR</div>
-        <div>
-          Import Wallet Manually: <input placeholder="0x1234" className="input input-primary" />
+          Import Wallet Manually:{" "}
+          <input
+            placeholder="0x1234"
+            className="input input-primary"
+            input={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />
+          <button className="btn" onClick={(e) => persistWalletData(address)}>
+            {" "}
+            Save
+          </button>
         </div>
       </div>
     </>

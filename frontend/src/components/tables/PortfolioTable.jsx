@@ -54,7 +54,7 @@ export default function ({ data, tvl }) {
 
         <>
           <div className="grid grid-cols-7 uppercase leading-normal px-10 py-2 font-bold text-black">
-            <div className="text-center col-span-2 justify-self-start">Asset</div>
+            <div className="text-center col-span-2 justify-self-start">Portfolio Name</div>
             <div className="text-right justify-self-end">Portfolio Type</div>
             <div className="text-right justify-self-end">Num. Holdings</div>
             <div className="text-right justify-self-end">Contributions</div>

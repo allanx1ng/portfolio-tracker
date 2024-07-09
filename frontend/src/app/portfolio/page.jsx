@@ -66,7 +66,7 @@ export default function () {
       {/* </div> */}
 
       <div className="my-8">
-        <div className="my-8 px-8 py-4 rounded-3xl bg-secondary">
+        <div>
           {data.length == 0 ? (
             <ErrorCode error={204} text={"No assets currently, add some to get started"} />
           ) : (

@@ -62,9 +62,9 @@ export default function ({ data, displayData, setDisplayData }) {
 
   return (
     <>
-      <details className="dropdown">
-        <summary className="btn m-1">Sort table:</summary>
-        <ul className={"menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow"}>
+      <div className="dropdown dropdown-end ">
+        <summary tabIndex={0} className="btn btn-sm m-1 text-black btn-ghost" role="button">Sort: {sort}</summary>
+        <ul tabIndex={0} className={"menu dropdown-content relative bg-base-100 rounded-box z-[1] w-52 p-2 shadow"}>
           <li
             onClick={() => {
               setSort("Value")
@@ -120,7 +120,7 @@ export default function ({ data, displayData, setDisplayData }) {
             <a>Total Gain Ascending</a>
           </li>
         </ul>
-      </details>
+      </div>
     </>
   )
 }

@@ -2,7 +2,7 @@
 import BackButton from "@/components/BackButton"
 import GetAllPortfolios from "./getAllPortfolios"
 export default function() {
-    return <div className="p-8">
+    return <div className="">
         <h1 className="my-8">
             All portfolios:
         </h1>
