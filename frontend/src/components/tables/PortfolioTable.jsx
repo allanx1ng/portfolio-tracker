@@ -3,7 +3,7 @@ import { percentGainCalc, percentPortfolioCalc, round } from "@/util/util"
 import { wallets } from "@/util/Constants"
 
 export default function ({ data, tvl }) {
-    console.log(data)
+  console.log(data)
   //   console.log(tvl)
   return (
     <>
@@ -64,10 +64,16 @@ export default function ({ data, tvl }) {
           {data.map((p, idx) => (
             <div
               key={idx}
-              className="grid grid-cols-7 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-4 font-semibold"
+              className="grid grid-cols-7 w-full rounded-full bg-white shadow-md justify-between items-center px-10 py-4 font-semibold gap-x-1"
             >
               <a className="flex items-center col-span-2" href={`/portfolios/${p.portfolio_name}`}>
-                {p.account_type == "wallet" && <img src={wallets[p.provider].icon} alt={`Icon`} className="w-10 h-10 mr-4 rounded-full" />}
+                {p.account_type == "wallet" && (
+                  <img
+                    src={wallets[p.provider].icon}
+                    alt={`Icon`}
+                    className="w-10 h-10 mr-4 rounded-full"
+                  />
+                )}
                 <div>
                   <div className="font-bold">{p.portfolio_name}</div>
                   <div className="text-sm text-gray-600">
@@ -75,7 +81,14 @@ export default function ({ data, tvl }) {
                   </div>
                 </div>
               </a>
-              <div className="text-sm justify-self-end">{p.account_type.toUpperCase()}</div>
+              <div className="text-sm text-right truncate">
+                <div>{p.account_type.toUpperCase()}</div>
+                {p.account_type === "wallet" && (
+                  <div className="truncate max-w-full min-w-0 text-gray-600">
+                    {p.wallet_address}
+                  </div>
+                )}
+              </div>
               <div className="text-sm justify-self-end">{p.holdings}</div>
               <div className="text-sm justify-self-end">${round(p.contributions, 2)}</div>
               <div className="flex justify-end justify-self-end col-span-2">

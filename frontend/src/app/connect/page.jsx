@@ -3,6 +3,8 @@ import Phantom from "@/components/WalletConnections/Phantom"
 import CoinbaseWallet from "@/components/WalletConnections/CBWallet"
 // import Coinbase from "@/components/WalletConnections/Coinbase"
 import { wallets } from "@/util/Constants"
+import { Icon } from "@iconify/react"
+
 
 const Connect = () => {
   console.log()
@@ -22,7 +24,12 @@ const Connect = () => {
           {Object.entries(wallets).map(([key, value], index) => (
             <a href={`/connect/${key}`} className="w-200px h-200px" key={index}>
               <div className="w-200px h-200px bg-white rounded-3xl flex flex-col flex-1 items-center justify-center text-lg shadow-md">
-                <img src={value.icon} alt="image" className="w-40 h-40 rounded-full p-4" />
+                {key == "custom" ? (
+                  <Icon icon="material-symbols:wallet" className="w-40 h-40 rounded-full p-4"/>
+                ) : (
+                  <img src={value.icon} alt="image" className="w-40 h-40 rounded-full p-4" />
+                )}
+
                 <div>{value.name}</div>
               </div>
             </a>
