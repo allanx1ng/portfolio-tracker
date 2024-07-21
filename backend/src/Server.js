@@ -69,6 +69,35 @@ class Server {
   registerRoutes() {
     // Registration
     this.app.post("/register", Account.create)
+    // this.app.post("/oauth/google", passport.authenticate('google', { scope: ['openid', 'profile', 'email'] }))
+    this.app.post("/oauth/google", Authentication.oauth)
+    this.app.get(
+      "/oauth",
+      (req, res, next) => {
+        passport.authenticate("google", { session: false }, (err, user, info) => {
+          if (err) {
+            return res.status(500).json({ message: "Internal Passport Server Error" })
+          }
+          if (!user) {
+            // Determine the appropriate status code and message
+            console.log(err, user, info)
+            return res
+              .status(info.status || 401)
+              .json({ message: info.message || "Authentication failed" })
+          }
+          // If user is successfully authenticated, forward to Authentication.login
+          req.body.email = user.email // Manually set user
+          req.body.src = 'oauth'
+          return next() // Pass to the next middleware/function
+        })(req, res, next)
+      },
+      Authentication.login
+    )
+
+    // this.app.get('/oauth', 
+    //   passport.authenticate('google', { failureRedirect: '/' }), 
+    //   Authentication.login
+    // );
     this.app.get("/verify-email", Account.verify)
 
     // fetch asset prices
@@ -102,7 +131,11 @@ class Server {
     this.app.get("/single-asset", Authentication.authenticateToken, Portfolio.getSingleAsset)
 
     // get wallet balances:
-    this.app.post("/fetch-sol-tokens", Authentication.authenticateToken, FetchWalletBalance.fetchTokens)
+    this.app.post(
+      "/fetch-sol-tokens",
+      Authentication.authenticateToken,
+      FetchWalletBalance.fetchTokens
+    )
 
     this.app.post(
       "/login",

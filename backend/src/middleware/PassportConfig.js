@@ -1,8 +1,62 @@
 const LocalStrategy = require("passport-local").Strategy
+const GoogleStrategy = require("passport-google-oauth2").Strategy
 const bcrypt = require("bcrypt")
 const DatabaseInstance = require("../db/Database")
 
 module.exports = (passport) => {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: "/oauth",
+        passReqToCallback: true,
+      },
+      async (req, accessToken, refreshToken, profile, done) => {
+        try {
+          // const getUserData = async (access_token) => {
+          //   const response = await fetch(
+          //     `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
+          //   )
+          //   const data = await response.json()
+          //   return data
+          // }
+
+          // const userData = await getUserData(accessToken)
+          const db = DatabaseInstance.getInstance()
+          console.log(profile)
+
+          let user = await db.queryDbValues("SELECT * FROM GoogleLogin WHERE googleId = $1", [profile.id]);
+
+          if (user.length === 0) {
+            const newUser = {
+              googleId: profile.id,
+              username: profile.displayName,
+              email: profile.email,
+            }
+
+            const insertAccount = `INSERT INTO UserAccount (email, username, created_on) VALUES ($1, $2, $3);`
+            const insertLogin =
+              "INSERT INTO GoogleLogin (googleId, email) VALUES ($1, $2) RETURNING *"
+
+            const pgTimestamp = new Date().toISOString().replace("T", " ").replace("Z", "")
+
+            await db.queryDbValues(insertAccount, [newUser.email, newUser.username, pgTimestamp])
+            const dataLogin = await db.queryDbValues(insertLogin, [newUser.googleId, newUser.email])
+
+            user = dataLogin[0]
+          } else {
+            user = user[0]
+          }
+
+          return done(null, user)
+        } catch (err) {
+          return done(err, false)
+        }
+      }
+    )
+  )
+
   passport.use(
     new LocalStrategy(
       {
@@ -48,7 +102,7 @@ module.exports = (passport) => {
             })
           })
         } catch (err) {
-          console.error("Error during verifyCredentials:", err);
+          console.error("Error during verifyCredentials:", err)
           return done(err)
         }
       }
@@ -72,7 +126,7 @@ module.exports = (passport) => {
 
       return done(null, data[0])
     } catch (err) {
-      console.error("Error during deserializeUser:", err);
+      console.error("Error during deserializeUser:", err)
       return done(err, false) // In case of an error
     }
   })

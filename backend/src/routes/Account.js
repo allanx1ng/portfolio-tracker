@@ -3,9 +3,7 @@ const Emailer = require("../util/Emailer")
 const bcrypt = require("bcrypt")
 const DatabaseInstance = require("../db/Database")
 const db = DatabaseInstance.getInstance()
-require('dotenv').config()
-const secretKey = process.env.EMAIL_VERIFY_KEY
-
+require("dotenv").config()
 class Account {
   static async create(req, res) {
     const { email, username, password } = req.body
@@ -15,13 +13,13 @@ class Account {
       }
 
       if (!validator.isEmail(email)) {
-        return res.status(400).send({message: 'email format not valid'})
+        return res.status(400).send({ message: "email format not valid" })
       }
       if (password.length > 20 || password.length < 3) {
-        return res.status(400).send({password: 'password length not valid'})
+        return res.status(400).send({ password: "password length not valid" })
       }
       if (!username) {
-        return res.status(400).send({message: 'username cannot be empty'})
+        return res.status(400).send({ message: "username cannot be empty" })
       }
 
       // check if user is already registered
@@ -29,7 +27,9 @@ class Account {
       if (dataEmail.length > 0) {
         return res.status(400).send({ message: "User with this email already exists" })
       }
-      const dataUser = await db.queryDbValues(`SELECT * FROM UserAccount WHERE username=$1`, [username])
+      const dataUser = await db.queryDbValues(`SELECT * FROM UserAccount WHERE username=$1`, [
+        username,
+      ])
       if (dataUser.length > 0) {
         return res.status(400).send({ message: "Username already exists" })
       }
@@ -51,8 +51,6 @@ class Account {
 
       const dataLogin = await db.queryDbValues(insertLogin, [email, hashedPassword])
 
-     
-
       // Emailer.sendVerificationEmail(email)
 
       res.status(201).send({ result: "registration success" })
@@ -62,7 +60,17 @@ class Account {
     }
   }
 
-  static async verify(req, res) {}
+  static async verify(req, res) {
+
+    const getUserData = async (access_token) => {
+
+      const response = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`);
+      
+      //console.log('response',response);
+      const data = await response.json();
+      console.log('data',data);
+    }
+  }
 }
 
 module.exports = Account

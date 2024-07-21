@@ -28,13 +28,17 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token")
     if (token != null) {
-      const decodedToken = decodeToken(token)
+      try {
+        const decodedToken = decodeToken(token)
 
-      const didTokenExpire = Date.now() >= decodedToken.exp * 1000
-      if (didTokenExpire) {
-        logout()
-      } else {
-        setUser({ ...decodedToken, token })
+        const didTokenExpire = Date.now() >= decodedToken.exp * 1000
+        if (didTokenExpire) {
+          logout()
+        } else {
+          setUser({ ...decodedToken, token })
+        }
+      } catch (err) {
+        console.error("invalid token")
       }
     }
   }, [])

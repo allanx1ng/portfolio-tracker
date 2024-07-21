@@ -5,6 +5,8 @@ require("dotenv").config()
 const DatabaseInstance = require("../db/Database")
 const db = DatabaseInstance.getInstance()
 
+const { OAuth2Client } = require("google-auth-library")
+
 // // const db = DatabaseInstance.getInstance();
 const secretKey = process.env.JWT_SECRET_KEY
 class Authentication {
@@ -37,6 +39,12 @@ class Authentication {
         expiresIn: "12h",
       })
       console.log(token)
+
+      if (req.body.src == "oauth") {
+        // Redirect to the frontend with the token
+        return res.redirect(`http://localhost:3000/auth/google/callback?token=${token}`)
+      }
+
       return res.status(201).json({ message: "Logged in successfully", token: token })
     } catch (err) {
       res.status(500)
@@ -44,6 +52,29 @@ class Authentication {
   }
 
   static async logout(req, res) {}
+
+  static async oauth(req, res) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000")
+    res.header("Access-Control-Allow-Credentials", "true")
+    res.header("Referrer-Policy", "no-referrer-when-downgrade")
+    const redirectURL = "http://localhost:4321/oauth"
+
+    const oAuth2Client = new OAuth2Client(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      redirectURL
+    )
+
+    // Generate the url that will be used for the consent dialog.
+    const authorizeUrl = oAuth2Client.generateAuthUrl({
+      access_type: "offline",
+      scope:
+        "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid ",
+      prompt: "consent",
+    })
+
+    res.json({ url: authorizeUrl })
+  }
 }
 
 module.exports = Authentication
