@@ -84,8 +84,8 @@ const Register = () => {
     tryRegister()
   }
   return (
-    <div className="w-screen h-screen">
-      <ToastContainer className="z-50" />
+    <div className="w-full h-screen">
+      {/* <ToastContainer className="z-50" /> */}
       {/* {justRegistered && 
         <VerifyEmail/>
       } */}

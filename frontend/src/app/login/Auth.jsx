@@ -62,7 +62,7 @@ const Auth = () => {
     }
   }
   return (
-    <div className="w-screen h-screen">
+    <div className="w-full h-screen left-0">
       <form className="grid w-full justify-center p-10 space-y-2">
         <label className="input input-bordered input-primary flex items-center gap-2">
           <svg
