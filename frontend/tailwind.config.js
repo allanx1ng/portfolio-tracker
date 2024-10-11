@@ -185,6 +185,27 @@ module.exports = {
         },
       },
       {
+        blue: {
+          primary: "#0284c7",
+
+          secondary: "#bae6fd",
+
+          accent: "#d9480d",
+
+          neutral: "#FFF5F5",
+
+          "base-100": "#ffffff",
+
+          info: "#7dd3fc",
+
+          success: "#4ade80",
+
+          warning: "#fbbf24",
+
+          error: "#f43f5e",
+        },
+      },
+      {
         green: {
           primary: "#0d9488",
 

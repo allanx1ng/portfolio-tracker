@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
     })();
   `
   return (
-    <html lang="en" data-theme="green">
+    <html lang="en" data-theme="blue">
       <head>
         <script dangerouslySetInnerHTML={{ __html: setThemeScript }} />
       </head>

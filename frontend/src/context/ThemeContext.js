@@ -3,7 +3,7 @@
 // ThemeContext.js
 import { createContext, useContext, useState, useEffect } from "react"
 
-const DEFAULT_LIGHT = "green"
+const DEFAULT_LIGHT = "blue"
 const DEFAULT_DARK = "dark"
 
 const ThemeContext = createContext()
