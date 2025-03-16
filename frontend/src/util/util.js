@@ -33,6 +33,36 @@ export const round = (num, maxDecimals) => {
   return num
 }
 
+/**
+ * Format a number to a specified number of decimal places safely
+ * @param {number} num - The number to format
+ * @param {number} decimals - The number of decimal places (default: 2)
+ * @returns {number} - The formatted number
+ */
+export const formatNumber = (num, decimals = 2) => {
+  // Ensure num is a number
+  if (isNaN(num)) {
+    return 0
+  }
+  num = Number(num)
+  
+  // Ensure decimals is within valid range (0-20)
+  decimals = Math.max(0, Math.min(20, decimals))
+  
+  // Format the number using toFixed
+  return Number(num.toFixed(decimals))
+}
+
+/**
+ * Format currency value
+ * @param {number} value - The value to format
+ * @param {number} decimals - The number of decimal places (default: 2)
+ * @returns {string} - The formatted currency string
+ */
+export const formatCurrency = (value, decimals = 2) => {
+  return `$${formatNumber(value, decimals).toLocaleString()}`
+}
+
 export const percentGainCalc = (val, contributions) => {
   if (val == 0 && contributions == 0) {
     return 0

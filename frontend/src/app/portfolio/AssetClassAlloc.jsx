@@ -1,4 +1,4 @@
-import PieChart from "@/components/charts/PieChart"
+import PieChart from "@/components/charts/pie/PieChart"
 
 import { useState, useEffect } from "react"
 import { usePortfolio } from "@/context/TotalAssetContext"

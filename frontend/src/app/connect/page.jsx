@@ -4,6 +4,7 @@ import CoinbaseWallet from "@/components/WalletConnections/CBWallet"
 // import Coinbase from "@/components/WalletConnections/Coinbase"
 import { wallets } from "@/util/Constants"
 import { Icon } from "@iconify/react"
+import Brokerage from "./brokerage/page"
 
 
 const Connect = () => {
@@ -34,6 +35,12 @@ const Connect = () => {
               </div>
             </a>
           ))}
+        </div>
+        <div className="grid grid-cols-5">
+          <h2 className="col-span-full pb-4">Brokerages</h2>
+          <Brokerage/>
+        
+          
         </div>
       </div>
       <a className="btn btn-primary" href="/connect/addCustom">

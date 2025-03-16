@@ -15,6 +15,7 @@ const AddPortfolio = require("./routes/AddPortfolio.js")
 const SearchAssets = require("./routes/SearchAssets.js")
 const Portfolio = require("./routes/Portfolio.js")
 const Payments = require("./routes/Payments.js")
+const ConnectBrokerage = require("./routes/ConnectAccount.js")
 
 class Server {
   constructor(port) {
@@ -158,6 +159,22 @@ class Server {
       },
       Authentication.login
     )
+
+    // plaid
+    this.app.get("/plaid", ConnectBrokerage.plaid)
+
+    // In registerRoutes method
+    this.app.post("/connect/plaid/create-link",
+      Authentication.authenticateToken,
+      ConnectBrokerage.createLinkToken
+    );
+
+    this.app.post("/connect/plaid/exchange-token",
+      Authentication.authenticateToken,
+      ConnectBrokerage.connectBrokerage
+    );
+
+    this.app.post("/connect/brokerage", Authentication.authenticateToken, ConnectBrokerage.connectBrokerage)
 
     this.app.post("/donation", Authentication.authenticateToken, Payments.donateMoney)
   }

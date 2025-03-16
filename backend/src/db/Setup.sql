@@ -1,5 +1,5 @@
 
-
+DROP TABLE IF EXISTS plaid_connections CASCADE;
 DROP TABLE IF EXISTS Portfolio_assets CASCADE;
 DROP TABLE IF EXISTS StockAsset CASCADE;
 DROP TABLE IF EXISTS CryptoAsset CASCADE;
@@ -105,6 +105,18 @@ CREATE TABLE Portfolio_assets (
     ON DELETE CASCADE,
     FOREIGN KEY (asset_id) REFERENCES Asset(asset_id)
     ON DELETE CASCADE
+);
+
+CREATE TABLE plaid_connections (
+    id SERIAL PRIMARY KEY,
+    uid INTEGER REFERENCES useraccount(uid), -- Changed from users(id) to match your schema
+    access_token TEXT NOT NULL,
+    item_id TEXT NOT NULL,
+    institution_id TEXT NOT NULL,
+    institution_name TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(uid, institution_id) -- Prevent duplicate connections for same institution
 );
 
 
