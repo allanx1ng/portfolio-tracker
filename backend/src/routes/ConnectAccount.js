@@ -10,16 +10,20 @@ class ConnectAccount {
             console.log(req.body);
             const configs = {
                 user: { client_user_id: uid.toString() },
-                client_name: 'Your App Name',
+                client_name: 'Portfolio Tracker',
                 products: ['transactions'],
                 transactions: {
-                    days_requested: 10
-                  },
-                country_codes: ['CA'],
-                language: 'en',
-                // institution_id: institution_id
+                    days_requested: 30
+                },
+                country_codes: ['CA'], // Focus on Canadian institutions
+                language: 'en'
             };
             
+            // Only add institution_id if it's provided
+            if (institution_id) {
+                configs.institution_id = institution_id;
+            }
+
             const response = await plaidClient.linkTokenCreate(configs);
             console.log(response.data);
             res.json({ link_token: response.data.link_token });
@@ -28,52 +32,70 @@ class ConnectAccount {
         }
     }
 
-    static async connectBrokerage(req, res) {
+    static async connectAccount(req, res) {
         try {
             const { public_token, institution_id, institution_name } = req.body;
             const { uid } = req.user;
             console.log(req.body);
+            
+            // Check if this institution is already connected for this user
+            // const existingConnections = await db.queryDbValues(
+            //     'SELECT institution_name FROM plaid_connections WHERE uid = $1 AND institution_id = $2',
+            //     [uid, institution_id]
+            // );
+            
+            // if (existingConnections && existingConnections.length > 0) {
+            //     return res.status(409).json({
+            //         error: 'Account already connected',
+            //         message: `${institution_name} is already connected to your account. You can refresh your transactions from the dashboard.`,
+            //         institutionId: institution_id
+            //     });
+            // }
+            
             // Exchange public token for access token
             const tokenResponse = await plaidClient.itemPublicTokenExchange({
                 public_token,
             });
             const { access_token, item_id } = tokenResponse.data;
-            console.log(access_token);
-
-            // Get investment holdings
-            const holdings = await plaidClient.investmentsHoldingsGet({
-                access_token,
-            });
-            console.log(holdings.data)
+            console.log(tokenResponse.data);
+            res.status(500).json({});
+            return
 
             // Store access token and account info in database
             const query = `
             INSERT INTO plaid_connections 
             (uid, access_token, item_id, institution_id, institution_name) 
-            VALUES ($1, $2, $3, $4, $5)
-            ON CONFLICT (uid, institution_id) 
-            DO UPDATE SET 
-                access_token = EXCLUDED.access_token,
-                item_id = EXCLUDED.item_id,
-                last_updated = CURRENT_TIMESTAMP`;
+            VALUES ($1, $2, $3, $4, $5)`;
 
-        await db.queryDbValues(query, [
-            uid, 
-            access_token, 
-            item_id, 
-            institution_id, 
-            institution_name
-        ]);
+            await db.queryDbValues(query, [
+                uid,
+                access_token,
+                item_id,
+                institution_id,
+                institution_name
+            ]);
 
             console.log('Account connected successfully');
-            // Format holdings data for frontend
-            const formattedHoldings = holdings.data.holdings.map(holding => ({
-                security_id: holding.security_id,
-                quantity: holding.quantity,
-                value: holding.institution_value
-            }));
+            
+            // Trigger an initial transaction sync after connecting
+            // This can be async - we don't need to wait for it to complete
+            try {
+                const Transactions = require('./Transactions');
+                Transactions.SyncTransactions({
+                    body: { item_id },
+                    user: { uid }
+                }, { 
+                    // Mock response object for background sync
+                    status: () => ({ json: () => {} })
+                });
+            } catch (syncError) {
+                console.error('Initial sync error (non-fatal):', syncError);
+            }
 
-            res.status(200).json({ holdings: formattedHoldings });
+            res.status(200).json({ 
+                success: true,
+                message: 'Account connected successfully'
+            });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
@@ -82,11 +104,12 @@ class ConnectAccount {
     static async getHoldings(req, res) {
         try {
             const { uid } = req.user;
+            const { institution_id } = req.body;
 
             // Get stored access token
             const connection = await db.queryDbValues(
-                'SELECT access_token FROM plaid_connections WHERE uid = $1',
-                [uid]
+                'SELECT access_token FROM plaid_connections WHERE uid = $1 AND institution_id = $2',
+                [uid, institution_id]
             );
 
             if (!connection.rows[0]) {

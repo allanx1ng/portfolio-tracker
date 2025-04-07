@@ -16,6 +16,9 @@ const SearchAssets = require("./routes/SearchAssets.js")
 const Portfolio = require("./routes/Portfolio.js")
 const Payments = require("./routes/Payments.js")
 const ConnectBrokerage = require("./routes/ConnectAccount.js")
+const Transactions = require("./routes/Transactions.js")
+const ConnectedAccounts = require("./routes/ConnectedAccounts.js")
+const SchemaManager = require("./db/EnsureSchemas.js")
 
 class Server {
   constructor(port) {
@@ -30,6 +33,16 @@ class Server {
     })
     this.init()
   }
+
+  // async ensureDatabaseSchemas() {
+  //   try {
+  //     // Initialize database schemas on startup
+  //     await SchemaManager.initializeSchemas()
+  //     console.log("Database schemas initialized successfully")
+  //   } catch (error) {
+  //     console.error("Error initializing database schemas:", error)
+  //   }
+  // }
 
   init() {
     this.registerMiddleware()
@@ -171,15 +184,35 @@ class Server {
 
     this.app.post("/connect/plaid/exchange-token",
       Authentication.authenticateToken,
-      ConnectBrokerage.connectBrokerage
+      ConnectBrokerage.connectAccount
     );
 
-    this.app.post("/connect/brokerage", Authentication.authenticateToken, ConnectBrokerage.connectBrokerage)
+    this.app.post("/connect/brokerage", Authentication.authenticateToken, ConnectBrokerage.connectAccount)
+
+    // Connected accounts routes
+    this.app.get("/connected-accounts",
+      Authentication.authenticateToken,
+      ConnectedAccounts.getConnectedAccounts
+    )
+
+    // Transactions routes
+    this.app.post("/transactions/sync", 
+      Authentication.authenticateToken, 
+      Transactions.SyncTransactions
+    )
+    
+    this.app.get("/transactions", 
+      Authentication.authenticateToken, 
+      Transactions.GetTransactions
+    )
 
     this.app.post("/donation", Authentication.authenticateToken, Payments.donateMoney)
   }
 
-  start() {
+  async start() {
+    // Initialize database schemas before starting the server
+    // await this.ensureDatabaseSchemas()
+    
     this.server.listen(this.port, () => {
       // need to use this.server for socket.io
       console.log(`Server listening on port ${this.port}`)

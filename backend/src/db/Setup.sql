@@ -108,10 +108,9 @@ CREATE TABLE Portfolio_assets (
 );
 
 CREATE TABLE plaid_connections (
-    id SERIAL PRIMARY KEY,
-    uid INTEGER REFERENCES useraccount(uid), -- Changed from users(id) to match your schema
+    item_id TEXT PRIMARY KEY,
+    uid INTEGER REFERENCES useraccount(uid) ON DELETE RESTRICT, -- Changed from users(id) to match your schema
     access_token TEXT NOT NULL,
-    item_id TEXT NOT NULL,
     institution_id TEXT NOT NULL,
     institution_name TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

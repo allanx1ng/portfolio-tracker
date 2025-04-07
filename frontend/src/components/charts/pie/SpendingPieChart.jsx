@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import FinancePieChart from "../../../app/finances/FinancePieChart"
+import FinancePieChart from "./FinancePieChart"
 import { spendingByCategory } from "../../../app/finances/mockData"
 import { round } from "@/util/util"
 

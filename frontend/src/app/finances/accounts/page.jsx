@@ -1,14 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import Link from "next/link"
-import { bankAccounts, cards } from "../mockData"
+import { useFinancesData, FinancesDataProvider } from "../FinancesDataProvider"
 import StatsCard from "./StatsCard"
 import InstitutionSection from "./InstitutionSection"
+import PlaidConnect from "@/components/Stocks/PlaidLink"
+import { successMsg } from "@/util/toastNotifications"
 
-export default function AccountsPage() {
+// Component that uses the finances data context
+function AccountsContent() {
+  const { bankAccounts, cards, isLoading } = useFinancesData()
+  const [showPlaidConnect, setShowPlaidConnect] = useState(false)
+  
   // Group accounts by institution
-  const accountsByInstitution = bankAccounts.reduce((acc, account) => {
+  const accountsByInstitution = bankAccounts?.reduce((acc, account) => {
     if (!acc[account.institution]) {
       acc[account.institution] = []
     }
@@ -17,12 +23,29 @@ export default function AccountsPage() {
   }, {})
   
   // Calculate total balance across all accounts
-  const totalBalance = bankAccounts.reduce((sum, account) => sum + account.balance, 0)
+  const totalBalance = bankAccounts?.reduce((sum, account) => sum + account.balance, 0) || 0
   
   // Calculate total debt across all credit cards
-  const totalDebt = cards
-    .filter(card => card.type === "Credit Card")
-    .reduce((sum, card) => sum + Math.abs(card.balance), 0)
+  const totalDebt = cards?.length
+    ? cards
+      .filter(card => card.type === "Credit Card")
+      .reduce((sum, card) => sum + Math.abs(card.balance), 0)
+    : 0
+  
+  // Handle successful Plaid connection
+  const handlePlaidSuccess = useCallback((response) => {
+    successMsg('Account connected successfully! Syncing transactions...')
+    setShowPlaidConnect(false)
+    // We could trigger a refresh of the financial data here
+  }, [])
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+      </div>
+    )
+  }
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -65,16 +88,50 @@ export default function AccountsPage() {
           />
         ))}
         
-        {/* Add Account Button */}
+        {/* Add Account Button and Connect UI */}
         <div className="mt-8 text-center">
-          <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Connect New Account
-          </button>
+          {showPlaidConnect ? (
+            <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Connect a Bank Account</h3>
+              <p className="text-sm text-gray-500 mb-6">
+                Connect securely to your bank to import transactions and account balances.
+              </p>
+              
+              <PlaidConnect
+                buttonText="Connect Bank Account"
+                buttonClassName="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md"
+                onSuccess={handlePlaidSuccess}
+              />
+              
+              <button
+                className="mt-4 text-sm text-gray-500 hover:text-gray-700"
+                onClick={() => setShowPlaidConnect(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button 
+              onClick={() => setShowPlaidConnect(true)}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Connect New Account
+            </button>
+          )}
         </div>
       </div>
     </div>
+  )
+}
+
+// Wrapper component that provides the data context
+export default function AccountsPage() {
+  return (
+    <FinancesDataProvider>
+      <AccountsContent />
+    </FinancesDataProvider>
   )
 }
