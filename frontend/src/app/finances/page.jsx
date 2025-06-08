@@ -1,6 +1,7 @@
 "use client"
 
 import { TimeframeProvider, TimeframeSelector } from "../../components/charts/line/TimeframeContext"
+import WidgetCard from "@/components/ui/WidgetCard"
 import OverviewStats from "../../components/Finance/Overview_Widgets/OverviewStats"
 import RechartsBalanceChart from "../../components/charts/line/RechartsBalanceChart"
 import RechartsPieChart from "../../components/charts/pie/RechartsPieChart"
@@ -79,7 +80,9 @@ function Dashboard() {
           {/* Spending, Debt, Accounts, Goals and Transactions */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             <div className="md:col-span-1">
-              <RechartsPieChart data={spendingByCategory} />
+              <WidgetCard title="Spending by Category">
+                <RechartsPieChart data={spendingByCategory} />
+              </WidgetCard>
             </div>
             <div className="md:col-span-1">
               <DebtBreakdown />

@@ -27,7 +27,7 @@ const COLORS = [
   '#ec4899'  // pink
 ]
 
-const RechartsPieChart = ({ data = [] }) => {
+const PieChartContent = ({ data = [] }) => {
   const { timeframe } = useTimeframe()
   const [chartData, setChartData] = useState([])
   const [totalSpending, setTotalSpending] = useState(0)
@@ -159,4 +159,4 @@ const RechartsPieChart = ({ data = [] }) => {
   )
 }
 
-export default RechartsPieChart
+export default PieChartContent

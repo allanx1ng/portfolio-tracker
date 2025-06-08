@@ -17,7 +17,7 @@ class Prices {
     this.stockDataArray = []
 
     // Fetch prices immediately and every 5 minutes (300,000 ms)
-    // this.fetchAndUpdateStats()
+    this.fetchAndUpdateStats()
     // setInterval(() => this.fetchAndUpdateStats(), 600000);
   }
 
