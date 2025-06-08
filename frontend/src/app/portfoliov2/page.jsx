@@ -7,7 +7,7 @@ import WidgetCard from "@/components/ui/WidgetCard"
 import { usePortfolio } from "@/context/TotalAssetContext"
 import { usePortfolios } from "@/context/PortfoliosContext"
 import { percentGainCalc, round } from "@/util/util"
-import ChartDataProcessing from "../portfolio/ChartDataProcessing"
+import ChartDataProcessing from "./ChartDataProcessing"
 import AssetClassAlloc from "../portfolio/AssetClassAlloc"
 import AssetTable from "@/components/tables/AssetTable"
 
@@ -45,9 +45,9 @@ function PortfolioOverview() {
         />
       </div>
 
-      {/* Asset Overview Chart */}
+      {/* Asset Distribution */}
       <div className="mb-8">
-        <WidgetCard title="Asset Overview">
+        <WidgetCard title="Asset Distribution">
           <ChartDataProcessing />
         </WidgetCard>
       </div>

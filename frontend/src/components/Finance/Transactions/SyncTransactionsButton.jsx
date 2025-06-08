@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import { syncTransactions } from '@/util/transactionService'
 import { successMsg, errorMsg } from '@/util/toastNotifications'
+import { Button } from '@/components/ui/buttons'
 
 /**
  * Button component for manually syncing transactions for a connected Plaid account
@@ -10,8 +11,9 @@ import { successMsg, errorMsg } from '@/util/toastNotifications'
  * @param {Object} props
  * @param {string} props.itemId - The Plaid item ID to sync
  * @param {Function} props.onSuccess - Callback function to execute after successful sync
- * @param {string} [props.buttonText] - Optional custom button text
- * @param {string} [props.buttonClassName] - Optional custom button class
+ * @param {string} [props.buttonText] - Optional custom button text (default: 'Sync Transactions')
+ * @param {string} [props.variant] - Button variant: 'primary', 'secondary', 'outline', 'ghost', or 'danger' (default: 'primary')
+ * @param {string} [props.size] - Button size: 'sm', 'md', or 'lg' (default: 'md')
  * @param {boolean} [props.showCounts] - Whether to show counts of added/modified/removed transactions
  * @returns {JSX.Element}
  */
@@ -19,7 +21,8 @@ const SyncTransactionsButton = ({
   itemId, 
   onSuccess,
   buttonText = 'Sync Transactions',
-  buttonClassName = "px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed",
+  variant = 'primary',
+  size = 'md',
   showCounts = false
 }) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -62,13 +65,16 @@ const SyncTransactionsButton = ({
 
   return (
     <div className="flex flex-col">
-      <button
+      <Button
         onClick={handleSync}
-        disabled={isLoading || !itemId}
-        className={buttonClassName}
+        disabled={!itemId}
+        isLoading={isLoading}
+        loadingText="Syncing..."
+        variant={variant}
+        size={size}
       >
-        {isLoading ? 'Syncing...' : buttonText}
-      </button>
+        {buttonText}
+      </Button>
       
       {showCounts && syncResult && (
         <div className="mt-2 text-sm text-gray-600">

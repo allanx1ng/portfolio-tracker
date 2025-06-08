@@ -7,6 +7,7 @@ import StatsCard from "./StatsCard"
 import InstitutionSection from "./InstitutionSection"
 import PlaidConnect from "@/components/Stocks/PlaidLink"
 import { successMsg } from "@/util/toastNotifications"
+import { Button, LinkButton } from '@/components/ui/buttons'
 
 // Component that uses the finances data context
 function AccountsContent() {
@@ -52,14 +53,18 @@ function AccountsContent() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Connected Accounts</h1>
-          <Link 
-            href="/finances" 
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Dashboard
+          <Link href="/finances" passHref>
+            <Button
+              variant="secondary"
+              size="sm"
+              leftIcon={
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              }
+            >
+              Back to Dashboard
+            </Button>
           </Link>
         </div>
         
@@ -99,27 +104,31 @@ function AccountsContent() {
               
               <PlaidConnect
                 buttonText="Connect Bank Account"
-                buttonClassName="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md"
+                variant="primary"
+                size="lg"
                 onSuccess={handlePlaidSuccess}
               />
               
-              <button
-                className="mt-4 text-sm text-gray-500 hover:text-gray-700"
+              <LinkButton
+                color="gray"
+                className="mt-4"
                 onClick={() => setShowPlaidConnect(false)}
               >
                 Cancel
-              </button>
+              </LinkButton>
             </div>
           ) : (
-            <button 
+            <Button
+              variant="primary"
               onClick={() => setShowPlaidConnect(true)}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+              leftIcon={
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              }
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
               Connect New Account
-            </button>
+            </Button>
           )}
         </div>
       </div>
