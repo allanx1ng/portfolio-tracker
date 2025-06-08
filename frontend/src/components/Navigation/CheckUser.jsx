@@ -20,19 +20,16 @@ const CheckUser = () => {
           <Dropdown user={user} logout={logout} />
         </div>
       ) : (
-        <div className="text-white">
+        <div className="flex items-center space-x-4">
           <a
             href="/login"
-            // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
-            className="btn btn-sm btn-secondary mx-2 text-primary"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors duration-150"
           >
             Login
           </a>
-          <>/</>
           <a
             href="/signup"
-            // className="mx-2 font-semibold hover:underline transition duration-250 ease-in-out"
-            className="btn btn-sm btn-secondary mx-2 text-primary"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-150"
           >
             Sign Up
           </a>
