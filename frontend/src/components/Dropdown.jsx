@@ -1,12 +1,12 @@
 "use client"
 import { useState, useRef, useEffect } from "react"
-import ToggleDarkmode from "./ToggleDarkmode"
-// import { ChevronDownIcon } from '@heroicons/react/solid'; // Make sure you have Heroicons installed
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/buttons"
 
 const Dropdown = ({ user, logout }) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef()
+  const router = useRouter()
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -20,7 +20,6 @@ const Dropdown = ({ user, logout }) => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
-  const router = useRouter()
 
   const handleLogout = (event) => {
     event.preventDefault()
@@ -29,31 +28,41 @@ const Dropdown = ({ user, logout }) => {
   }
 
   return (
-    <div className="dropdown dropdown-end">
-      <div tabIndex={0} role="button" className="btn btn-sm btn-secondary m-1 text-primary">
-        Hello, {user.email}
-      </div>
-      <ul
-        tabIndex={0}
-        className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+    <div className="relative" ref={dropdownRef}>
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2"
       >
-        <li>
-          <a href="/profile">Profile</a>
-        </li>
-        {/* <li>
-          <ToggleDarkmode/>
-        </li> */}
+        <span>Hello, {user.email}</span>
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </Button>
 
-        <li>
+      {isOpen && (
+        <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-card ring-1 ring-border focus:outline-none">
           <a
-            href="/login"
-            className="btn btn-sm btn-error mx-2 btn-outline my-2"
+            href="/profile"
+            className="block px-4 py-2 text-text-primary hover:bg-bg-alt"
+          >
+            Profile
+          </a>
+          <button
             onClick={handleLogout}
+            className="block w-full text-left px-4 py-2 text-action-danger hover:bg-bg-alt"
           >
             Logout
-          </a>
-        </li>
-      </ul>
+          </button>
+        </div>
+      )}
     </div>
   )
 }

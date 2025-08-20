@@ -8,6 +8,7 @@ import InstitutionSection from "./InstitutionSection"
 import PlaidConnect from "@/components/Stocks/PlaidLink"
 import { successMsg } from "@/util/toastNotifications"
 import { Button, LinkButton } from '@/components/ui/buttons'
+import apiClient from "@/util/apiClient"
 
 // Component that uses the finances data context
 function AccountsContent() {
@@ -130,6 +131,10 @@ function AccountsContent() {
               Connect New Account
             </Button>
           )}
+
+          <Button onClick={() => apiClient.get('/test/sync-investments', { params: {institution_id: 'ins_38' }})}>
+            display holdings
+          </Button>
         </div>
       </div>
     </div>

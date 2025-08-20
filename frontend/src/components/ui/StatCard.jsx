@@ -6,30 +6,31 @@ const StatCard = ({
   title,
   value,
   percentChange,
-  color = "indigo",
+  color = "primary", // Ensure we have a default color
   icon,
   isCurrency = true,
   isPercentage = false
 }) => {
   const colorVariants = {
-    indigo: {
-      border: "border-indigo-500",
-      bg: "bg-indigo-100",
-      text: "text-indigo-500"
+    primary: {
+      border: "border-action-primary",
+      bg: "bg-action-primary/10",
+      text: "text-action-primary"
     },
-    green: {
-      border: "border-green-500",
-      bg: "bg-green-100",
-      text: "text-green-500"
+    success: {
+      border: "border-action-success",
+      bg: "bg-action-success/10",
+      text: "text-action-success"
     },
-    red: {
-      border: "border-red-500",
-      bg: "bg-red-100",
-      text: "text-red-500"
+    danger: {
+      border: "border-action-danger",
+      bg: "bg-action-danger/10",
+      text: "text-action-danger"
     }
   }
 
-  const colors = colorVariants[color]
+  // Get the color variant or fall back to primary if the specified color doesn't exist
+  const colors = colorVariants[color] || colorVariants.primary
 
   const formatValue = (val) => {
     if (isCurrency) return formatCurrency(val)
@@ -38,9 +39,9 @@ const StatCard = ({
   }
 
   return (
-    <div className={`bg-white rounded-2xl shadow-md p-6 border-l-4 ${colors.border}`}>
+    <div className={`bg-card rounded-2xl shadow-md p-6 border-l-4 ${colors.border}`}>
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
+        <h3 className="text-lg font-semibold text-text-primary">{title}</h3>
         <div className={`p-2 ${colors.bg} rounded-full`}>
           {icon || (
             <svg xmlns="http://www.w3.org/2000/svg" className={`h-6 w-6 ${colors.text}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,9 +51,13 @@ const StatCard = ({
         </div>
       </div>
       <div className="flex flex-col">
-        <span className="text-3xl font-bold text-gray-800">{formatValue(value)}</span>
+        <span className="text-3xl font-bold text-text-primary">
+          {formatValue(value)}
+        </span>
         {percentChange !== undefined && (
-          <div className={`flex items-center mt-2 ${percentChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+          <div className={`flex items-center mt-2 ${
+            percentChange >= 0 ? 'text-action-success' : 'text-action-danger'
+          }`}>
             <span className="text-sm font-medium">
               {percentChange >= 0 ? '+' : ''}{percentChange.toFixed(1)}%
             </span>
@@ -65,7 +70,9 @@ const StatCard = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             )}
-            <span className="text-xs text-gray-500 ml-1">vs last month</span>
+            <span className="text-xs text-text-secondary ml-1">
+              vs last month
+            </span>
           </div>
         )}
       </div>

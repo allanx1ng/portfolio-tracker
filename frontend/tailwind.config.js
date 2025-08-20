@@ -7,6 +7,30 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        // Semantic colors
+        text: {
+          primary: '#111827',    // gray-900
+          secondary: '#6b7280',  // gray-500
+          muted: '#9ca3af',      // gray-400
+          inverted: '#ffffff'
+        },
+        bg: {
+          page: '#f9fafb',      // gray-50
+          card: '#ffffff',
+          alt: '#f3f4f6'        // gray-100
+        },
+        border: {
+          DEFAULT: '#e5e7eb',    // gray-200
+          focus: '#6366f1'       // indigo-500
+        },
+        action: {
+          primary: '#4f46e5',    // indigo-600
+          danger: '#dc2626',     // red-600
+          success: '#16a34a',    // green-600
+          warning: '#ca8a04'     // yellow-600
+        }
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
@@ -31,201 +55,10 @@ module.exports = {
         "800px": "800px",
       },
       gridTemplateColumns: {
-        fixed: "repeat(3, 200px)", // Two columns each 200px wide
-        "flex-fixed": "200px 1fr", // One fixed and one flexible column
+        fixed: "repeat(3, 200px)",
+        "flex-fixed": "200px 1fr",
       },
     },
-    // variants: {
-    //   backdropFilter: ["responsive"], // Add this line
-    // },
   },
-  plugins: [require("daisyui"), require("tailwindcss-filters")],
-  daisyui: {
-    themes: [
-      "light",
-      "dark",
-      "cupcake",
-      "bumblebee",
-      "emerald",
-      "corporate",
-      "synthwave",
-      "retro",
-      "cyberpunk",
-      "valentine",
-      "halloween",
-      "garden",
-      "forest",
-      "aqua",
-      "lofi",
-      "pastel",
-      "fantasy",
-      "wireframe",
-      "black",
-      "luxury",
-      "dracula",
-      "cmyk",
-      "autumn",
-      "business",
-      "acid",
-      "lemonade",
-      "night",
-      "coffee",
-      "winter",
-      "dim",
-      "nord",
-      "sunset",
-      {
-        moon_night: {
-          primary: "#3855CC",
-
-          secondary: "#66B3FF",
-
-          accent: "#cceeff",
-
-          neutral: "#2c3141",
-
-          "base-100": "#2c3141",
-
-          info: "#38bdf8",
-
-          success: "#4ade80",
-
-          warning: "#fb923c",
-
-          error: "#ef4444",
-        },
-      },
-      {
-        custom_light_2: {
-          primary: "#a855f7",
-
-          secondary: "#d8b4fe",
-
-          accent: "#2dd4bf",
-
-          neutral: "#d1d5db",
-
-          "base-100": "#ffffff",
-
-          info: "#7dd3fc",
-
-          success: "#4ade80",
-
-          warning: "#fbbf24",
-
-          error: "#f43f5e",
-        },
-      },
-      {
-        custom_light: {
-          primary: "#065f46",
-
-          secondary: "#34d399",
-
-          accent: "#fb923c",
-
-          neutral: "#d1d5db",
-
-          "base-100": "#f3f4f6",
-
-          info: "#7dd3fc",
-
-          success: "#4ade80",
-
-          warning: "#fbbf24",
-
-          error: "#f43f5e",
-        },
-      },
-      {
-        custom_dark: {
-          primary: "#10b981",
-
-          secondary: "#a7f3d0",
-
-          accent: "#fb923c",
-
-          neutral: "#6b7280",
-
-          "base-100": "#1f2937",
-
-          info: "#7dd3fc",
-
-          success: "#4ade80",
-
-          warning: "#fbbf24",
-
-          error: "#f43f5e",
-        },
-      },
-      {
-        firey: {
-          primary: "#FF4B5C",
-
-          secondary: "#FFB500",
-
-          tertiary: "#FF6F61",
-
-          accent: "#00BFA5",
-
-          // neutral: "#FFF5F5",
-          // neutral: "#f5f5f5",
-
-          neutral: "#FFF5F5",
-
-          "base-100": "#f5f5f5",
-
-          info: "#7dd3fc",
-
-          success: "#4ade80",
-
-          warning: "#fbbf24",
-
-          error: "#f43f5e",
-        },
-      },
-      {
-        blue: {
-          primary: "#0284c7",
-
-          secondary: "#bae6fd",
-
-          accent: "#d9480d",
-
-          neutral: "#FFF5F5",
-
-          "base-100": "#ffffff",
-
-          info: "#7dd3fc",
-
-          success: "#4ade80",
-
-          warning: "#fbbf24",
-
-          error: "#f43f5e",
-        },
-      },
-      {
-        green: {
-          primary: "#0d9488",
-
-          secondary: "#ccfbf1",
-
-          accent: "#d9480d",
-
-          neutral: "#FFF5F5",
-
-          "base-100": "#ffffff",
-
-          info: "#7dd3fc",
-
-          success: "#4ade80",
-
-          warning: "#fbbf24",
-
-          error: "#f43f5e",
-        },
-      },
-    ],
-  },
+  plugins: [require("tailwindcss-filters")]
 }

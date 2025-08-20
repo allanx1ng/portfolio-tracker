@@ -109,13 +109,14 @@ CREATE TABLE Portfolio_assets (
 
 CREATE TABLE plaid_connections (
     item_id TEXT PRIMARY KEY,
-    uid INTEGER REFERENCES useraccount(uid) ON DELETE RESTRICT, -- Changed from users(id) to match your schema
+    uid INTEGER REFERENCES useraccount(uid) ON DELETE RESTRICT,
     access_token TEXT NOT NULL,
     institution_id TEXT NOT NULL,
     institution_name TEXT NOT NULL,
+    product TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(uid, institution_id) -- Prevent duplicate connections for same institution
+    UNIQUE(uid, institution_id, product) -- Change unique constraint
 );
 
 

@@ -195,18 +195,25 @@ class Server {
       ConnectedAccounts.getConnectedAccounts
     )
 
-    // Transactions routes
-    this.app.post("/transactions/sync", 
-      Authentication.authenticateToken, 
-      Transactions.SyncTransactions
-    )
+    // // Transactions routes
+    // this.app.post("/transactions/sync", 
+    //   Authentication.authenticateToken, 
+    //   Transactions.SyncTransactions
+    // )
     
-    this.app.get("/transactions", 
-      Authentication.authenticateToken, 
-      Transactions.GetTransactions
-    )
+    // this.app.get("/transactions", 
+    //   Authentication.authenticateToken, 
+    //   Transactions.GetTransactions
+    // )
 
     this.app.post("/donation", Authentication.authenticateToken, Payments.donateMoney)
+
+
+
+    this.app.get("/test/sync-investments",
+      Authentication.authenticateToken,
+      require("./routes/InvestmentSync").syncHoldings
+    )
   }
 
   async start() {

@@ -25,9 +25,106 @@ export const theme = {
       700: '#374151',
       800: '#1f2937',
       900: '#111827'
+    },
+    
+    // Semantic colors
+    semantic: {
+      text: {
+        primary: '#111827',    // gray-900
+        secondary: '#6b7280',  // gray-500
+        muted: '#9ca3af',      // gray-400
+        inverted: '#ffffff'
+      },
+      background: {
+        page: '#f9fafb',       // gray-50
+        card: '#ffffff',
+        alt: '#f3f4f6'         // gray-100
+      },
+      border: {
+        default: '#e5e7eb',    // gray-200
+        focus: '#6366f1'       // indigo-500
+      },
+      action: {
+        primary: '#4f46e5',    // indigo-600
+        danger: '#dc2626',     // red-600
+        success: '#16a34a',    // green-600
+        warning: '#ca8a04'     // yellow-600
+      }
     }
   },
-  
+
+  typography: {
+    fonts: {
+      sans: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+    },
+    sizes: {
+      xs: '0.75rem',     // 12px
+      sm: '0.875rem',    // 14px
+      base: '1rem',      // 16px
+      lg: '1.125rem',    // 18px
+      xl: '1.25rem',     // 20px
+      '2xl': '1.5rem',   // 24px
+      '3xl': '1.875rem', // 30px
+      '4xl': '2.25rem'   // 36px
+    },
+    weights: {
+      light: '300',
+      normal: '400',
+      medium: '500',
+      semibold: '600',
+      bold: '700'
+    },
+    styles: {
+      // Text styles that combine size, weight, and colors
+      h1: {
+        size: '3xl',
+        weight: 'bold',
+        color: 'text.primary'
+      },
+      h2: {
+        size: '2xl',
+        weight: 'semibold',
+        color: 'text.primary'
+      },
+      h3: {
+        size: 'xl',
+        weight: 'semibold',
+        color: 'text.primary'
+      },
+      h4: {
+        size: 'lg',
+        weight: 'medium',
+        color: 'text.primary'
+      },
+      body: {
+        size: 'base',
+        weight: 'normal',
+        color: 'text.primary'
+      },
+      'body-small': {
+        size: 'sm',
+        weight: 'normal',
+        color: 'text.primary'
+      },
+      'body-large': {
+        size: 'lg',
+        weight: 'normal',
+        color: 'text.primary'
+      },
+      caption: {
+        size: 'sm',
+        weight: 'normal',
+        color: 'text.secondary'
+      },
+      label: {
+        size: 'sm',
+        weight: 'medium',
+        color: 'text.secondary'
+      }
+    }
+  },
+
   // Component-specific tokens
   components: {
     button: {
@@ -94,32 +191,54 @@ export const theme = {
     }
   },
   
+  // Layout and spacing
   spacing: {
-    xs: '0.5rem',
-    sm: '0.75rem',
-    md: '1rem',
-    lg: '1.5rem',
-    xl: '2rem'
+    0: '0',
+    px: '1px',
+    0.5: '0.125rem',
+    1: '0.25rem',
+    1.5: '0.375rem',
+    2: '0.5rem',
+    2.5: '0.625rem',
+    3: '0.75rem',
+    3.5: '0.875rem',
+    4: '1rem',
+    5: '1.25rem',
+    6: '1.5rem',
+    7: '1.75rem',
+    8: '2rem',
+    9: '2.25rem',
+    10: '2.5rem',
+    12: '3rem',
+    14: '3.5rem',
+    16: '4rem',
+    20: '5rem',
+    24: '6rem',
+    28: '7rem',
+    32: '8rem',
+    36: '9rem',
+    40: '10rem',
+    44: '11rem',
+    48: '12rem'
   },
-  
-  typography: {
-    sizes: {
-      xs: '0.75rem',
-      sm: '0.875rem',
-      base: '1rem',
-      lg: '1.125rem',
-      xl: '1.25rem',
-      '2xl': '1.5rem',
-      '3xl': '1.875rem'
-    }
-  },
-  
+
   radius: {
+    none: '0',
     sm: '0.25rem',
     DEFAULT: '0.375rem',
     md: '0.375rem',
     lg: '0.5rem',
     xl: '0.75rem',
+    '2xl': '1rem',
+    '3xl': '1.5rem',
     full: '9999px'
+  },
+
+  shadows: {
+    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+    DEFAULT: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
   }
 }
