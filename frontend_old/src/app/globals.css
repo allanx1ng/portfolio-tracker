@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "react-toastify/dist/ReactToastify.css";
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  } */
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.toast-container {
+  position: fixed;
+  z-index: 9999; /* Ensure this is higher than any other z-index in your app */
+}
+
+/* .gradient-bg {
+  background: linear-gradient(135deg, #ff4b5c 0%, #ffb500 125%);
+  backdrop-filter: blur(10px);
+  z-index: -9999;
+} */
+.gradient-bg {
+  background: linear-gradient(135deg, #70e000 0%, #007200 125%);
+}
+.bg-triple-gradient {
+  background: linear-gradient(to bottom, #ff4b5c, transparent 50%),
+    linear-gradient(to top left, #00bfa5, transparent 75%),
+    linear-gradient(to top right, #ffb500, transparent 75%);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* body { */
+/* color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb)); */
+/* } */
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  h1 {
+    @apply text-4xl font-bold; /* Example styles: 4xl font size and bold font */
+  }
+
+  h2 {
+    @apply text-2xl font-bold; /* Example styles: 4xl font size and bold font */
+  }
+  p {
+    @apply text-lg; /* Example for paragraph tags */
+  }
+  /* Add more styles for other tags if needed */
+}
