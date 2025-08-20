@@ -20,6 +20,8 @@ const Transactions = require("./routes/Transactions.js")
 const ConnectedAccounts = require("./routes/ConnectedAccounts.js")
 const SchemaManager = require("./db/EnsureSchemas.js")
 
+const Investments = require("./routes/Investments.js")
+
 class Server {
   constructor(port) {
     this.app = express()
@@ -208,7 +210,10 @@ class Server {
 
     this.app.post("/donation", Authentication.authenticateToken, Payments.donateMoney)
 
-
+    this.app.get("/investments",
+      Authentication.authenticateToken,
+      Investments.getAllInvestments
+    )
 
     this.app.get("/test/sync-investments",
       Authentication.authenticateToken,

@@ -1,4 +1,9 @@
 function calculatePortfolioOverview(accounts) {
+    let totalPortfolioValue = 0;
+    let totalCashEquiv = 0;
+    let totalInvestmentValue = 0;
+    let totalPortfolioCostBasis = 0;
+
     const securityMap = {};
 
     accounts.forEach(account => {
@@ -7,8 +12,11 @@ function calculatePortfolioOverview(accounts) {
             const quantity = holding.quantity;
             const costBasis = holding.buy_price * quantity;
 
+            totalPortfolioValue += holding.current_value;
+
             if (!securityMap[securityId]) {
                 securityMap[securityId] = {
+                    security_id: holding.security_id,
                     name: holding.name,
                     ticker: holding.ticker,
                     type: holding.type,
@@ -17,12 +25,17 @@ function calculatePortfolioOverview(accounts) {
                     currentPrice: holding.current_price,
                     iso_currency_code: holding.iso_currency_code,
                     is_cash_equivalent: holding.is_cash_equivalent,
+                    sector: holding.sector,
                 };
             }
 
             securityMap[securityId].totalQuantity += quantity;
             securityMap[securityId].totalCostBasis += costBasis;
         });
+
+        totalPortfolioCostBasis += account.holdings.reduce((sum, holding) => sum + holding.buy_price * holding.quantity, 0);
+        totalCashEquiv += account.holdings.filter(holding => holding.is_cash_equivalent).reduce((sum, holding) => sum + holding.current_value, 0);
+        totalInvestmentValue += account.holdings.filter(holding => !holding.is_cash_equivalent).reduce((sum, holding) => sum + holding.current_value, 0);
     });
 
     const portfolioOverview = Object.values(securityMap).map(security => {
@@ -37,10 +50,24 @@ function calculatePortfolioOverview(accounts) {
             currentPrice: security.currentPrice,
             iso_currency_code: security.iso_currency_code,
             is_cash_equivalent: security.is_cash_equivalent,
+            sector: security.sector,
         };
     });
 
-    return portfolioOverview;
+    const totalPortfolioGain = totalPortfolioValue - totalPortfolioCostBasis;
+    const totalPortfolioGainPercentage = totalPortfolioCostBasis === 0 ? 0 : (totalPortfolioGain / totalPortfolioCostBasis) * 100;
+
+    return {
+        overall: {
+            totalAccountValue: totalPortfolioValue,
+            totalCashEquiv: totalCashEquiv,
+            totalInvestmentValue: totalInvestmentValue,
+            totalPortfolioCostBasis: totalPortfolioCostBasis,
+            totalPortfolioGain: totalPortfolioGain,
+            totalPortfolioGainPercentage: totalPortfolioGainPercentage,
+        },
+        holdings: portfolioOverview
+    };
 }
 
 

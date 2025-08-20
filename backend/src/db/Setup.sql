@@ -119,6 +119,51 @@ CREATE TABLE plaid_connections (
     UNIQUE(uid, institution_id, product) -- Change unique constraint
 );
 
+-- -- Table to store Plaid investment accounts
+-- CREATE TABLE plaid_investment_accounts (
+--     account_id TEXT PRIMARY KEY,
+--     uid INTEGER REFERENCES useraccount(uid) ON DELETE RESTRICT,
+--     institution_id TEXT NOT NULL,
+--     name TEXT NOT NULL,
+--     official_name TEXT,
+--     subtype TEXT,
+--     type TEXT NOT NULL,
+--     current_balance NUMERIC(36, 18),
+--     iso_currency_code TEXT,
+--     total_value NUMERIC(36, 18),
+--     is_cash BOOLEAN,
+--     accountGain NUMERIC(36, 18),
+--     accountGainPercentage NUMERIC(36, 18),
+--     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+-- );
+
+-- -- Table to store Plaid investment holdings
+-- CREATE TABLE plaid_investment_holdings (
+--     holding_id SERIAL PRIMARY KEY,
+--     account_id TEXT REFERENCES plaid_investment_accounts(account_id) ON DELETE CASCADE,
+--     security_id TEXT NOT NULL,
+--     current_price NUMERIC(36, 18),
+--     buy_price NUMERIC(36, 18),
+--     quantity NUMERIC(36, 18),
+--     current_value NUMERIC(36, 18),
+--     iso_currency_code TEXT,
+--     gain NUMERIC(36, 18),
+--     gainPercentage NUMERIC(36, 18)
+-- );
+
+-- -- Table to store Plaid investment securities
+-- CREATE TABLE plaid_investment_securities (
+--     security_id TEXT PRIMARY KEY,
+--     name TEXT NOT NULL,
+--     ticker TEXT,
+--     type TEXT,
+--     is_cash_equivalent BOOLEAN,
+--     sector TEXT,
+--     close_price_as_of DATE,
+--     close_price NUMERIC(36, 18),
+--     market_identifier_code TEXT
+-- );
+
 
 
 
