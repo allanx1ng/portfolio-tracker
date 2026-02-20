@@ -127,17 +127,12 @@ class ConnectAccount {
             //     console.error('Initial sync error (non-fatal):', syncError);
             // }
 
-            // Try logging investments holdings
+            // Persist initial investment holdings to DB
             try {
                 const InvestmentSync = require('./InvestmentSync');
-                await InvestmentSync.syncHoldings({
-                    body: { institution_id },
-                    user: { uid }
-                }, {
-                    status: () => ({ json: () => { } })
-                });
+                await InvestmentSync.syncHoldings(uid, institution_id);
             } catch (error) {
-                console.error('Initial sync error (non-fatal):', error);
+                console.error('Initial investment sync error (non-fatal):', error);
             }
 
             res.status(200).json({
@@ -160,11 +155,11 @@ class ConnectAccount {
                 [uid, institution_id]
             );
 
-            if (!connection.rows[0]) {
+            if (!connection[0]) {
                 return res.status(404).json({ error: 'No connected accounts found' });
             }
 
-            const { access_token } = connection.rows[0];
+            const { access_token } = connection[0];
 
             // Fetch latest holdings data
             const holdings = await plaidClient.investmentsHoldingsGet({

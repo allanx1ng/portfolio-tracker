@@ -18,7 +18,6 @@ const Payments = require("./routes/Payments.js")
 const ConnectBrokerage = require("./routes/ConnectAccount.js")
 const Transactions = require("./routes/Transactions.js")
 const ConnectedAccounts = require("./routes/ConnectedAccounts.js")
-const SchemaManager = require("./db/EnsureSchemas.js")
 
 const Investments = require("./routes/Investments.js")
 
@@ -215,9 +214,27 @@ class Server {
       Investments.getAllInvestments
     )
 
+    // Force refresh investments from Plaid
+    // ?institution_id=xxx to sync one, omit to sync all
     this.app.get("/test/sync-investments",
       Authentication.authenticateToken,
-      require("./routes/InvestmentSync").syncHoldings
+      async (req, res) => {
+        try {
+          const { uid } = req.user;
+          const InvestmentSync = require("./routes/InvestmentSync");
+          const institution_id = req.query.institution_id;
+
+          if (institution_id) {
+            const result = await InvestmentSync.syncHoldings(uid, institution_id);
+            return res.status(200).json({ success: true, data: result });
+          } else {
+            const results = await InvestmentSync.syncAllHoldings(uid);
+            return res.status(200).json({ success: true, data: results });
+          }
+        } catch (err) {
+          return res.status(500).json({ error: err.message });
+        }
+      }
     )
   }
 
