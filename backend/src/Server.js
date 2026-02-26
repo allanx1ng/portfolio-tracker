@@ -28,7 +28,7 @@ class Server {
     this.server = http.createServer(this.app)
     this.io = io(this.server, {
       cors: {
-        origin: "*",
+        origin: process.env.FRONTEND_URL || "http://localhost:3000",
         methods: ["GET", "POST", "DELETE", "PUT"],
       },
     })
@@ -51,9 +51,12 @@ class Server {
   }
 
   registerMiddleware() {
-    this.app.use(cors())
+    this.app.use(cors({
+      origin: process.env.FRONTEND_URL || "http://localhost:3000",
+      credentials: true,
+    }))
     this.app.use(express.urlencoded({ extended: false }))
-    this.app.use(session({ secret: "somethingsecret", resave: false, saveUninitialized: false }))
+    this.app.use(session({ secret: process.env.SESSION_SECRET || "somethingsecret", resave: false, saveUninitialized: false }))
 
     this.app.use(passport.initialize())
     passportConfig(passport) // initialize passport configuration.
@@ -82,6 +85,10 @@ class Server {
   }
 
   registerRoutes() {
+    // Auth
+    this.app.post("/refresh", Authentication.refresh)
+    this.app.post("/logout", Authentication.logout)
+
     // Registration
     this.app.post("/register", Account.create)
     // this.app.post("/oauth/google", passport.authenticate('google', { scope: ['openid', 'profile', 'email'] }))

@@ -1,28 +1,36 @@
 "use client"
 
 import { useState, useEffect, createContext, useContext } from "react"
-// import { decodeToken } from "@/util/authenticationUtil";
+import apiClient from "@/util/apiClient"
 
-// Custom auth context
 const AuthContext = createContext(null)
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
 
-  const logout = () => {
+  const logout = async () => {
+    const refreshToken = localStorage.getItem("refreshToken")
+
+    // Tell backend to invalidate the refresh token
+    try {
+      await apiClient.post("/logout", { refreshToken })
+    } catch (err) {
+      // Logout should succeed even if backend call fails
+    }
+
     localStorage.removeItem("token")
+    localStorage.removeItem("refreshToken")
     setUser(null)
   }
 
-  const login = (token) => {
+  const login = (token, refreshToken) => {
     if (token) {
       localStorage.setItem("token", token)
-      console.log("login processing")
-      console.log(decodeToken(token))
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken)
+      }
       setUser(decodeToken(token))
-    } else {
-      console.log("no token")
     }
   }
 
@@ -34,7 +42,27 @@ const AuthProvider = ({ children }) => {
 
         const didTokenExpire = Date.now() >= decodedToken.exp * 1000
         if (didTokenExpire) {
-          logout()
+          // Don't logout — the apiClient interceptor will handle refresh
+          // Just don't set user; AuthGate will show loading, and the next
+          // API call will trigger a refresh which updates localStorage
+          const refreshToken = localStorage.getItem("refreshToken")
+          if (refreshToken) {
+            // Attempt refresh immediately
+            apiClient.post("/refresh", { refreshToken })
+              .then(({ data }) => {
+                localStorage.setItem("token", data.token)
+                localStorage.setItem("refreshToken", data.refreshToken)
+                setUser(decodeToken(data.token))
+              })
+              .catch(() => {
+                localStorage.removeItem("token")
+                localStorage.removeItem("refreshToken")
+              })
+              .finally(() => setAuthLoading(false))
+            return // don't setAuthLoading(false) yet
+          } else {
+            localStorage.removeItem("token")
+          }
         } else {
           setUser({ ...decodedToken, token })
         }
@@ -49,7 +77,6 @@ const AuthProvider = ({ children }) => {
 }
 
 const decodeToken = (token) => {
-  // Helped with https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript-without-using-a-library
   try {
     return JSON.parse(atob(token.split(".")[1]))
   } catch (err) {

@@ -62,8 +62,6 @@ export default function DashboardPage() {
       const key = holding.ticker || holding.name
       uniqueHoldings.add(key)
 
-      if (holding.is_cash_equivalent) return
-
       const value = holding.currentPrice * holding.totalQuantity
       const costBasis = holding.averageBuyPrice * holding.totalQuantity
 
@@ -76,6 +74,7 @@ export default function DashboardPage() {
           ticker: holding.ticker,
           name: holding.name,
           type: holding.type,
+          isCash: holding.is_cash_equivalent,
           currentPrice: holding.currentPrice,
           totalQuantity: holding.totalQuantity,
           totalValue: value,
@@ -83,25 +82,33 @@ export default function DashboardPage() {
         }
       }
 
-      // Pie chart data
-      const existing = holdingsForChart.find(h => h.label === key)
-      if (existing) {
-        existing.value += value
-      } else {
-        holdingsForChart.push({ label: key, value })
+      // Pie chart data (exclude cash)
+      if (!holding.is_cash_equivalent) {
+        const existing = holdingsForChart.find(h => h.label === key)
+        if (existing) {
+          existing.value += value
+        } else {
+          holdingsForChart.push({ label: key, value })
+        }
       }
     })
   })
 
   // Build sorted holdings list with computed fields
+  const totalPortfolioValue = overview.totalAccountValue || 0
   const allHoldings = Object.values(holdingsMap)
     .map(h => ({
       ...h,
-      avgCostBasis: h.totalCostBasis / h.totalQuantity,
+      avgCostBasis: h.totalQuantity === 0 ? 0 : h.totalCostBasis / h.totalQuantity,
       gain: h.totalValue - h.totalCostBasis,
       gainPercent: h.totalCostBasis === 0 ? 0 : ((h.totalValue - h.totalCostBasis) / h.totalCostBasis) * 100,
+      portfolioPercent: totalPortfolioValue === 0 ? 0 : (h.totalValue / totalPortfolioValue) * 100,
     }))
-    .sort((a, b) => b.totalValue - a.totalValue)
+    .sort((a, b) => {
+      // Cash at bottom, then by value descending
+      if (a.isCash !== b.isCash) return a.isCash ? 1 : -1
+      return b.totalValue - a.totalValue
+    })
 
   // Top 3 institutions by total value
   const topInstitutions = [...institutions]
@@ -126,7 +133,7 @@ export default function DashboardPage() {
         <StatCard
           title="Unrealized Gain/Loss"
           value={overview.totalPortfolioGain || 0}
-          percentChange={overview.totalPortfolioGainPercentage}
+          percentChange={overview.totalPortfolioGainPercentage ?? undefined}
           color={overview.totalPortfolioGain >= 0 ? "success" : "danger"}
         />
         <StatCard
@@ -182,14 +189,12 @@ export default function DashboardPage() {
                   </span>
                 </div>
               ))}
-              {institutions.length > 3 && (
-                <Link
-                  href="/test-connection/portfolio"
-                  className="block text-center text-sm text-action-primary hover:underline mt-2"
-                >
-                  View all {institutions.length} institutions
-                </Link>
-              )}
+              <Link
+                href="/test-connection"
+                className="block text-center text-sm text-action-primary hover:underline mt-2"
+              >
+                View All Accounts
+              </Link>
             </div>
           )}
         </WidgetCard>
@@ -223,6 +228,7 @@ export default function DashboardPage() {
                     <th className="pb-3 pr-4 text-right">Avg Cost</th>
                     <th className="pb-3 pr-4 text-right">Shares</th>
                     <th className="pb-3 pr-4 text-right">Value</th>
+                    <th className="pb-3 pr-4 text-right">% Portfolio</th>
                     <th className="pb-3 text-right">Gain/Loss</th>
                   </tr>
                 </thead>
@@ -231,12 +237,12 @@ export default function DashboardPage() {
                     <tr key={holding.ticker || holding.name} className="hover:bg-gray-50 transition-colors">
                       <td className="py-3 pr-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-text-secondary flex-shrink-0">
-                            {(holding.ticker || holding.name || "?").slice(0, 2).toUpperCase()}
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${holding.isCash ? 'bg-green-50 text-action-success' : 'bg-gray-100 text-text-secondary'}`}>
+                            {holding.isCash ? '$' : (holding.ticker || holding.name || "?").slice(0, 2).toUpperCase()}
                           </div>
                           <div className="min-w-0">
                             <p className="text-sm font-semibold text-text-primary truncate">
-                              {holding.ticker || "N/A"}
+                              {holding.isCash ? 'Cash' : (holding.ticker || "N/A")}
                             </p>
                             <p className="text-xs text-text-secondary truncate max-w-[200px]">
                               {holding.name}
@@ -245,24 +251,33 @@ export default function DashboardPage() {
                         </div>
                       </td>
                       <td className="py-3 pr-4 text-right text-sm text-text-primary whitespace-nowrap">
-                        {formatCurrency(holding.currentPrice)}
+                        {holding.isCash ? '—' : formatCurrency(holding.currentPrice)}
                       </td>
                       <td className="py-3 pr-4 text-right text-sm text-text-primary whitespace-nowrap">
-                        {formatCurrency(holding.avgCostBasis)}
+                        {holding.isCash ? '—' : formatCurrency(holding.avgCostBasis)}
                       </td>
                       <td className="py-3 pr-4 text-right text-sm text-text-primary whitespace-nowrap">
-                        {formatNumber(holding.totalQuantity, 4)}
+                        {holding.isCash ? '—' : formatNumber(holding.totalQuantity, 4)}
                       </td>
                       <td className="py-3 pr-4 text-right text-sm font-semibold text-text-primary whitespace-nowrap">
                         {formatCurrency(holding.totalValue)}
                       </td>
+                      <td className="py-3 pr-4 text-right text-sm text-text-secondary whitespace-nowrap">
+                        {formatNumber(holding.portfolioPercent, 1)}%
+                      </td>
                       <td className="py-3 text-right whitespace-nowrap">
-                        <p className={`text-sm font-semibold ${holding.gain >= 0 ? 'text-action-success' : 'text-action-danger'}`}>
-                          {holding.gain >= 0 ? '+' : ''}{formatCurrency(holding.gain)}
-                        </p>
-                        <p className={`text-xs ${holding.gain >= 0 ? 'text-action-success' : 'text-action-danger'}`}>
-                          {holding.gainPercent >= 0 ? '+' : ''}{formatNumber(holding.gainPercent, 1)}%
-                        </p>
+                        {holding.isCash ? (
+                          <span className="text-sm text-text-secondary">—</span>
+                        ) : (
+                          <>
+                            <p className={`text-sm font-semibold ${holding.gain >= 0 ? 'text-action-success' : 'text-action-danger'}`}>
+                              {holding.gain >= 0 ? '+' : ''}{formatCurrency(holding.gain)}
+                            </p>
+                            <p className={`text-xs ${holding.gain >= 0 ? 'text-action-success' : 'text-action-danger'}`}>
+                              {holding.gainPercent >= 0 ? '+' : ''}{formatNumber(holding.gainPercent, 1)}%
+                            </p>
+                          </>
+                        )}
                       </td>
                     </tr>
                   ))}

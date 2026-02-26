@@ -37,7 +37,7 @@ const Auth = () => {
 
       if (response.status === 201) {
         successMsg("Login Successful")
-        login(response.data.token)
+        login(response.data.token, response.data.refreshToken)
         setJustLoggedIn(true)
         setTimeout(() => {
           setIsLoading(false)

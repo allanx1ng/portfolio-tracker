@@ -1,5 +1,5 @@
-// // const DatabaseInstance = require("../database/Database");
 const jwt = require("jsonwebtoken")
+const crypto = require("crypto")
 require("dotenv").config()
 
 const DatabaseInstance = require("../db/Database")
@@ -7,8 +7,10 @@ const db = DatabaseInstance.getInstance()
 
 const { OAuth2Client } = require("google-auth-library")
 
-// // const db = DatabaseInstance.getInstance();
 const secretKey = process.env.JWT_SECRET_KEY
+const ACCESS_TOKEN_EXPIRY = "2h"
+const REFRESH_TOKEN_EXPIRY_DAYS = 30
+
 class Authentication {
   // Authenticate token middleware for protected routes
   static authenticateToken(req, res, next) {
@@ -25,39 +27,127 @@ class Authentication {
     })
   }
 
+  // Generate a cryptographically random refresh token and store it in DB
+  static async createRefreshToken(uid) {
+    const token = crypto.randomBytes(64).toString("hex")
+    const expiresAt = new Date(Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000)
+
+    await db.queryDbValues(
+      `INSERT INTO refresh_tokens (uid, token, expires_at) VALUES ($1, $2, $3)`,
+      [uid, token, expiresAt]
+    )
+
+    return token
+  }
+
   static async login(req, res) {
     try {
-      const user = { email: req.body.email, password: req.body.password }
-      // check against user in db
+      const user = { email: req.body.email }
       const query = "SELECT uid FROM UserAccount WHERE email = $1"
+      const result = await db.queryDbValues(query, [user.email])
 
-      const uid = await db.queryDbValues(query, [user.email])
-
-      console.log(user)
-      console.log(uid[0].uid)
-      const token = jwt.sign({ email: user.email, uid: uid[0].uid }, secretKey, {
-        expiresIn: "12h",
-      })
-      console.log(token)
-
-      if (req.body.src == "oauth") {
-        // Redirect to the frontend with the token
-        return res.redirect(`http://localhost:3000/auth/google/callback?token=${token}`)
+      if (!result || result.length === 0) {
+        return res.status(401).json({ message: "User not found" })
       }
 
-      return res.status(201).json({ message: "Logged in successfully", token: token })
+      const uid = result[0].uid
+
+      const accessToken = jwt.sign({ email: user.email, uid }, secretKey, {
+        expiresIn: ACCESS_TOKEN_EXPIRY,
+      })
+
+      const refreshToken = await Authentication.createRefreshToken(uid)
+
+      if (req.body.src == "oauth") {
+        return res.redirect(
+          `${process.env.FRONTEND_URL || "http://localhost:3000"}/auth/google/callback?token=${accessToken}&refreshToken=${refreshToken}`
+        )
+      }
+
+      return res.status(201).json({
+        message: "Logged in successfully",
+        token: accessToken,
+        refreshToken,
+      })
     } catch (err) {
-      res.status(500)
+      console.error("Login error:", err)
+      res.status(500).json({ message: "Internal server error" })
     }
   }
 
-  static async logout(req, res) {}
+  static async refresh(req, res) {
+    try {
+      const { refreshToken } = req.body
+
+      if (!refreshToken) {
+        return res.status(400).json({ message: "Refresh token required" })
+      }
+
+      // Look up the refresh token in DB
+      const rows = await db.queryDbValues(
+        `SELECT rt.id, rt.uid, rt.expires_at, ua.email
+         FROM refresh_tokens rt
+         JOIN useraccount ua ON ua.uid = rt.uid
+         WHERE rt.token = $1`,
+        [refreshToken]
+      )
+
+      if (!rows || rows.length === 0) {
+        return res.status(403).json({ message: "Invalid refresh token" })
+      }
+
+      const row = rows[0]
+
+      // Check expiry
+      if (new Date(row.expires_at) < new Date()) {
+        // Clean up expired token
+        await db.queryDbValues(`DELETE FROM refresh_tokens WHERE id = $1`, [row.id])
+        return res.status(403).json({ message: "Refresh token expired" })
+      }
+
+      // Delete the old refresh token (rotation — one-time use)
+      await db.queryDbValues(`DELETE FROM refresh_tokens WHERE id = $1`, [row.id])
+
+      // Issue new access token + new refresh token
+      const accessToken = jwt.sign({ email: row.email, uid: row.uid }, secretKey, {
+        expiresIn: ACCESS_TOKEN_EXPIRY,
+      })
+
+      const newRefreshToken = await Authentication.createRefreshToken(row.uid)
+
+      return res.status(200).json({
+        token: accessToken,
+        refreshToken: newRefreshToken,
+      })
+    } catch (err) {
+      console.error("Refresh error:", err)
+      return res.status(500).json({ message: "Internal server error" })
+    }
+  }
+
+  static async logout(req, res) {
+    try {
+      const { refreshToken } = req.body
+
+      if (refreshToken) {
+        await db.queryDbValues(`DELETE FROM refresh_tokens WHERE token = $1`, [refreshToken])
+      }
+
+      // Also clean up all expired tokens for hygiene
+      await db.queryDbValues(`DELETE FROM refresh_tokens WHERE expires_at < NOW()`)
+
+      return res.status(200).json({ message: "Logged out successfully" })
+    } catch (err) {
+      console.error("Logout error:", err)
+      return res.status(500).json({ message: "Internal server error" })
+    }
+  }
 
   static async oauth(req, res) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000")
+    res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL || "http://localhost:3000")
     res.header("Access-Control-Allow-Credentials", "true")
     res.header("Referrer-Policy", "no-referrer-when-downgrade")
-    const redirectURL = "http://localhost:4321/oauth"
+    const redirectURL = `${process.env.BACKEND_URL || "http://localhost:4321"}/oauth`
 
     const oAuth2Client = new OAuth2Client(
       process.env.GOOGLE_CLIENT_ID,
@@ -65,7 +155,6 @@ class Authentication {
       redirectURL
     )
 
-    // Generate the url that will be used for the consent dialog.
     const authorizeUrl = oAuth2Client.generateAuthUrl({
       access_type: "offline",
       scope:

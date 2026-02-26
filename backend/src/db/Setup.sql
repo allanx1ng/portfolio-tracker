@@ -1,4 +1,5 @@
 
+DROP TABLE IF EXISTS refresh_tokens CASCADE;
 DROP TABLE IF EXISTS plaid_investment_holdings CASCADE;
 DROP TABLE IF EXISTS plaid_investment_accounts CASCADE;
 DROP TABLE IF EXISTS plaid_investment_securities CASCADE;
@@ -107,6 +108,16 @@ CREATE TABLE Portfolio_assets (
     FOREIGN KEY (uid, portfolio_name) REFERENCES Portfolio(uid, portfolio_name) ON DELETE CASCADE,
     FOREIGN KEY (asset_id) REFERENCES Asset(asset_id) ON DELETE CASCADE
 );
+
+CREATE TABLE refresh_tokens (
+    id SERIAL PRIMARY KEY,
+    uid INTEGER REFERENCES useraccount(uid) ON DELETE CASCADE,
+    token TEXT NOT NULL UNIQUE,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_refresh_tokens_uid ON refresh_tokens(uid);
+CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
 
 CREATE TABLE plaid_connections (
     item_id TEXT PRIMARY KEY,

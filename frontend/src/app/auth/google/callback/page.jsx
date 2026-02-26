@@ -12,8 +12,9 @@ const App = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
+    const refreshToken = urlParams.get('refreshToken');
     if (token) {
-        login(token)
+        login(token, refreshToken)
         successMsg("Login successful")
         router.push('/')
     }
