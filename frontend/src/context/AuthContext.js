@@ -8,6 +8,7 @@ const AuthContext = createContext(null)
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
+  const [authLoading, setAuthLoading] = useState(true)
 
   const logout = () => {
     localStorage.removeItem("token")
@@ -41,9 +42,10 @@ const AuthProvider = ({ children }) => {
         console.error("invalid token")
       }
     }
+    setAuthLoading(false)
   }, [])
 
-  return <AuthContext.Provider value={{ user, logout, login }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, authLoading, logout, login }}>{children}</AuthContext.Provider>
 }
 
 const decodeToken = (token) => {

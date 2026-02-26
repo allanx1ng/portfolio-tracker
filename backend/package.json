@@ -3,8 +3,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "jest",
-    "apply-transaction-schema": "node src/db/ApplyTransactionSchema.js"
+    "test": "jest"
   },
   "dependencies": {
     "@solana/web3.js": "^1.91.8",

@@ -188,12 +188,15 @@ class Server {
       ConnectBrokerage.connectAccount
     );
 
-    this.app.post("/connect/brokerage", Authentication.authenticateToken, ConnectBrokerage.connectAccount)
-
     // Connected accounts routes
     this.app.get("/connected-accounts",
       Authentication.authenticateToken,
       ConnectedAccounts.getConnectedAccounts
+    )
+
+    this.app.post("/connected-accounts/disconnect",
+      Authentication.authenticateToken,
+      ConnectedAccounts.disconnectAccount
     )
 
     // // Transactions routes

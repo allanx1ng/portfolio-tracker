@@ -1,4 +1,7 @@
 
+DROP TABLE IF EXISTS plaid_investment_holdings CASCADE;
+DROP TABLE IF EXISTS plaid_investment_accounts CASCADE;
+DROP TABLE IF EXISTS plaid_investment_securities CASCADE;
 DROP TABLE IF EXISTS plaid_connections CASCADE;
 DROP TABLE IF EXISTS Portfolio_assets CASCADE;
 DROP TABLE IF EXISTS StockAsset CASCADE;
@@ -111,10 +114,11 @@ CREATE TABLE plaid_connections (
     access_token TEXT NOT NULL,
     institution_id TEXT NOT NULL,
     institution_name TEXT NOT NULL,
+    institution_logo TEXT,
     product TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(uid, institution_id, product) -- Change unique constraint
+    UNIQUE(uid, institution_id, product)
 );
 
 -- Table to store Plaid investment securities

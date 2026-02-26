@@ -1,12 +1,12 @@
 "use client"
 
-import { formatCurrency } from "@/util/util"
+import { formatCurrency } from "@/util/format"
 
 const StatCard = ({
   title,
   value,
   percentChange,
-  color = "primary", // Ensure we have a default color
+  color = "primary",
   icon,
   isCurrency = true,
   isPercentage = false
@@ -29,7 +29,6 @@ const StatCard = ({
     }
   }
 
-  // Get the color variant or fall back to primary if the specified color doesn't exist
   const colors = colorVariants[color] || colorVariants.primary
 
   const formatValue = (val) => {
@@ -39,7 +38,7 @@ const StatCard = ({
   }
 
   return (
-    <div className={`bg-card rounded-2xl shadow-md p-6 border-l-4 ${colors.border}`}>
+    <div className={`bg-bg-card rounded-2xl shadow-md p-6 border-l-4 ${colors.border}`}>
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-text-primary">{title}</h3>
         <div className={`p-2 ${colors.bg} rounded-full`}>
@@ -70,9 +69,6 @@ const StatCard = ({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             )}
-            <span className="text-xs text-text-secondary ml-1">
-              vs last month
-            </span>
           </div>
         )}
       </div>

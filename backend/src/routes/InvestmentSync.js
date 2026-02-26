@@ -101,7 +101,7 @@ class InvestmentSync {
         // Fetch accounts
         const accounts = await db.queryDbValues(
             `SELECT account_id, name, official_name, subtype, type,
-                    current_balance, iso_currency_code, total_value, holdings_count
+                    current_balance, iso_currency_code, total_value, holdings_count, last_synced
              FROM plaid_investment_accounts
              WHERE uid = $1 AND institution_id = $2`,
             [uid, institution_id]
@@ -154,6 +154,7 @@ class InvestmentSync {
                 holdings_count: account.holdings_count,
                 holdings: accountHoldings,
                 total_value: parseFloat(account.total_value),
+                last_synced: account.last_synced,
             };
         });
 

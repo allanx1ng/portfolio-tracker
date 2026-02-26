@@ -10,7 +10,7 @@ class Investments {
 
             // Get all connected investment institutions
             const institutions = await db.queryDbValues(
-                `SELECT DISTINCT institution_id, institution_name
+                `SELECT DISTINCT institution_id, institution_name, institution_logo
                  FROM plaid_connections
                  WHERE uid = $1 AND product = $2`,
                 [uid, 'investments']
@@ -27,7 +27,7 @@ class Investments {
             // For each institution: check staleness, refresh if needed, then read from cache
             const institutionsSyncData = [];
             for (const institution of institutions) {
-                const { institution_id, institution_name } = institution;
+                const { institution_id, institution_name, institution_logo } = institution;
 
                 try {
                     const stale = await InvestmentSync.isStale(uid, institution_id);
@@ -38,9 +38,17 @@ class Investments {
                     const accounts = await InvestmentSync.getCachedHoldings(uid, institution_id);
                     if (accounts) {
                         const portfolioOverview = calculatePortfolioOverview(accounts);
+                        // Get latest last_synced across accounts for this institution
+                        const last_synced = accounts.reduce((latest, acc) => {
+                            const synced = acc.last_synced ? new Date(acc.last_synced) : null;
+                            return synced && (!latest || synced > latest) ? synced : latest;
+                        }, null);
+
                         institutionsSyncData.push({
                             institution_id,
                             institution_name,
+                            institution_logo,
+                            last_synced,
                             data: { processed: accounts, portfolioOverview }
                         });
                     }

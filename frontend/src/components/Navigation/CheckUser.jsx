@@ -6,7 +6,7 @@ import { Fragment } from "react"
 // import { useState } from "react"
 
 const CheckUser = () => {
-  const { user, logout } = useAuth()
+  const { user, authLoading, logout } = useAuth()
   // const [contextMenu, setContextMenu] = useState(false)
 
   if (user) {
@@ -15,7 +15,9 @@ const CheckUser = () => {
 
   return (
     <div className="">
-      {user ? (
+      {authLoading ? (
+        <div className="h-9" />
+      ) : user ? (
         <div>
           <Dropdown user={user} logout={logout} />
         </div>

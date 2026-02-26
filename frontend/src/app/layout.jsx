@@ -4,6 +4,7 @@ import Navbar from "@/components/Navigation/Navbar"
 import { AuthProvider } from "@/context/AuthContext"
 import { ToastContainer } from "react-toastify"
 import Footer from "@/components/Navigation/Footer"
+import AuthGate from "@/components/Navigation/AuthGate"
 import { ThemeProvider } from "@/context/ThemeContext"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -32,7 +33,9 @@ export default function RootLayout({ children }) {
             <ToastContainer />
             <div className="flex flex-col min-h-screen">
               <Navbar />
-              <main className="flex-grow p-16">{children}</main>
+              <main className="flex-grow p-16">
+                <AuthGate>{children}</AuthGate>
+              </main>
               <Footer />
             </div>
           </body>

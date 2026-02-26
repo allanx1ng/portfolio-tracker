@@ -3,23 +3,26 @@ const DatabaseInstance = require("../db/Database");
 const db = DatabaseInstance.getInstance();
 
 class ConnectAccount {
+    static VALID_PRODUCTS = ['investments', 'transactions'];
+
     static async createLinkToken(req, res) {
         try {
             const { uid } = req.user;
-            const { institution_id, institution_name } = req.body;
-            console.log(req.body);
+            const { product } = req.body;
+
+            const selectedProduct = product || 'investments';
+            if (!ConnectAccount.VALID_PRODUCTS.includes(selectedProduct)) {
+                return res.status(400).json({
+                    error: `Invalid product. Must be one of: ${ConnectAccount.VALID_PRODUCTS.join(', ')}`
+                });
+            }
+
             const configs = {
                 user: { client_user_id: uid.toString() },
                 client_name: 'Portfolio Tracker',
-                products: ['investments'],
-                // products: ['investments', 'transactions'], // Include both transactions and investments
-                // required_if_supported_products: ['transactions'],
-                // transactions: {
-                //     days_requested: 30
-                // },
-                country_codes: ['CA'], // Focus on Canadian institutions
+                products: [selectedProduct],
+                country_codes: ['CA'],
                 language: 'en',
-                // institution_id: 'ins_42'
             };
 
             // Only add institution_id if it's provided
@@ -74,30 +77,30 @@ class ConnectAccount {
             const product = itemResponse.data.item.products[0]; // e.g. 'transactions' or 'investments'
             console.log(itemResponse.data);
 
-            // Fetch institution_name using /institutions/get_by_id
+            // Fetch institution details (name + logo)
             let institution_name = null;
+            let institution_logo = null;
             if (institution_id) {
                 const instResponse = await plaidClient.institutionsGetById({
                     institution_id,
                     country_codes: ['CA'],
+                    options: { include_optional_metadata: true },
                 });
                 institution_name = instResponse.data.institution.name;
+                institution_logo = instResponse.data.institution.logo || null;
             }
-
-            console.log({ access_token, item_id, institution_id, institution_name, product });
-            // res.status(500).json({});
-            // return
 
             // Store access token and account info in database
             const query = `
-            INSERT INTO plaid_connections 
-            (uid, access_token, item_id, institution_id, institution_name, product, last_updated)
-            VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
+            INSERT INTO plaid_connections
+            (uid, access_token, item_id, institution_id, institution_name, institution_logo, product, last_updated)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP)
             ON CONFLICT (uid, institution_id, product)
-            DO UPDATE SET 
+            DO UPDATE SET
                 access_token = EXCLUDED.access_token,
                 item_id = EXCLUDED.item_id,
                 institution_name = EXCLUDED.institution_name,
+                institution_logo = EXCLUDED.institution_logo,
                 last_updated = CURRENT_TIMESTAMP
             `;
 
@@ -107,6 +110,7 @@ class ConnectAccount {
                 item_id,
                 institution_id,
                 institution_name,
+                institution_logo,
                 product
             ]);
 
@@ -127,12 +131,14 @@ class ConnectAccount {
             //     console.error('Initial sync error (non-fatal):', syncError);
             // }
 
-            // Persist initial investment holdings to DB
-            try {
-                const InvestmentSync = require('./InvestmentSync');
-                await InvestmentSync.syncHoldings(uid, institution_id);
-            } catch (error) {
-                console.error('Initial investment sync error (non-fatal):', error);
+            // Persist initial investment holdings to DB if this is an investments connection
+            if (product === 'investments') {
+                try {
+                    const InvestmentSync = require('./InvestmentSync');
+                    await InvestmentSync.syncHoldings(uid, institution_id);
+                } catch (error) {
+                    console.error('Initial investment sync error (non-fatal):', error);
+                }
             }
 
             res.status(200).json({

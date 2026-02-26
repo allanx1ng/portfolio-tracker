@@ -5,7 +5,7 @@ import { successMsg, errorMsg } from "@/util/toastNotifications"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
 import apiClient from "@/util/apiClient"
-import VerifyEmail from "@/components/VerifyEmail"
+
 
 const Register = () => {
   const [userEmail, setEmail] = useState("")

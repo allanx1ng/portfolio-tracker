@@ -6,29 +6,24 @@ class DatabaseInstance {
 
   constructor() {
     const ENV = process.env.NODE_ENV
-    if (ENV === "production") {
-      this.pool = new Pool({
-        user: process.env.DB_USER,
-        host: process.env.DB_HOST,
-        database: process.env.DB_NAME,
-        password: process.env.DB_PASS,
-        port: process.env.DB_PORT,
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      })
-    } else if (ENV === "development") {
-      this.pool = new Pool({
-        user: process.env.DB_USER,
-        host: process.env.DB_HOST,
-        database: process.env.DB_NAME,
-        password: process.env.DB_PASS,
-        port: process.env.DB_PORT,
-        // ssl: {
-        //   rejectUnauthorized: false,
-        // },
-      })
+    const poolConfig = {
+      user: process.env.DB_USER,
+      host: process.env.DB_HOST,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASS,
+      port: process.env.DB_PORT,
     }
+
+    if (ENV === "production") {
+      poolConfig.ssl = { rejectUnauthorized: false }
+    }
+
+    this.pool = new Pool(poolConfig)
+
+    // Prevent idle client errors from crashing the process
+    this.pool.on("error", (err) => {
+      console.error("Unexpected database pool error:", err.message)
+    })
   }
 
   static getInstance() {
