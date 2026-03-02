@@ -1,51 +1,32 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { getInvestments } from "@/util/getInvestments";
+import { useInvestments } from "@/context/InvestmentsContext";
+import { PageSpinner } from "@/components/ui/Spinner";
 import Link from "next/link";
 
 export default function AccountDetailPage() {
   const { accountId } = useParams();
-  const [account, setAccount] = useState(null);
-  const [institutionName, setInstitutionName] = useState("");
+  const { fetchAccountDetail, getAccountDetail } = useInvestments();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await getInvestments();
-
-      // Find the account across all institutions
-      for (const inst of data.institutions || []) {
-        const found = (inst.data?.processed || []).find(
-          (a) => a.account_id === accountId
-        );
-        if (found) {
-          setAccount(found);
-          setInstitutionName(inst.institution_name);
-          break;
-        }
-      }
-    } catch (err) {
-      console.error("Failed to fetch account:", err);
-      setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [accountId]);
-
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    const load = async () => {
+      try {
+        if (!getAccountDetail(accountId)) {
+          await fetchAccountDetail(accountId);
+        }
+      } catch (err) {
+        setError(err.response?.data?.error || err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [accountId, fetchAccountDetail, getAccountDetail]);
 
-  if (!account && !loading && !error) {
-    return <div className="text-center py-12 text-gray-500">Account not found.</div>;
-  }
-
-  if (loading) {
-    return <div className="text-center py-12 text-gray-500">Loading account...</div>;
-  }
+  if (loading) return <PageSpinner />;
 
   if (error) {
     return (
@@ -55,7 +36,8 @@ export default function AccountDetailPage() {
     );
   }
 
-  if (!account) {
+  const detail = getAccountDetail(accountId);
+  if (!detail) {
     return (
       <div className="max-w-3xl mx-auto">
         <p className="text-gray-500">Account not found.</p>
@@ -66,8 +48,8 @@ export default function AccountDetailPage() {
     );
   }
 
+  const { account, holdings } = detail;
   const currency = account.iso_currency_code || "USD";
-  const holdings = account.holdings || [];
   const investmentHoldings = holdings.filter((h) => !h.is_cash_equivalent);
   const cashHoldings = holdings.filter((h) => h.is_cash_equivalent);
 
@@ -78,7 +60,7 @@ export default function AccountDetailPage() {
       </Link>
 
       <div className="mt-4 mb-6">
-        <p className="text-sm text-gray-500">{institutionName}</p>
+        <p className="text-sm text-gray-500">{account.institution_name}</p>
         <h1 className="text-2xl">
           {account.name}
           {account.official_name && account.official_name !== account.name && (

@@ -1,3 +1,5 @@
-export default function () {
-  return <span className="loading loading-dots loading-md"></span>
+import Spinner from "@/components/ui/Spinner"
+
+export default function Loading() {
+  return <Spinner size="xs" />
 }

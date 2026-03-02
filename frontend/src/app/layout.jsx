@@ -2,6 +2,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import Navbar from "@/components/Navigation/Navbar"
 import { AuthProvider } from "@/context/AuthContext"
+import { InvestmentsProvider } from "@/context/InvestmentsContext"
 import { ToastContainer } from "react-toastify"
 import Footer from "@/components/Navigation/Footer"
 import AuthGate from "@/components/Navigation/AuthGate"
@@ -29,16 +30,18 @@ export default function RootLayout({ children }) {
 
       <ThemeProvider>
         <AuthProvider>
-          <body className={`${inter.className} min-h-screen h-screen font-semibold`}>
-            <ToastContainer />
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow p-16">
-                <AuthGate>{children}</AuthGate>
-              </main>
-              <Footer />
-            </div>
-          </body>
+          <InvestmentsProvider>
+            <body className={`${inter.className} min-h-screen h-screen font-semibold`}>
+              <ToastContainer />
+              <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-grow p-16">
+                  <AuthGate>{children}</AuthGate>
+                </main>
+                <Footer />
+              </div>
+            </body>
+          </InvestmentsProvider>
         </AuthProvider>
       </ThemeProvider>
     </html>

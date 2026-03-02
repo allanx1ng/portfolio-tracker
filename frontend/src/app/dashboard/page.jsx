@@ -2,38 +2,23 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { getInvestments } from "@/util/getInvestments"
 import { formatCurrency, formatNumber } from "@/util/format"
+import { useInvestments } from "@/context/InvestmentsContext"
+import { PageSpinner } from "@/components/ui/Spinner"
 import StatCard from "@/components/ui/StatCard"
 import WidgetCard from "@/components/ui/WidgetCard"
 import PieChart from "@/components/charts/PieChart"
 
 export default function DashboardPage() {
-  const [investmentData, setInvestmentData] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { loading, error, ensureData, getOverallOverview, getDashboardOverview } = useInvestments()
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getInvestments()
-        setInvestmentData(data)
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
-    }
+    ensureData().then(() => setReady(true)).catch(() => setReady(true))
+  }, [ensureData])
 
-    fetchData()
-  }, [])
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-action-primary"></span>
-      </div>
-    )
+  if (!ready || loading) {
+    return <PageSpinner />
   }
 
   if (error) {
@@ -44,80 +29,9 @@ export default function DashboardPage() {
     )
   }
 
-  const overview = investmentData?.overallPortfolioOverview || {}
-  const institutions = investmentData?.institutions || []
-
-  // Aggregate all holdings across institutions
-  const holdingsForChart = []
-  const holdingsMap = {}
-  const uniqueHoldings = new Set()
-  let totalAccounts = 0
-
-  institutions.forEach(inst => {
-    const accounts = inst.data?.processed || []
-    totalAccounts += accounts.length
-
-    const holdings = inst.data?.portfolioOverview?.holdings || []
-    holdings.forEach(holding => {
-      const key = holding.ticker || holding.name
-      uniqueHoldings.add(key)
-
-      const value = holding.currentPrice * holding.totalQuantity
-      const costBasis = holding.averageBuyPrice * holding.totalQuantity
-
-      if (holdingsMap[key]) {
-        holdingsMap[key].totalQuantity += holding.totalQuantity
-        holdingsMap[key].totalValue += value
-        holdingsMap[key].totalCostBasis += costBasis
-      } else {
-        holdingsMap[key] = {
-          ticker: holding.ticker,
-          name: holding.name,
-          type: holding.type,
-          isCash: holding.is_cash_equivalent,
-          currentPrice: holding.currentPrice,
-          totalQuantity: holding.totalQuantity,
-          totalValue: value,
-          totalCostBasis: costBasis,
-        }
-      }
-
-      // Pie chart data (exclude cash)
-      if (!holding.is_cash_equivalent) {
-        const existing = holdingsForChart.find(h => h.label === key)
-        if (existing) {
-          existing.value += value
-        } else {
-          holdingsForChart.push({ label: key, value })
-        }
-      }
-    })
-  })
-
-  // Build sorted holdings list with computed fields
-  const totalPortfolioValue = overview.totalAccountValue || 0
-  const allHoldings = Object.values(holdingsMap)
-    .map(h => ({
-      ...h,
-      avgCostBasis: h.totalQuantity === 0 ? 0 : h.totalCostBasis / h.totalQuantity,
-      gain: h.totalValue - h.totalCostBasis,
-      gainPercent: h.totalCostBasis === 0 ? 0 : ((h.totalValue - h.totalCostBasis) / h.totalCostBasis) * 100,
-      portfolioPercent: totalPortfolioValue === 0 ? 0 : (h.totalValue / totalPortfolioValue) * 100,
-    }))
-    .sort((a, b) => {
-      // Cash at bottom, then by value descending
-      if (a.isCash !== b.isCash) return a.isCash ? 1 : -1
-      return b.totalValue - a.totalValue
-    })
-
-  // Top 3 institutions by total value
-  const topInstitutions = [...institutions]
-    .map(inst => ({
-      ...inst,
-      totalValue: inst.data?.portfolioOverview?.overall?.totalAccountValue || 0
-    }))
-    .sort((a, b) => b.totalValue - a.totalValue)
-    .slice(0, 3)
+  const overview = getOverallOverview() || {}
+  const dashboard = getDashboardOverview() || {}
+  const { allHoldings = [], pieChartData = [], topInstitutions = [], totalAccounts = 0, totalInstitutions = 0, uniqueHoldings = 0 } = dashboard
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -149,7 +63,7 @@ export default function DashboardPage() {
         <WidgetCard title="Portfolio Summary">
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
-              <p className="text-3xl font-bold text-text-primary">{institutions.length}</p>
+              <p className="text-3xl font-bold text-text-primary">{totalInstitutions}</p>
               <p className="text-sm text-text-secondary mt-1">Institutions</p>
             </div>
             <div className="text-center">
@@ -157,7 +71,7 @@ export default function DashboardPage() {
               <p className="text-sm text-text-secondary mt-1">Accounts</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-text-primary">{uniqueHoldings.size}</p>
+              <p className="text-3xl font-bold text-text-primary">{uniqueHoldings}</p>
               <p className="text-sm text-text-secondary mt-1">Unique Holdings</p>
             </div>
           </div>
@@ -203,7 +117,7 @@ export default function DashboardPage() {
       {/* Pie Chart */}
       <WidgetCard title="Portfolio Allocation">
         <PieChart
-          data={holdingsForChart}
+          data={pieChartData}
           totalLabel="Total Investment Value"
           emptyMessage="No holdings to display. Connect an account to get started."
           valueLabel="Value"

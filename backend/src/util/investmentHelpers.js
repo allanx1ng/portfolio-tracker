@@ -125,4 +125,72 @@ function processHoldings(data) {
     return processedAccounts;
 }
 
-module.exports = { processHoldings, calculatePortfolioOverview };
+function calculateDashboardOverview(institutionsSyncData, totalPortfolioValue) {
+    const holdingsMap = {};
+    let totalAccounts = 0;
+
+    institutionsSyncData.forEach(inst => {
+        const accounts = inst.data?.processed || [];
+        totalAccounts += accounts.length;
+
+        const holdings = inst.data?.portfolioOverview?.holdings || [];
+        holdings.forEach(holding => {
+            const key = holding.ticker || holding.name;
+            const value = holding.currentPrice * holding.totalQuantity;
+            const costBasis = holding.averageBuyPrice * holding.totalQuantity;
+
+            if (holdingsMap[key]) {
+                holdingsMap[key].totalQuantity += holding.totalQuantity;
+                holdingsMap[key].totalValue += value;
+                holdingsMap[key].totalCostBasis += costBasis;
+            } else {
+                holdingsMap[key] = {
+                    ticker: holding.ticker,
+                    name: holding.name,
+                    type: holding.type,
+                    isCash: holding.is_cash_equivalent,
+                    currentPrice: holding.currentPrice,
+                    totalQuantity: holding.totalQuantity,
+                    totalValue: value,
+                    totalCostBasis: costBasis,
+                };
+            }
+        });
+    });
+
+    const allHoldings = Object.values(holdingsMap).map(h => ({
+        ...h,
+        avgCostBasis: h.totalQuantity === 0 ? 0 : h.totalCostBasis / h.totalQuantity,
+        gain: h.totalValue - h.totalCostBasis,
+        gainPercent: h.totalCostBasis === 0 ? 0 : ((h.totalValue - h.totalCostBasis) / h.totalCostBasis) * 100,
+        portfolioPercent: totalPortfolioValue === 0 ? 0 : (h.totalValue / totalPortfolioValue) * 100,
+    })).sort((a, b) => {
+        if (a.isCash !== b.isCash) return a.isCash ? 1 : -1;
+        return b.totalValue - a.totalValue;
+    });
+
+    const pieChartData = allHoldings
+        .filter(h => !h.isCash)
+        .map(h => ({ label: h.ticker || h.name, value: h.totalValue }));
+
+    const topInstitutions = institutionsSyncData
+        .map(inst => ({
+            institution_id: inst.institution_id,
+            institution_name: inst.institution_name,
+            institution_logo: inst.institution_logo,
+            totalValue: inst.data?.portfolioOverview?.overall?.totalAccountValue || 0,
+        }))
+        .sort((a, b) => b.totalValue - a.totalValue)
+        .slice(0, 3);
+
+    return {
+        totalInstitutions: institutionsSyncData.length,
+        totalAccounts,
+        uniqueHoldings: Object.keys(holdingsMap).length,
+        allHoldings,
+        pieChartData,
+        topInstitutions,
+    };
+}
+
+module.exports = { processHoldings, calculatePortfolioOverview, calculateDashboardOverview };

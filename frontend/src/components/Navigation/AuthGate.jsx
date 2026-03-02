@@ -3,6 +3,7 @@
 import { useAuth } from "@/context/AuthContext"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect } from "react"
+import { PageSpinner } from "@/components/ui/Spinner"
 
 const PUBLIC_ROUTES = ["/", "/login", "/signup", "/auth"]
 
@@ -21,20 +22,8 @@ export default function AuthGate({ children }) {
     }
   }, [authLoading, user, isPublic])
 
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-action-primary"></span>
-      </div>
-    )
-  }
-
-  if (!user && !isPublic) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <span className="loading loading-spinner loading-lg text-action-primary"></span>
-      </div>
-    )
+  if (authLoading || (!user && !isPublic)) {
+    return <PageSpinner />
   }
 
   return children

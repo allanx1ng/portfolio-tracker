@@ -64,7 +64,7 @@ const Auth = () => {
   return (
     <div className="w-full h-screen left-0">
       <form className="grid w-full justify-center p-10 space-y-2">
-        <label className="input input-bordered input-primary flex items-center gap-2">
+        <label className="flex items-center gap-2 px-3 py-2 border border-action-primary rounded-lg focus-within:ring-2 focus-within:ring-action-primary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -75,7 +75,7 @@ const Auth = () => {
             <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
           </svg>
           <input
-            className="grow"
+            className="grow outline-none bg-transparent"
             placeholder={"Email"}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -83,7 +83,7 @@ const Auth = () => {
             required
           />
         </label>
-        <label className="input input-bordered input-primary flex items-center gap-2">
+        <label className="flex items-center gap-2 px-3 py-2 border border-action-primary rounded-lg focus-within:ring-2 focus-within:ring-action-primary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -97,7 +97,7 @@ const Auth = () => {
             />
           </svg>
           <input
-            className="grow"
+            className="grow outline-none bg-transparent"
             placeholder={"Password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -105,7 +105,7 @@ const Auth = () => {
             required
           />
         </label>
-        <button disabled={isLoading} className="btn btn-success btn-outline" onClick={handleLogin}>
+        <button disabled={isLoading} className="px-6 py-2 border border-action-success text-action-success font-semibold rounded-lg hover:bg-action-success hover:text-white transition-colors disabled:opacity-50" onClick={handleLogin}>
           {!isLoading && "Login"}
           {isLoading && <Loading />}
         </button>

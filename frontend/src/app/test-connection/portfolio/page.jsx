@@ -1,37 +1,23 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
-import { getInvestments } from "@/util/getInvestments";
+import { useState, useEffect } from "react";
+import { useInvestments } from "@/context/InvestmentsContext";
+import { PageSpinner } from "@/components/ui/Spinner";
 import Link from "next/link";
 
 export default function TestPortfolioPage() {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const result = await getInvestments();
-      setData(result);
-    } catch (err) {
-      console.error("Failed to fetch investments:", err);
-      setError(err.response?.data?.error || err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { loading, error, ensureData, refreshInvestments, getInstitutions, getOverallOverview } = useInvestments();
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    ensureData().then(() => setReady(true)).catch(() => setReady(true));
+  }, [ensureData]);
 
   const handleRefresh = async () => {
-    await fetchData();
+    await refreshInvestments();
   };
 
-  if (loading) {
-    return <div className="text-center py-12 text-gray-500">Loading investments...</div>;
+  if (!ready || loading) {
+    return <PageSpinner />;
   }
 
   if (error) {
@@ -42,8 +28,8 @@ export default function TestPortfolioPage() {
     );
   }
 
-  const institutions = data?.institutions || [];
-  const overview = data?.overallPortfolioOverview;
+  const institutions = getInstitutions();
+  const overview = getOverallOverview();
 
   return (
     <div className="max-w-3xl mx-auto">

@@ -2,9 +2,12 @@
 import { useState, useEffect, useCallback } from "react";
 import PlaidConnect from "@/components/Stocks/PlaidLink";
 import { getConnectedAccounts, disconnectAccount } from "@/util/transactionService";
+import Spinner from "@/components/ui/Spinner";
+import { useInvestments } from "@/context/InvestmentsContext";
 import Link from "next/link";
 
 export default function TestConnectionPage() {
+  const { invalidateCache } = useInvestments();
   const [connections, setConnections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [disconnecting, setDisconnecting] = useState(null);
@@ -31,6 +34,7 @@ export default function TestConnectionPage() {
     try {
       setDisconnecting(itemId);
       await disconnectAccount(itemId);
+      invalidateCache();
       await fetchConnections();
     } catch (err) {
       console.error("Failed to disconnect:", err);
@@ -49,7 +53,7 @@ export default function TestConnectionPage() {
         <PlaidConnect
           product="investments"
           buttonText="Connect Investment Account"
-          onSuccess={fetchConnections}
+          onSuccess={() => { invalidateCache(); fetchConnections(); }}
         />
       </div>
 
@@ -67,7 +71,7 @@ export default function TestConnectionPage() {
         </div>
 
         {loading ? (
-          <p className="text-gray-500">Loading...</p>
+          <Spinner size="md" className="text-action-primary" />
         ) : connections.length === 0 ? (
           <p className="text-gray-500">No accounts connected yet.</p>
         ) : (

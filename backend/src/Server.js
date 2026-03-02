@@ -224,6 +224,11 @@ class Server {
       Investments.getAllInvestments
     )
 
+    this.app.get("/investments/account/:accountId",
+      Authentication.authenticateToken,
+      Investments.getAccountDetail
+    )
+
     // Force refresh investments from Plaid
     // ?institution_id=xxx to sync one, omit to sync all
     this.app.get("/test/sync-investments",

@@ -12,7 +12,7 @@ export default function () {
   }
   return (
     <div>
-      <button className="btn btn-primary" onClick={() => googleAuth()}>
+      <button className="px-6 py-3 bg-action-primary text-white font-semibold rounded-lg hover:opacity-90 transition-opacity" onClick={() => googleAuth()}>
         google
       </button>
     </div>
