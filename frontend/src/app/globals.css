@@ -53,6 +53,7 @@ html, body {
   padding: 0;
   display: flex;
   flex-direction: column;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -78,15 +79,29 @@ body {
 }
 
 @layer base {
-  h1 {
-    @apply text-4xl font-bold; /* Example styles: 4xl font size and bold font */
-  }
+  h1 { @apply text-4xl font-bold tracking-tight; }
+  h2 { @apply text-2xl font-bold; }
+  h3 { @apply text-lg font-semibold; }
+  p  { @apply text-base; }
+}
 
-  h2 {
-    @apply text-2xl font-bold; /* Example styles: 4xl font size and bold font */
+@layer components {
+  .text-display {
+    @apply text-5xl font-bold tracking-tight leading-tight;
   }
-  p {
-    @apply text-lg; /* Example for paragraph tags */
+  .section-heading {
+    @apply text-3xl font-bold text-text-primary;
   }
-  /* Add more styles for other tags if needed */
+  .section-label {
+    @apply text-sm font-semibold uppercase tracking-widest text-action-primary;
+  }
+  .body-text {
+    @apply text-base font-normal leading-relaxed text-text-secondary;
+  }
+  .body-sm {
+    @apply text-sm font-normal leading-relaxed text-text-secondary;
+  }
+  .data-label {
+    @apply text-xs font-medium uppercase tracking-wide text-text-muted;
+  }
 }

@@ -22,13 +22,14 @@ module.exports = {
         },
         border: {
           DEFAULT: '#e5e7eb',    // gray-200
-          focus: '#6366f1'       // indigo-500
+          focus: '#10b981'       // emerald-500
         },
         action: {
-          primary: '#4f46e5',    // indigo-600
-          danger: '#dc2626',     // red-600
-          success: '#16a34a',    // green-600
-          warning: '#ca8a04'     // yellow-600
+          primary: '#059669',       // emerald-600
+          primaryLight: '#ecfdf5',  // emerald-50 — tinted surfaces, badge backgrounds
+          danger: '#dc2626',        // red-600
+          success: '#059669',       // emerald-600
+          warning: '#ca8a04'        // yellow-600
         }
       },
       backgroundImage: {

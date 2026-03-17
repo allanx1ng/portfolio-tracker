@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
               <ToastContainer />
               <div className="flex flex-col min-h-screen">
                 <Navbar />
-                <main className="flex-grow p-16">
+                <main className="flex-grow pt-24 px-16 pb-16">
                   <AuthGate>{children}</AuthGate>
                 </main>
                 <Footer />

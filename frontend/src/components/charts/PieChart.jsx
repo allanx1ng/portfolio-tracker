@@ -12,16 +12,16 @@ import {
 import { formatCurrency, formatNumber } from "@/util/format"
 
 const COLORS = [
-  '#6366f1', // indigo
-  '#10b981', // emerald
+  '#059669', // emerald-600 (brand primary)
   '#f59e0b', // amber
   '#f43f5e', // rose
   '#3b82f6', // blue
-  '#22c55e', // green
+  '#14b8a6', // teal
   '#eab308', // yellow
   '#ef4444', // red
   '#a855f7', // purple
-  '#14b8a6', // teal
+  '#22c55e', // green
+  '#10b981', // emerald-500
   '#f97316', // orange
   '#ec4899'  // pink
 ]
