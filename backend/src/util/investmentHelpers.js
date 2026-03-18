@@ -82,8 +82,8 @@ function processHoldings(data) {
         securityMap[security.security_id] = security;
     });
 
-    // Process accounts and their holdings
-    const processedAccounts = accounts.map(account => {
+    // Process accounts and their holdings — skip depository/credit accounts
+    const processedAccounts = accounts.filter(a => a.type === 'investment').map(account => {
         const accountHoldings = holdings.filter(holding => holding.account_id === account.account_id);
 
         const detailedHoldings = accountHoldings.map(holding => {

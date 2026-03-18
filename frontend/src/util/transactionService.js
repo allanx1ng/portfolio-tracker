@@ -70,6 +70,11 @@ export const disconnectAccount = async (itemId) => {
   return response.data;
 };
 
+export const getTransactionAccounts = async () => {
+  const response = await apiClient.get('/transactions/accounts');
+  return response.data;
+};
+
 /**
  * Get financial data including transactions, accounts, etc.
  * @param {Object} params - Optional parameters for data fetching

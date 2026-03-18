@@ -3,6 +3,9 @@ DROP TABLE IF EXISTS refresh_tokens CASCADE;
 DROP TABLE IF EXISTS plaid_investment_holdings CASCADE;
 DROP TABLE IF EXISTS plaid_investment_accounts CASCADE;
 DROP TABLE IF EXISTS plaid_investment_securities CASCADE;
+DROP TABLE IF EXISTS plaid_transactions CASCADE;
+DROP TABLE IF EXISTS plaid_transaction_accounts CASCADE;
+DROP TABLE IF EXISTS plaid_sync_cursors CASCADE;
 DROP TABLE IF EXISTS plaid_connections CASCADE;
 DROP TABLE IF EXISTS Portfolio_assets CASCADE;
 DROP TABLE IF EXISTS StockAsset CASCADE;
@@ -172,6 +175,49 @@ CREATE TABLE plaid_investment_holdings (
     current_value NUMERIC(36, 18),
     iso_currency_code TEXT
 );
+
+-- Cursor per item for incremental transaction sync (/transactions/sync)
+CREATE TABLE plaid_sync_cursors (
+    item_id TEXT PRIMARY KEY REFERENCES plaid_connections(item_id) ON DELETE CASCADE,
+    uid INTEGER NOT NULL REFERENCES useraccount(uid) ON DELETE CASCADE,
+    cursor TEXT,               -- NULL on first sync
+    last_synced TIMESTAMP
+);
+
+-- Accounts linked via transactions product (checking, savings, credit cards)
+CREATE TABLE plaid_transaction_accounts (
+    account_id TEXT PRIMARY KEY,
+    uid INTEGER NOT NULL REFERENCES useraccount(uid) ON DELETE RESTRICT,
+    item_id TEXT NOT NULL REFERENCES plaid_connections(item_id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    official_name TEXT,
+    type TEXT NOT NULL,        -- depository, credit, loan
+    subtype TEXT,              -- checking, savings, credit card, etc.
+    current_balance NUMERIC(18, 2),
+    available_balance NUMERIC(18, 2),
+    iso_currency_code TEXT,
+    last_synced TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Individual transactions
+CREATE TABLE plaid_transactions (
+    transaction_id TEXT PRIMARY KEY,
+    account_id TEXT NOT NULL REFERENCES plaid_transaction_accounts(account_id) ON DELETE CASCADE,
+    uid INTEGER NOT NULL REFERENCES useraccount(uid) ON DELETE CASCADE,
+    amount NUMERIC(18, 2) NOT NULL,    -- positive = debit/spend, negative = credit/refund
+    date DATE NOT NULL,
+    authorized_date DATE,
+    name TEXT,
+    merchant_name TEXT,
+    category_primary TEXT,             -- personal_finance_category.primary
+    category_detailed TEXT,            -- personal_finance_category.detailed
+    payment_channel TEXT,              -- online, in store, other
+    pending BOOLEAN DEFAULT FALSE,
+    iso_currency_code TEXT,
+    logo_url TEXT
+);
+CREATE INDEX idx_transactions_account_date ON plaid_transactions(account_id, date);
+CREATE INDEX idx_transactions_uid_date ON plaid_transactions(uid, date);
 
 
 

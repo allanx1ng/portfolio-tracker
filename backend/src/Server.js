@@ -206,16 +206,21 @@ class Server {
       ConnectedAccounts.disconnectAccount
     )
 
-    // // Transactions routes
-    // this.app.post("/transactions/sync", 
-    //   Authentication.authenticateToken, 
-    //   Transactions.SyncTransactions
-    // )
-    
-    // this.app.get("/transactions", 
-    //   Authentication.authenticateToken, 
-    //   Transactions.GetTransactions
-    // )
+    // Transactions routes
+    this.app.post("/transactions/sync",
+      Authentication.authenticateToken,
+      Transactions.syncTransactions
+    )
+
+    this.app.get("/transactions",
+      Authentication.authenticateToken,
+      Transactions.getTransactions
+    )
+
+    this.app.get("/transactions/accounts",
+      Authentication.authenticateToken,
+      Transactions.getAccounts
+    )
 
     this.app.post("/donation", Authentication.authenticateToken, Payments.donateMoney)
 

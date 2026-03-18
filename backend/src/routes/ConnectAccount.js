@@ -116,21 +116,6 @@ class ConnectAccount {
 
             console.log('Account connected successfully, added to DB');
 
-            // Trigger an initial transaction sync after connecting
-            // This can be async - we don't need to wait for it to complete
-            // try {
-            //     const Transactions = require('./Transactions');
-            //     Transactions.SyncTransactions({
-            //         body: { item_id },
-            //         user: { uid }
-            //     }, {
-            //         // Mock response object for background sync
-            //         status: () => ({ json: () => { } })
-            //     });
-            // } catch (syncError) {
-            //     console.error('Initial sync error (non-fatal):', syncError);
-            // }
-
             // Persist initial investment holdings to DB if this is an investments connection
             if (product === 'investments') {
                 try {
@@ -138,6 +123,15 @@ class ConnectAccount {
                     await InvestmentSync.syncHoldings(uid, institution_id);
                 } catch (error) {
                     console.error('Initial investment sync error (non-fatal):', error);
+                }
+            }
+
+            if (product === 'transactions') {
+                try {
+                    const TransactionSync = require('./TransactionSync');
+                    await TransactionSync.syncTransactions(uid, item_id);
+                } catch (error) {
+                    console.error('Initial transaction sync error (non-fatal):', error);
                 }
             }
 
